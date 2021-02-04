@@ -4,13 +4,10 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
-
-	"github.com/vorteil/direktiv/pkg/direktiv"
 )
 
 func main() {
@@ -57,27 +54,12 @@ func main() {
 // finishRunning will write to a file and or print the json body to stdout and exits
 func finishRunning(eb *EndBody) {
 	var err error
-	if eb.Error != "" {
-		g := direktiv.ActionError{
-			ErrorCode:    "com.requester.error",
-			ErrorMessage: eb.Error,
-		}
-		b, _ := json.Marshal(g)
-		fmt.Printf("LOGGING FAILED: %s", string(b))
-		err = ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
-		if err != nil {
-			log.Fatal("can not write error data")
-			return
-		}
-	} else {
-		ms, _ := json.Marshal(eb)
-		fmt.Printf("LOGGING SUCCESS: %s", string(ms))
+	ms, _ := json.Marshal(eb)
 
-		err = ioutil.WriteFile("/direktiv-data/data.out", []byte(ms), 0755)
-		if err != nil {
-			log.Fatal("can not write out data")
-			return
-		}
+	err = ioutil.WriteFile("/direktiv-data/data.out", []byte(ms), 0755)
+	if err != nil {
+		log.Fatal("can not write out data")
+		return
 	}
 }
 
