@@ -21,6 +21,9 @@ jobs:
       run: mv requester/Dockerfile request/
       
     - name: Build
-      run: CGO_ENABLED=0 go build -o request requester/main.go
+      run: CGO_ENABLED=0 go build -o request/request requester/main.go
+    
+    - name: Check-Contents
+      run: ls request
     
     
