@@ -1,10 +1,8 @@
-name: Build-Requester
+name: Build-Apps
 
 on:
   push:
-    tags: 
-      - 'requester-*'
-
+    branches: ["master"]
 jobs:
 
   build:
