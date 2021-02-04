@@ -1,0 +1,28 @@
+name: Build-Requester
+
+on:
+  push:
+    tags: 
+      - 'requester-*'
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15
+
+    - name: Create-Requester-Application
+      run: mkdir request
+      
+    - name: Move-Dockerfile
+      run: mv requester/Dockerfile request/
+      
+    - name: Build
+      run: CGO_ENABLED=0 go build requester cmd/main.go -o request/request
+    
+    
