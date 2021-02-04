@@ -2,56 +2,83 @@ package main
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
-	"os"
 	"strconv"
+
+	"github.com/vorteil/direktiv/pkg/direktiv"
 )
 
 func main() {
+	var err error
+	var data []byte
 
 	eb := &EndBody{}
-	// Arguments provided are more than the program
-	if len(os.Args) > 2 {
-		// use first arg for file name
-		filepathArg := os.Args[1]
-		outFileArg := os.Args[2]
-
-		requester := Manager{}
-		err := requester.Initialize(filepathArg)
-		if err != nil {
-			eb.Error = err.Error()
-			finishRunning(outFileArg, eb)
-		}
-
-		err = requester.Create()
-		if err != nil {
-			eb.Error = err.Error()
-			finishRunning(outFileArg, eb)
-		}
-
-		endBody, err := requester.Send()
-		if err != nil {
-			eb.Error = err.Error()
-			finishRunning(outFileArg, eb)
-		}
-
-		finishRunning(outFileArg, endBody)
-	} else {
-		eb.Error = "No filepath provided as argument to read json"
-		fmt.Printf("%+v\n", eb)
+	// read data in
+	data, err = ioutil.ReadFile("/direktiv-data/data.in")
+	if err != nil {
+		eb.Error = err.Error()
+		finishRunning(eb)
 		return
 	}
+
+	log.Printf("in data: %s", string(data))
+
+	requester := Manager{}
+	err = requester.Initialize(data)
+	if err != nil {
+		eb.Error = err.Error()
+		finishRunning(eb)
+		return
+	}
+
+	err = requester.Create()
+	if err != nil {
+		eb.Error = err.Error()
+		finishRunning(eb)
+		return
+	}
+
+	eb2, err := requester.Send()
+	if err != nil {
+		eb.Error = err.Error()
+		finishRunning(eb)
+		return
+	}
+
+	finishRunning(eb2)
 
 }
 
 // finishRunning will write to a file and or print the json body to stdout and exits
-func finishRunning(path string, eb *EndBody) {
-	ms, _ := json.Marshal(eb)
-	_ = ioutil.WriteFile(path, ms, 0644)
-	os.Exit(0)
+func finishRunning(eb *EndBody) {
+	var err error
+	if eb.Error != "" {
+		g := direktiv.ActionError{
+			ErrorCode:    "com.requester.error",
+			ErrorMessage: eb.Error,
+		}
+		b, _ := json.Marshal(g)
+		fmt.Printf("LOGGING FAILED: %s", string(b))
+		err = ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
+		if err != nil {
+			log.Fatal("can not write error data")
+			return
+		}
+	} else {
+		ms, _ := json.Marshal(eb)
+		fmt.Printf("LOGGING SUCCESS: %s", string(ms))
+
+		err = ioutil.WriteFile("/direktiv-data/data.out", []byte(ms), 0755)
+		if err != nil {
+			log.Fatal("can not write out data")
+			return
+		}
+	}
 }
 
 // Manager is used to maintain the request object
@@ -78,21 +105,21 @@ type EndBody struct {
 }
 
 // Initialize reads the file unmarshal json into appropriate struct
-func (m *Manager) Initialize(path string) error {
+func (m *Manager) Initialize(bv []byte) error {
 
-	// Open file and read its contents attempt to unmarshal it from json
-	jsonFile, err := os.Open(path)
-	if err != nil {
-		return err
-	}
-	defer jsonFile.Close()
+	// // Open file and read its contents attempt to unmarshal it from json
+	// jsonFile, err := os.Open(path)
+	// if err != nil {
+	// 	return err
+	// }
+	// defer jsonFile.Close()
 
-	bv, err := ioutil.ReadAll(jsonFile)
-	if err != nil {
-		return err
-	}
+	// bv, err := ioutil.ReadAll(jsonFile)
+	// if err != nil {
+	// 	return err
+	// }
 
-	err = json.Unmarshal(bv, &m.Request)
+	err := json.Unmarshal(bv, &m.Request)
 	if err != nil {
 		return err
 	}
@@ -112,7 +139,11 @@ func (m *Manager) Create() error {
 	b := bytes.NewBuffer([]byte(bvMap))
 
 	// Initialize client and the request
-	m.client = &http.Client{}
+	m.client = &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		},
+	}
 	m.req, err = http.NewRequest(m.Request.Method, m.Request.Host, b)
 	if err != nil {
 		return err
