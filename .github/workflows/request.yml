@@ -53,6 +53,6 @@ jobs:
       with:
         push: true
         tags: vorteil/request:latest
-        context: ./app
-        file: ./app/Dockerfile
+        context: ./request
+        file: ./request/Dockerfile
         platforms: linux/amd64
