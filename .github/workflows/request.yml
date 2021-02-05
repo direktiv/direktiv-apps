@@ -13,10 +13,10 @@ jobs:
         go-version: 1.15
    
     - name: Create-AppDir
-      run: mkdir app
+      run: mkdir request
 
     - name: Move-Dockerfile
-      run: mv requester/Dockerfile ../request
+      run: cp requester/Dockerfile ../request
       
     - name: Build
       run: CGO_ENABLED=0 go build -o ./request/request requester/main.go
