@@ -47,7 +47,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}  
     
     - name: lsCheck
-      run: ls -la .
+      run: ls -la ./app
     - name: Build and Push
       id: docker_build
       uses: docker/build-push-action@v2
@@ -55,5 +55,5 @@ jobs:
         push: true
         tags: vorteil/request:latest
         context: .
-        file: ./request/Dockerfile
+        file: ./app/Dockerfile
         platforms: linux/amd64
