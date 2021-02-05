@@ -24,12 +24,12 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: request-app
-        path: ./app
+        path: app
 
   release:
     runs-on: ubuntu-latest
     steps:
-
+    - uses: actions/checkout@v2
     - name: Download Request Application
       uses: actions/download-artifact@v2
       with:
