@@ -32,7 +32,7 @@ jobs:
     - name: Download a Request-APP
       uses: actions/download-artifact@v2
       with:
-        name: app
+        name: request-app
     - name: Push to DockerHub
       uses: docker/build-push-action@v1
       with:
