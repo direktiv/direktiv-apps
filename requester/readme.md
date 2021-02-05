@@ -1,6 +1,6 @@
 # Request
 
-Takes a simple json file like the one below to send a HTTP request.
+Takes a simple json file like the one below to send a HTTP request using Direktiv.
 
 ```json
 {

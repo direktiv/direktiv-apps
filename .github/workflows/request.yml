@@ -17,6 +17,8 @@ jobs:
 
     - name: Move-Dockerfile
       run: cp requester/Dockerfile ./request/
+    - name: Move-Request-Readme
+      run: cp requester/readme.md ./request/
       
     - name: Build
       run: CGO_ENABLED=0 go build -o ./request/request requester/main.go
