@@ -16,15 +16,15 @@ jobs:
       run: mkdir app
 
     - name: Move-Dockerfile
-      run: mv requester/Dockerfile ../app
+      run: mv requester/Dockerfile ../request
       
     - name: Build
-      run: CGO_ENABLED=0 go build -o ./app/request requester/main.go
+      run: CGO_ENABLED=0 go build -o ./request/request requester/main.go
     
     - uses: actions/upload-artifact@v2
       with:
-        name: request-app
-        path: app
+        name: request
+        path: request
 
   release:
     needs: build
@@ -34,8 +34,8 @@ jobs:
     - name: Download Request Application
       uses: actions/download-artifact@v2
       with:
-        name: request-app
-        path: ./app
+        name: request
+        path: ./request
 
     - name: Setup Docker Buildx
       uses: docker/setup-buildx-action@v1
@@ -47,7 +47,8 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}  
     
     - name: lsCheck
-      run: ls -la ./app
+      run: ls -la ./request
+
     - name: Build and Push
       id: docker_build
       uses: docker/build-push-action@v2
@@ -55,5 +56,5 @@ jobs:
         push: true
         tags: vorteil/request:latest
         context: .
-        file: ./app/Dockerfile
+        file: ./request/Dockerfile
         platforms: linux/amd64
