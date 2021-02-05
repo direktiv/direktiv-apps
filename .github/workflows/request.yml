@@ -44,6 +44,8 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}  
     
+    - name: lsCheck
+      run: ls -la .
     - name: Build and Push
       id: docker_build
       uses: docker/build-push-action@v2
