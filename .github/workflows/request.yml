@@ -12,7 +12,7 @@ jobs:
       with:
         go-version: 1.15
    
-    - name: Create-App-Dir
+    - name: Create-AppDir
       run: mkdir app
 
     - name: Move-Dockerfile
@@ -29,14 +29,27 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-    - name: Download a Request-APP
+
+    - name: Download Request Application
       uses: actions/download-artifact@v2
       with:
         name: request-app
-    - name: Push to DockerHub
-      uses: docker/build-push-action@v1
+
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Login to Dockerhub
+      uses: docker/login-action@v1
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        dockerfile: ./app/Dockerfile
-        tag_with_ref: true    
+        password: ${{ secrets.DOCKER_PASSWORD }}  
+    
+    - name: Build and Push
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: vorteil/request:latest
+        context: ./app
+        file: ./app/Dockerfile
+        platforms: linux/amd64
