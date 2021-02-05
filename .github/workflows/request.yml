@@ -17,12 +17,11 @@ jobs:
       
     - name: Build
       run: CGO_ENABLED=0 go build -o request requester/main.go
-  release:
-      runs-on: ubuntu-latest
-      steps:
-      - name: Push to DockerHub
-        uses: docker/build-push-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          tag_with_ref: true    
+      
+    - name: Push to DockerHub
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        dockerfile: Dockerfile
+        tag_with_ref: true    
