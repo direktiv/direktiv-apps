@@ -13,13 +13,13 @@ jobs:
         go-version: 1.15
    
     - name: Create-AppDir
-      run: mkdir twilio
+      run: mkdir twilio-app
 
     - name: Move-Dockerfile
-      run: cp twilio/Dockerfile ./twilio/
+      run: cp twilio/Dockerfile ./twilio-app/
       
     - name: Build
-      run: CGO_ENABLED=0 go build -o ./twilio/twilio twilio/twilio.go
+      run: CGO_ENABLED=0 go build -o ./twilio-app/twilio twilio/twilio.go
     
     - uses: actions/upload-artifact@v2
       with:
