@@ -15,6 +15,10 @@ jobs:
       run: mkdir twilio-app
     - name: Move-Dockerfile
       run: cp twilio/Dockerfile ./twilio-app/
+    - name: Find-Sendgrid
+      run: go get github.com/sendgrid/sendgrid-go
+    - name: Find-Mail
+      run: go get github.com/sendgrid/sendgrid-go/helpers/mail
     - name: Build
       run: CGO_ENABLED=0 go build -o ./twilio-app/twilio ./twilio/main.go
     - uses: actions/upload-artifact@v2
