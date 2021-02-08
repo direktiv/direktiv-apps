@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -34,41 +35,48 @@ type EndBody struct {
 }
 
 func main() {
-	if len(os.Args) > 2 {
-		tm := &TwilioMessage{}
-		eb := &EndBody{}
+	// if len(os.Args) > 2 {
+	tm := &TwilioMessage{}
+	eb := &EndBody{}
 
-		inputFile := os.Args[1]
-		outputFile := os.Args[2]
+	// inputFile := os.Args[1]
+	// outputFile := os.Args[2]
 
-		// Read input file and unmarshal into struct
-		b, err := ioutil.ReadFile(inputFile)
-		if err != nil {
-			eb.Error = err.Error()
-			finishRunning(outputFile, eb)
-		}
-
-		err = json.Unmarshal(b, &tm)
-		if err != nil {
-			eb.Error = err.Error()
-			finishRunning(outputFile, eb)
-		}
-
-		switch tm.TypeOf {
-		case "email":
-			eb, err = SendEmail(tm)
-			if err != nil {
-				fmt.Println(err, eb)
-				eb.Error = err.Error()
-			}
-		case "sms":
-			eb, err = SendSMS(tm)
-			if err != nil {
-				eb.Error = err.Error()
-			}
-		}
-		finishRunning(outputFile, eb)
+	// read data in
+	data, err := ioutil.ReadFile("/direktiv-data/data.in")
+	if err != nil {
+		eb.Error = err.Error()
+		finishRunning(eb)
+		return
 	}
+
+	log.Printf("in data: %s", string(data))
+
+	err = json.Unmarshal(data, &tm)
+	if err != nil {
+		eb.Error = err.Error()
+		finishRunning(eb)
+	}
+
+	switch tm.TypeOf {
+	case "email":
+		eb, err = SendEmail(tm)
+		if err != nil {
+			fmt.Println(err, eb)
+			eb.Error = err.Error()
+			finishRunning(eb)
+
+		}
+	case "sms":
+		eb, err = SendSMS(tm)
+		if err != nil {
+			eb.Error = err.Error()
+			finishRunning(eb)
+
+		}
+	}
+	finishRunning(eb)
+	// }
 }
 
 // SendEmail sends a message to the provided email from the input json
@@ -130,8 +138,8 @@ func SendSMS(tm *TwilioMessage) (*EndBody, error) {
 }
 
 // finishRunning will write to a file and or print the json body to stdout and exits
-func finishRunning(path string, eb *EndBody) {
+func finishRunning(eb *EndBody) {
 	ms, _ := json.Marshal(eb)
-	_ = ioutil.WriteFile(path, ms, 0644)
+	_ = ioutil.WriteFile("/direktiv-data/data.out", []byte(ms), 0755)
 	os.Exit(0)
 }
