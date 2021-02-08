@@ -10,8 +10,8 @@ import (
 	"os"
 	"strings"
 
-	sendgrid "github.com/sendgrid/sendgrid-go"
-	mail "github.com/sendgrid/sendgrid-go/helpers/mail"
+	"github.com/sendgrid/sendgrid-go"
+	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
 // TwilioMessage input struct to send an sms or email

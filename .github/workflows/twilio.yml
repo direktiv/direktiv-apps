@@ -11,23 +11,16 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.15
-   
     - name: Create-AppDir
       run: mkdir twilio-app
-
     - name: Move-Dockerfile
       run: cp twilio/Dockerfile ./twilio-app/
-    
-    - name: Grab Deps
-      run: go get -u ./...
     - name: Build
-      run: CGO_ENABLED=0 go build -o ./twilio-app/twilio ./twilio/twilio.go
-    
+      run: CGO_ENABLED=0 go build -o ./twilio-app/twilio ./twilio/main.go
     - uses: actions/upload-artifact@v2
       with:
         name: twilio
         path: twilio
-
   release-twilio:
     needs: build-twilio
     runs-on: ubuntu-latest
