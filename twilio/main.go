@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -89,14 +91,31 @@ func SendEmail(tm *TwilioMessage) (*EndBody, error) {
 
 	// from, subject header, send to, content, htmlContent
 	message := mail.NewSingleEmail(from, subject, to, tm.Message, tm.HTMLMessage)
-	client := sendgrid.NewSendClient(tm.Token)
-	resp, err := client.Send(message)
+	b := bytes.NewReader(mail.GetRequestBody(message))
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		},
+	}
+	req, _ := http.NewRequest("POST", "https://api.sendgrid.com/v3/mail/send", b)
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", tm.Token))
+	req.Header.Add("User-Agent", fmt.Sprintf("sendgrid/%s;go", sendgrid.Version))
+	req.Header.Add("Accept", "application/json")
+
+	// client := sendgrid.NewSendClient(tm.Token)
+	resp, err := client.Do(req)
+	if err != nil {
+		return eb, err
+	}
+	defer resp.Body.Close()
+
+	br, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return eb, err
 	}
 
 	eb.Status = resp.StatusCode
-	eb.Response = resp.Body
+	eb.Response = string(br)
 	eb.Error = ""
 
 	return eb, nil
@@ -112,7 +131,11 @@ func SendSMS(tm *TwilioMessage) (*EndBody, error) {
 	msgData.Set("Body", tm.Message)
 	msgDataReader := *strings.NewReader(msgData.Encode())
 
-	client := &http.Client{}
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		},
+	}
 	req, _ := http.NewRequest("POST", urlStr, &msgDataReader)
 	req.SetBasicAuth(tm.Sid, tm.Token)
 	req.Header.Add("Accept", "application/json")
