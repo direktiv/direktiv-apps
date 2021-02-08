@@ -90,7 +90,8 @@ func SendEmail(tm *TwilioMessage) (*EndBody, error) {
 	to := mail.NewEmail("", tm.To)
 
 	// from, subject header, send to, content, htmlContent
-	fmt.Println(from, to)
+	log.Printf("in data: %+v\n", tm)
+
 	message := mail.NewSingleEmail(from, subject, to, tm.Message, tm.HTMLMessage)
 	b := bytes.NewReader(mail.GetRequestBody(message))
 	client := &http.Client{
