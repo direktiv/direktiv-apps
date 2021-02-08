@@ -100,6 +100,7 @@ func SendEmail(tm *TwilioMessage) (*EndBody, error) {
 	req, _ := http.NewRequest("POST", "https://api.sendgrid.com/v3/mail/send", b)
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", tm.Token))
 	req.Header.Add("User-Agent", fmt.Sprintf("sendgrid/%s;go", sendgrid.Version))
+	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Accept", "application/json")
 
 	// client := sendgrid.NewSendClient(tm.Token)
