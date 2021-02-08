@@ -90,6 +90,7 @@ func SendEmail(tm *TwilioMessage) (*EndBody, error) {
 	to := mail.NewEmail("", tm.To)
 
 	// from, subject header, send to, content, htmlContent
+	fmt.Println(from, to)
 	message := mail.NewSingleEmail(from, subject, to, tm.Message, tm.HTMLMessage)
 	b := bytes.NewReader(mail.GetRequestBody(message))
 	client := &http.Client{
@@ -116,8 +117,12 @@ func SendEmail(tm *TwilioMessage) (*EndBody, error) {
 	}
 
 	eb.Status = resp.StatusCode
-	eb.Response = string(br)
-	eb.Error = ""
+	if resp.StatusCode != 200 && resp.StatusCode != 202 {
+		eb.Error = string(br)
+
+	} else {
+		eb.Response = string(br)
+	}
 
 	return eb, nil
 }
