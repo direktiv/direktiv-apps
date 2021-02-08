@@ -1,9 +1,9 @@
-name: Build-Apps
+name: Twilio
 on:
   push:
     branches: ["master"]
 jobs:
-  build-twilio:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -25,15 +25,15 @@ jobs:
       with:
         name: twilio
         path: twilio
-  release-twilio:
+  release:
     needs: build-twilio
     runs-on: ubuntu-latest
     steps:
     - name: Download Twilio Application
       uses: actions/download-artifact@v2
       with:
-        name: twilio
-        path: twilio
+        name: twilio-app
+        path: twilio-app
 
     - name: Setup Docker Buildx
       uses: docker/setup-buildx-action@v1
@@ -45,7 +45,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}  
     
     - name: lsCheck
-      run: ls -la ./twilio
+      run: ls -la ./twilio-app
 
     - name: Build and Push
       id: docker_build
@@ -54,5 +54,5 @@ jobs:
         push: true
         tags: vorteil/twilio:latest
         context: .
-        file: ./twilio/Dockerfile
+        file: ./twilio-app/Dockerfile
         platforms: linux/amd64

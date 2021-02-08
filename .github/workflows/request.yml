@@ -1,4 +1,4 @@
-name: Build-Apps
+name: Request
 on:
   push:
     branches: ["master"]
@@ -11,7 +11,7 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.15
-   
+  
     - name: Create-AppDir
       run: mkdir request
 
