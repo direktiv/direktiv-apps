@@ -23,8 +23,8 @@ jobs:
       run: CGO_ENABLED=0 go build -o ./twilio-app/twilio ./twilio/main.go
     - uses: actions/upload-artifact@v2
       with:
-        name: twilio
-        path: twilio
+        name: twilio-app
+        path: twilio-app
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -32,7 +32,7 @@ jobs:
     - name: Download Twilio Application
       uses: actions/download-artifact@v2
       with:
-        name: twilio
+        name: twilio-app
         path: twilio-app
 
     - name: Setup Docker Buildx
