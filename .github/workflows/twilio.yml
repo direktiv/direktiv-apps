@@ -17,9 +17,11 @@ jobs:
 
     - name: Move-Dockerfile
       run: cp twilio/Dockerfile ./twilio-app/
-      
+    
+    - name: Grab Deps
+      run: cd twilio && go get -u ./...
     - name: Build
-      run: CGO_ENABLED=0 go build -o ./twilio-app/twilio twilio/twilio.go
+      run: CGO_ENABLED=0 go build -o ./twilio-app/twilio ./twilio/twilio.go
     
     - uses: actions/upload-artifact@v2
       with:
