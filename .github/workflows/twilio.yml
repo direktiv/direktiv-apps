@@ -26,7 +26,7 @@ jobs:
         name: twilio
         path: twilio
   release:
-    needs: build-twilio
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Download Twilio Application
