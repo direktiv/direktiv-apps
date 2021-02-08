@@ -1,5 +1,5 @@
 FROM scratch
 
-ADD twilio /twilio
+ADD twilio /twilio-app
 
 CMD ["/twilio"]
