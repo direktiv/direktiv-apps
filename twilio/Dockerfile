@@ -2,4 +2,4 @@ FROM scratch
 
 ADD twilio-app /twilio-app
 
-CMD ["/twilio"]
+CMD ["/twilio-app/twilio"]
