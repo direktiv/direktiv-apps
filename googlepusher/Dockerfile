@@ -2,4 +2,4 @@ FROM scratch
 
 ADD store /store
 
-CMD ["/store"]
+CMD ["/store/store"]
