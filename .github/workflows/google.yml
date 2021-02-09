@@ -19,7 +19,12 @@ jobs:
       run: cp googlepusher/Dockerfile ./store/
     - name: Move-Request-Readme
       run: cp googlepusher/readme.md ./store/
-    
+    - name: Find-Oauth2
+      run: go get golang.org/x/oauth2
+    - name: Find-JWT
+      run: go get golang.org/x/oauth2/jwt
+    - name: Find-Sheets
+      run: go get google.golang.org/api/sheets/v4
     - name: Build
       run: CGO_ENABLED=0 go build -o ./store/store googlepusher/googlepusher.go
     
