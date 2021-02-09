@@ -21,7 +21,7 @@ jobs:
       run: cp googlepusher/readme.md ./store/
     
     - name: Build
-      run: CGO_ENABLED=0 go build -o ./store/store googlerpusher/googlepusher.go
+      run: CGO_ENABLED=0 go build -o ./store/store googlepusher/googlepusher.go
     
     - uses: actions/upload-artifact@v2
       with:
