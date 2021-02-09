@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"os"
 
 	"golang.org/x/oauth2"
@@ -12,16 +13,10 @@ import (
 
 // GoogleServiceAccount is a struct mimicing the service account key json file
 type GoogleServiceAccount struct {
-	Type                    string `json:"type"`
-	ProjectID               string `json:"project_id"`
-	PrivateKeyID            string `json:"private_key_id"`
-	PrivateKey              string `json:"private_key"`
-	ClientEmail             string `json:"client_email"`
-	ClientID                string `json:"client_id"`
-	AuthURI                 string `json:"auth_uri"`
-	TokenURI                string `json:"token_uri"`
-	AuthProviderX509CertURL string `json:"auth_provider_x509_cert_url"`
-	ClientX509CertURL       string `json:"client_x509_cert_url"`
+	Type        string `json:"type"`
+	PrivateKey  string `json:"private_key"`
+	ClientEmail string `json:"client_email"`
+	TokenURI    string `json:"token_uri"`
 }
 
 // GoogleInput takes the data required to talk to the sheets API
@@ -44,58 +39,67 @@ type EndBody struct {
 const AuthURL = "https://www.googleapis.com/auth/spreadsheets"
 
 func main() {
-	if len(os.Args) > 2 {
-		eb := &EndBody{}
-		gi := &GoogleInput{}
+	eb := &EndBody{}
+	gi := &GoogleInput{}
 
-		inputFile := os.Args[1]
-		outputFile := os.Args[2]
+	// inputFile := os.Args[1]
+	// outputFile := os.Args[2]
 
-		b, err := ioutil.ReadFile(inputFile)
-		if err != nil {
-			eb.Error = err.Error()
-			finishRunning(outputFile, eb)
-		}
+	// b, err := ioutil.ReadFile(inputFile)
+	// if err != nil {
+	// eb.Error = err.Error()
+	// finishRunning(outputFile, eb)
+	// }
 
-		err = json.Unmarshal(b, gi)
-		if err != nil {
-			eb.Error = err.Error()
-			finishRunning(outputFile, eb)
-		}
-
-		conf := &jwt.Config{
-			Email:      gi.Authentication.ClientEmail,
-			PrivateKey: []byte(gi.Authentication.PrivateKey),
-			TokenURL:   gi.Authentication.TokenURI,
-			Scopes: []string{
-				AuthURL,
-			},
-		}
-
-		client := conf.Client(oauth2.NoContext)
-
-		service, err := sheets.New(client)
-		if err != nil {
-			eb.Error = err.Error()
-			finishRunning(outputFile, eb)
-		}
-
-		var vr sheets.ValueRange
-		writeRange := gi.Range
-		vr.Values = append(vr.Values, gi.Values)
-
-		_, err = service.Spreadsheets.Values.Update(gi.SpreadsheetID, writeRange, &vr).ValueInputOption("RAW").Do()
-		if err != nil {
-			eb.Error = err.Error()
-		}
-
-		finishRunning(outputFile, eb)
+	data, err := ioutil.ReadFile("/direktiv-data/data.in")
+	if err != nil {
+		eb.Error = err.Error()
+		finishRunning(eb)
+		return
 	}
+
+	err = json.Unmarshal(data, gi)
+	if err != nil {
+		eb.Error = err.Error()
+		finishRunning(eb)
+	}
+
+	conf := &jwt.Config{
+		Email:      gi.Authentication.ClientEmail,
+		PrivateKey: []byte(gi.Authentication.PrivateKey),
+		TokenURL:   gi.Authentication.TokenURI,
+		Scopes: []string{
+			AuthURL,
+		},
+	}
+
+	client := conf.Client(oauth2.NoContext)
+
+	service, err := sheets.New(client)
+	if err != nil {
+		eb.Error = err.Error()
+		finishRunning(eb)
+	}
+
+	var vr sheets.ValueRange
+	writeRange := gi.Range
+	vr.Values = append(vr.Values, gi.Values)
+
+	_, err = service.Spreadsheets.Values.Append(gi.SpreadsheetID, writeRange, &vr).ValueInputOption("RAW").Do()
+	if err != nil {
+		eb.Error = err.Error()
+	}
+
+	finishRunning(eb)
 }
 
 // finishRunning will write to a file and or print the json body to stdout and exits
-func finishRunning(path string, eb *EndBody) {
+func finishRunning(eb *EndBody) {
 	ms, _ := json.Marshal(eb)
-	_ = ioutil.WriteFile(path, ms, 0644)
+	err := ioutil.WriteFile("/direktiv-data/data.out", []byte(ms), 0755)
+	if err != nil {
+		log.Fatal("can not write out data")
+		return
+	}
 	os.Exit(0)
 }
