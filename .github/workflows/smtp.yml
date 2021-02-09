@@ -43,7 +43,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}  
     
     - name: lsCheck
-      run: ls -la ./twilio-app
+      run: ls -la ./smtp-app
 
     - name: Build and Push
       id: docker_build
