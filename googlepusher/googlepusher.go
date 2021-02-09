@@ -1,9 +1,11 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 
 	"golang.org/x/oauth2"
@@ -74,6 +76,9 @@ func main() {
 	}
 
 	client := conf.Client(oauth2.NoContext)
+	client.Transport = &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
 
 	service, err := sheets.New(client)
 	if err != nil {
