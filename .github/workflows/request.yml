@@ -28,7 +28,7 @@ jobs:
         name: request
         path: request
 
-  release:
+release:
     needs: build
     runs-on: ubuntu-latest
     steps:
