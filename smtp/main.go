@@ -1,8 +1,10 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"os"
 
 	gomail "gopkg.in/mail.v2"
@@ -28,52 +30,50 @@ type EndBody struct {
 }
 
 func main() {
-	if len(os.Args) > 2 {
-		tm := &SMTPEmail{}
-		eb := &EndBody{}
+	tm := &SMTPEmail{}
+	eb := &EndBody{}
 
-		inputFile := os.Args[1]
-		outputFile := os.Args[2]
-
-		// Read input file and unmarshal into struct
-		b, err := ioutil.ReadFile(inputFile)
-		if err != nil {
-			eb.Error = err.Error()
-			finishRunning(outputFile, eb)
-		}
-
-		err = json.Unmarshal(b, tm)
-		if err != nil {
-			eb.Error = err.Error()
-			finishRunning(outputFile, eb)
-		}
-
-		m := gomail.NewMessage()
-		// Set E-Mail sender
-		m.SetHeader("From", tm.From)
-
-		// Set E-mail receivers
-		m.SetHeader("To", tm.To)
-
-		// Set E-mail subject
-		m.SetHeader("Subject", tm.Subject)
-
-		// Set E-mail body
-		m.SetBody("text/html", tm.Message)
-
-		// Settings for SMTP server
-		d := gomail.NewDialer(tm.Server, int(tm.Port), tm.From, tm.Password)
-
-		if err := d.DialAndSend(m); err != nil {
-			eb.Error = err.Error()
-		}
-		finishRunning(outputFile, eb)
+	// read data in
+	data, err := ioutil.ReadFile("/direktiv-data/data.in")
+	if err != nil {
+		eb.Error = err.Error()
+		finishRunning(eb)
+		return
 	}
+
+	err = json.Unmarshal(data, tm)
+	if err != nil {
+		eb.Error = err.Error()
+		finishRunning(eb)
+	}
+
+	m := gomail.NewMessage()
+	// Set E-Mail sender
+	m.SetHeader("From", tm.From)
+
+	// Set E-mail receivers
+	m.SetHeader("To", tm.To)
+
+	// Set E-mail subject
+	m.SetHeader("Subject", tm.Subject)
+
+	// Set E-mail body
+	m.SetBody("text/html", tm.Message)
+
+	// Settings for SMTP server
+	d := gomail.NewDialer(tm.Server, int(tm.Port), tm.From, tm.Password)
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+
+	if err := d.DialAndSend(m); err != nil {
+		eb.Error = err.Error()
+	}
+	finishRunning(eb)
 }
 
 // finishRunning will write to a file and or print the json body to stdout and exits
-func finishRunning(path string, eb *EndBody) {
+func finishRunning(eb *EndBody) {
 	ms, _ := json.Marshal(eb)
-	_ = ioutil.WriteFile(path, ms, 0644)
+	log.Printf("EB: %+v", eb)
+	_ = ioutil.WriteFile("/direktiv-data/data.out", []byte(ms), 0755)
 	os.Exit(0)
 }
