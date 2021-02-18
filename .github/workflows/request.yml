@@ -4,11 +4,13 @@ on:
     branches: ["master"]
 jobs:
   check:
+    runs-on: ubuntu-latest
+    steps:
     - uses: marceloprado/has-changed-path@v1
-        id: changed-requester
-        with:
-          paths: .
-        env:
+      id: changed-requester
+      with:
+        paths: .
+      env:
           SOURCE: requester
     
   build:
