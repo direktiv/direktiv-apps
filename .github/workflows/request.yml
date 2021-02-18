@@ -10,9 +10,7 @@ jobs:
     - uses: marceloprado/has-changed-path@v1
       id: changed-requester
       with:
-        paths: .
-      env:
-          SOURCE: requester
+        paths: requester
     - shell: bash
       if: steps.changed-main.outputs.changed == 'true'
       run: |
