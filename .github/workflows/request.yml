@@ -14,8 +14,13 @@ jobs:
       env:
           SOURCE: requester
     - shell: bash
+      if: steps.changed-main.outputs.changed == 'true'
       run: |
-        steps.changed-request.outputs.changed > changed-paths
+        true > changed-paths
+    - shell: bash
+      if: steps.changed-main.outputs.changed == 'false'
+      run: |
+        false > changed-paths
     - name: Upload whether files have changed for directory
       uses: actions/upload-artifact@v2
       with:
