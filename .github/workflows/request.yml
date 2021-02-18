@@ -55,7 +55,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: vorteil/request:latest
+        tags: vorteil/request
         context: .
         file: ./request/Dockerfile
         platforms: linux/amd64

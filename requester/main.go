@@ -4,59 +4,74 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 )
 
+type ActionError struct {
+	ErrorCode    string `json:"errorCode"`
+	ErrorMessage string `json:"errorMessage"`
+}
+
 func main() {
+	g := ActionError{
+		ErrorCode:    "com.request.error",
+		ErrorMessage: "",
+	}
 	var err error
 	var data []byte
 
-	eb := &EndBody{}
 	// read data in
 	data, err = ioutil.ReadFile("/direktiv-data/data.in")
 	if err != nil {
-		eb.Error = err.Error()
-		finishRunning(eb)
+		g.ErrorMessage = err.Error()
+		writeError(g)
 		return
 	}
-
-	log.Printf("in data: %s", string(data))
 
 	requester := Manager{}
 	err = requester.Initialize(data)
 	if err != nil {
-		eb.Error = err.Error()
-		finishRunning(eb)
+		g.ErrorMessage = err.Error()
+		writeError(g)
 		return
 	}
 
 	err = requester.Create()
 	if err != nil {
-		eb.Error = err.Error()
-		finishRunning(eb)
+		g.ErrorMessage = err.Error()
+		writeError(g)
 		return
 	}
 
-	eb2, err := requester.Send()
+	resp, err := requester.Send()
 	if err != nil {
-		eb.Error = err.Error()
-		finishRunning(eb)
+		g.ErrorMessage = err.Error()
+		writeError(g)
 		return
 	}
 
-	finishRunning(eb2)
+	finishRunning(resp)
 
 }
 
-// finishRunning will write to a file and or print the json body to stdout and exits
-func finishRunning(eb *EndBody) {
-	var err error
-	ms, _ := json.Marshal(eb)
+// writeError
+func writeError(g ActionError) {
+	b, _ := json.Marshal(g)
+	err := ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
+	if err != nil {
+		log.Fatal("can not write json error")
+		return
+	}
+}
 
-	err = ioutil.WriteFile("/direktiv-data/data.out", []byte(ms), 0755)
+// finishRunning will write to a file and or print the json body to stdout and exits
+func finishRunning(eb []byte) {
+	var err error
+	err = ioutil.WriteFile("/direktiv-data/data.out", eb, 0755)
 	if err != nil {
 		log.Fatal("can not write out data")
 		return
@@ -78,29 +93,8 @@ type Request struct {
 	Headers map[string]interface{} `json:"headers"`
 }
 
-// EndBody is the response of this library after a request
-type EndBody struct {
-	Error         string `json:"error"`
-	Response      string `json:"response"`
-	Status        int    `json:"statusCode"`
-	StatusMessage string `json:"status"`
-}
-
 // Initialize reads the file unmarshal json into appropriate struct
 func (m *Manager) Initialize(bv []byte) error {
-
-	// // Open file and read its contents attempt to unmarshal it from json
-	// jsonFile, err := os.Open(path)
-	// if err != nil {
-	// 	return err
-	// }
-	// defer jsonFile.Close()
-
-	// bv, err := ioutil.ReadAll(jsonFile)
-	// if err != nil {
-	// 	return err
-	// }
-
 	err := json.Unmarshal(bv, &m.Request)
 	if err != nil {
 		return err
@@ -151,15 +145,7 @@ func (m *Manager) Create() error {
 }
 
 // Send sends the http request to provided host and responds
-/*
-	{
-		error: "",
-		response: "",
-		status: ""
-	}
-*/
-func (m *Manager) Send() (*EndBody, error) {
-	eb := &EndBody{}
+func (m *Manager) Send() ([]byte, error) {
 
 	// Perform the request with the client we're using
 	resp, err := m.client.Do(m.req)
@@ -173,10 +159,10 @@ func (m *Manager) Send() (*EndBody, error) {
 		return nil, err
 	}
 
-	eb.Status = resp.StatusCode
-	eb.StatusMessage = resp.Status
-	eb.Response = string(body)
-	eb.Error = ""
+	if resp.StatusCode != 200 && resp.StatusCode != 202 {
+		// error more than likely
+		return nil, fmt.Errorf("Response Message: %s, Response Code: %v \nResponseBody: %s", resp.Status, resp.StatusCode, body)
+	}
 
-	return eb, nil
+	return body, nil
 }
