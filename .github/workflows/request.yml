@@ -34,7 +34,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: request-changed
-        path: changed-paths
+        path: request-changed
     - shell: bash
       run: |
           value=`cat request-changed`
