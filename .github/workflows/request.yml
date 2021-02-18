@@ -6,6 +6,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
     - uses: marceloprado/has-changed-path@v1
       id: changed-requester
       with:
@@ -32,7 +33,7 @@ jobs:
     - shell: bash
       run: |
           value=`cat request-changed`
-          
+         
     - uses: actions/checkout@v2
     - name: Set up Go
       uses: actions/setup-go@v2
