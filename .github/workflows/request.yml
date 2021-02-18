@@ -12,12 +12,27 @@ jobs:
         paths: .
       env:
           SOURCE: requester
-    
+    - shell: bash
+      run: |
+        steps.changed-request.outputs.changed > changed-paths
+    - name: Upload whether files have changed for directory
+      uses: actions/upload-artifact@v2
+      with:
+        name: request-changed
+        path: changed-paths    
   build:
     needs: check
     runs-on: ubuntu-latest
-    if: check.steps.changed-requester.outputs.changed == 'true'
     steps:
+    - name: Download change check
+      uses: actions/download-artifact@v2
+      with:
+        name: request-changed
+        path: .
+    - shell: bash
+        run: |
+          value=`cat request-changed`
+          
     - uses: actions/checkout@v2
     - name: Set up Go
       uses: actions/setup-go@v2
