@@ -30,7 +30,7 @@ jobs:
         name: request-changed
         path: .
     - shell: bash
-        run: |
+      run: |
           value=`cat request-changed`
           
     - uses: actions/checkout@v2
