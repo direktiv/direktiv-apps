@@ -3,7 +3,17 @@ on:
   push:
     branches: ["master"]
 jobs:
+  check:
+    - uses: marceloprado/has-changed-path@v1
+        id: changed-requester
+        with:
+          paths: .
+        env:
+          SOURCE: requester
+    
   build:
+    needs: check
+    if: steps.changed-requester.outputs.changed == 'true'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -11,24 +21,14 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.15
-    - uses: marceloprado/has-changed-path@v1
-      id: changed-requester
-      with:
-        paths: .
-      env:
-        SOURCE: requester
-
+  
     - name: Create-AppDir
-      if: steps.changed-requester.outputs.changed == 'true'
       run: mkdir request
     - name: Move-Dockerfile
-      if: steps.changed-requester.outputs.changed == 'true'
       run: cp requester/Dockerfile ./request/
     - name: Move-Request-Readme
-      if: steps.changed-requester.outputs.changed == 'true'
       run: cp requester/readme.md ./request/      
     - name: Build
-      if: steps.changed-requester.outputs.changed == 'true'
       run: CGO_ENABLED=0 go build -o ./request/request requester/main.go
     
     - uses: actions/upload-artifact@v2
