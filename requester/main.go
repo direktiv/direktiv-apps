@@ -95,6 +95,7 @@ type Request struct {
 
 // Initialize reads the file unmarshal json into appropriate struct
 func (m *Manager) Initialize(bv []byte) error {
+	fmt.Printf("REQUEST: %+v\nBV: %s", m.Request, bv)
 	err := json.Unmarshal(bv, &m.Request)
 	if err != nil {
 		return err
