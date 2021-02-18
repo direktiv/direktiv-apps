@@ -14,9 +14,10 @@ jobs:
     - uses: marceloprado/has-changed-path@v1
       id: changed-requester
       with:
-        paths: requester
+        paths: .
       env:
-        SOURCE: main
+        SOURCE: requester
+
     - name: Deploy main
       if: steps.changed-requester.outputs.changed == 'false'
       run: /deploy-main.sh
