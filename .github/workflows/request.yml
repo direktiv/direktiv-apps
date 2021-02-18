@@ -3,40 +3,10 @@ on:
   push:
     branches: ["master"]
 jobs:
-  check:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: marceloprado/has-changed-path@v1
-      id: changed-requester
-      with:
-        paths: requester
-    - shell: bash
-      if: steps.changed-main.outputs.changed == 'true'
-      run: |
-        true > changed-paths
-    - shell: bash
-      if: steps.changed-main.outputs.changed == 'false'
-      run: |
-        false > changed-paths
-    - name: Upload whether files have changed for directory
-      uses: actions/upload-artifact@v2
-      with:
-        name: request-changed
-        path: changed-paths    
   build:
     needs: check
     runs-on: ubuntu-latest
     steps:
-    - name: Download change check
-      uses: actions/download-artifact@v2
-      with:
-        name: request-changed
-        path: request-changed
-    - shell: bash
-      run: |
-          value=`cat request-changed`
-         
     - uses: actions/checkout@v2
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -76,15 +46,12 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}  
     
-    - name: lsCheck
-      run: ls -la ./request
-
     - name: Build and Push
       id: docker_build
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: vorteil/request
+        tags: vorteil/request:${{ github.ref }}
         context: .
         file: ./request/Dockerfile
         platforms: linux/amd64
