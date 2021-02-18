@@ -16,7 +16,7 @@ jobs:
   build:
     needs: check
     runs-on: ubuntu-latest
-    if: steps.changed-requester.outputs.changed == 'true'
+    if: check.steps.changed-requester.outputs.changed == 'true'
     steps:
     - uses: actions/checkout@v2
     - name: Set up Go
