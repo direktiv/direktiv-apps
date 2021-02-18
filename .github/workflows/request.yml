@@ -1,7 +1,7 @@
 name: Request
 on:
   push:
-    branches: ["master"]
+    branches: ["release-requester"]
 jobs:
   build:
     runs-on: ubuntu-latest
