@@ -18,10 +18,6 @@ jobs:
       env:
         SOURCE: requester
 
-    - name: Deploy main
-      if: steps.changed-requester.outputs.changed == 'false'
-      run: /deploy-main.sh
-
     - name: Create-AppDir
       if: steps.changed-requester.outputs.changed == 'true'
       run: mkdir request
