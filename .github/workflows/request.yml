@@ -61,7 +61,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: vorteil/request:${SHORT_SHA}
+        tags: vorteil/request:${{ env.SHORT_SHA }}
         context: .
         file: ./request/Dockerfile
         platforms: linux/amd64
