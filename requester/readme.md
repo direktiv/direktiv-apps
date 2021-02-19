@@ -1,6 +1,8 @@
 # Request
 
-Takes a simple json file like the one below to send a HTTP request using Direktiv.
+## Input
+
+Request takes a simple json input like the one below.
 
 ```json
 {
@@ -15,13 +17,19 @@ Takes a simple json file like the one below to send a HTTP request using Direkti
 }
 ```
 
-The output file will look something like
+Providing body and headers are optional.
+
+## Output
+
+The output of the following container will be the response of the http request.
+
+### Error
+
+If an error was to happen during the container running the output is written back to direktiv as the following
 
 ```json
 {
-    "Error": "",
-    "Response": "",
-    "Status": "",
-    "StatusCode": ""
+    "errorCode": "com.request.error",
+    "errorMsg": "Something went wrong"
 }
 ```
