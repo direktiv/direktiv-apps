@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -89,15 +88,14 @@ func main() {
 	writeRange := gi.Range
 	vr.Values = append(vr.Values, gi.Values)
 
-	test, err := service.Spreadsheets.Values.Append(gi.SpreadsheetID, writeRange, &vr).ValueInputOption("RAW").Do()
+	_, err = service.Spreadsheets.Values.Append(gi.SpreadsheetID, writeRange, &vr).ValueInputOption("RAW").Do()
 	if err != nil {
 		g.ErrorMessage = err.Error()
 		writeError(g)
 		return
 	}
 
-	fmt.Printf("TEST: %+v", test)
-	// finishRunning(eb)
+	finishRunning([]byte{})
 }
 
 // finishRunning will write to a file and or print the json body to stdout and exits
