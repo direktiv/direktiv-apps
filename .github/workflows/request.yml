@@ -72,7 +72,7 @@ jobs:
         DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
       with:
-        destination_container-repo: vorteil/request
+        destination_container_repo: vorteil/request
         provider: dockerhub
         short_description: 'A container that sends a simple http request'
         readme_file: './request/readme.md'
