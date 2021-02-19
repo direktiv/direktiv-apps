@@ -1,6 +1,10 @@
 # Twilio
 
-Takes multiple arguments to be able to send emails and sms. The following example below is what an email input file would look like.
+## Input
+A simple go application that either sends an email or sms using Twilio infrastructure.
+
+### Email
+To send an email using twilio it requires generating a token from [here](https://app.sendgrid.com/settings/api_keys) and sending the following input. (The email used to create this token is the email you will be sending the "from" tag from)
 
 ```json
     {
@@ -14,9 +18,11 @@ Takes multiple arguments to be able to send emails and sms. The following exampl
     }
 ```
 
-One of the message fields need to be used. htmlMessage takes priority over the other.
+One of the message fields needs to be used. htmlMessage takes priority over the other.
 
-Another type of input field we could use is for messaging mobiles via Twilio. Notice the extra field "sid" we need to use this as this functionality requires a different authentication.
+
+### SMS
+To send an sms you will need your twilio sid and token. Twilio should also provide you with a number that they use to send the sms messages.
 
 ```json
     {
@@ -29,16 +35,15 @@ Another type of input field we could use is for messaging mobiles via Twilio. No
     }
 ```
 
-The output file will look something like
+## Output
+
+Both requests here return no output from the response if successful.
+
+If an error was to happen during the container running the output is written back to direktiv as the following
 
 ```json
 {
-    "Error": "",
-    "Response": "",
-    "Status": "",
-    "StatusCode": ""
+    "errorCode": "com.request.error",
+    "errorMsg": "Something went wrong"
 }
 ```
-
-Error is only used if the request encountered an error the process
-Response, Status and Status code are all returned from the API we are requesting
