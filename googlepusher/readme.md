@@ -1,4 +1,8 @@
-# Write data to a google spreadsheet
+# Store
+
+Store appends to a google spreadsheet.
+
+## Input
 
 - Grab a service account key.
 - Look at the client_email in the credentials.json and provide access for that email to the spreadsheet ID you wish to edit.
@@ -19,13 +23,17 @@
 }
 ```
 
-- Output.json file should look like something below or contain an error depending on your configuration
+## Output
+
+No output will be provided if successful
+
+### Error
+
+If an error was to happen during the container running the output is written back to direktiv as the following
 
 ```json
 {
-    "error":"",
-    "response":"",
-    "statusCode":0,
-    "status":""
+    "errorCode": "com.store.error",
+    "errorMsg": "Something went wrong"
 }
 ```
