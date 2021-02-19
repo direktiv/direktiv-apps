@@ -1,7 +1,7 @@
 name: Store
 on: 
   push:
-    branches: ["master"]
+    branches: ["release-google"]
 jobs:
   build:
     runs-on: ubuntu-latest

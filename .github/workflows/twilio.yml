@@ -1,7 +1,7 @@
 name: Twilio
 on:
   push:
-    branches: ["master"]
+    branches: ["release-twilio"]
 jobs:
   build:
     runs-on: ubuntu-latest

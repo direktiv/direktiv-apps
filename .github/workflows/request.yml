@@ -11,7 +11,6 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.15
-  
     - name: Create-AppDir
       run: mkdir request
     - name: Move-Dockerfile
@@ -20,7 +19,6 @@ jobs:
       run: cp requester/readme.md ./request/      
     - name: Build
       run: CGO_ENABLED=0 go build -o ./request/request requester/main.go
-    
     - uses: actions/upload-artifact@v2
       with:
         name: request
