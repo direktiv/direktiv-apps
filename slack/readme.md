@@ -1,7 +1,8 @@
-# Post Message to slack channel
+# Use request container to post to slack
 
 - Create an app assign it to your team for slack.
-- Use the requester program to send the following input to hit your application to push a message
+- Use the request program to send the following input to hit your application to push a message
+
 ```json
 {
     "method": "POST",
@@ -16,13 +17,4 @@
 ```
 
 
-- The response should be something along the lines of the follow json struct and you should see the message appear in your slack channel.
-
-```json
-{
-    "error":"",
-    "response":"ok",
-    "statusCode":200,
-    "status":"200 OK"
-}
-```
+- The response will be a 200 if it is successful.
