@@ -15,6 +15,8 @@ jobs:
       run: mkdir twilio-app
     - name: Move-Dockerfile
       run: cp twilio/Dockerfile ./twilio-app/
+    - name: Move-Readme
+      run: cp twilio/readme.md ./twilio-app/
     - name: Find-Sendgrid
       run: go get github.com/sendgrid/sendgrid-go
     - name: Find-Mail
