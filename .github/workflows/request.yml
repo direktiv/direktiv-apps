@@ -68,7 +68,13 @@ jobs:
     
     - name: Docker Hub Description
       uses: peter-evans/dockerhub-description@v2
-      username: ${{ secrets.DOCKERHUB_USERNAME }}
-      password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      repository: vorteil/request
-      readme-filepath: ./request/readme.md
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: vorteil/request
+        readme-filepath: ./request/readme.md
+      env:
+        DOCKERHUB_USERNAME='${{ secrets.DOCKERHUB_USERNAME }}'
+        DOCKERHUB_PASSWORD='${{ secrets.DOCKERHUB_PASSWORD }}'
+        DOCKERHUB_REPOSITORY='vorteil/request'
+        README_FILEPATH='./request/readme.md'
