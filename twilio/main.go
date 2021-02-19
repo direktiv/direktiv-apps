@@ -112,9 +112,9 @@ func SendEmail(tm *TwilioMessage) ([]byte, error) {
 		return nil, err
 	}
 
-	if resp.StatusCode != 200 && resp.StatusCode != 202 {
+	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
 		// error more than likely
-		return nil, fmt.Errorf("Response Message: %s, Response Code: %v \nResponseBody: %s", resp.Status, resp.StatusCode, br)
+		return nil, fmt.Errorf("Response Message: %s, Response Code: %v \nResponseBody: %s", resp.Status, resp.StatusCode, body)
 	}
 
 	return br, nil
@@ -150,11 +150,10 @@ func SendSMS(tm *TwilioMessage) ([]byte, error) {
 		return nil, err
 	}
 
-	if resp.StatusCode != 200 && resp.StatusCode != 202 {
+	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
 		// error more than likely
 		return nil, fmt.Errorf("Response Message: %s, Response Code: %v \nResponseBody: %s", resp.Status, resp.StatusCode, body)
 	}
-
 	return body, nil
 }
 

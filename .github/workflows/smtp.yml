@@ -15,6 +15,8 @@ jobs:
       run: mkdir smtp-app
     - name: Move-Dockerfile
       run: cp smtp/Dockerfile ./smtp-app/
+    - name: Move-Readme
+      run: cp smtp/readme.md ./smtp-app/
     - name: Find-GoMail
       run: go get gopkg.in/mail.v2
     - name: Build
@@ -42,8 +44,8 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}  
     
-    - name: lsCheck
-      run: ls -la ./smtp-app
+    - name: Add SHORT_SHA env property with commit short sha
+      run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
 
     - name: Build and Push
       id: docker_build
@@ -54,3 +56,21 @@ jobs:
         context: .
         file: ./smtp-app/Dockerfile
         platforms: linux/amd64
+
+    - name: Build and Push
+      id: docker_build2
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: vorteil/twilio:${{ env.SHORT_SHA }}
+        context: .
+        file: ./smtp-app/Dockerfile
+        platforms: linux/amd64
+
+    - name: Sync
+      uses: ms-jpq/sync-dockerhub-readme@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: vorteil/smtp
+        readme: "./smtp-app/readme.md"
