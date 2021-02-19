@@ -1,31 +1,41 @@
 # Request
 
-## Input
+Perform a basic HTTP/S request.
 
-Request takes a simple json input like the one below.
+## Input
 
 ```json
 {
     "method": "GET",
-    "host": "https://vorteil.io",
-    "body" : {
-        "hello":"world"
+    "url"   : "https://vorteil.io",
+    "body"  : {
+        "hello": "world"
     },
-    "headers" : {
-        "Authorization": "Bearer Test"
+    "headers": {
+        "Content-Type": "application/json" 
     }
 }
 ```
 
-Providing body and headers are optional.
+**NOTE:** The `body` and `header` fields are optional.
 
 ## Output
 
-The output of the following container will be the response of the http request.
+If the request is successful, the response will be wrapped inside of a JSON object, within the `return` field.
+In the event that the response body is not in JSON format, the data will be base64 encoded and stored as the value of the `return` field.
 
-### Error
 
-If an error was to happen during the container running the output is written back to direktiv as the following
+```json
+{
+    "return": {
+        ...
+    }
+}
+```
+
+## Error
+
+In the case that an error is encountered, it will present in the following format:
 
 ```json
 {
