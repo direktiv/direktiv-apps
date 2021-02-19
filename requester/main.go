@@ -108,11 +108,16 @@ func (m *Manager) Create() error {
 	var err error
 
 	// Generate the body from the interface provided
-	bvMap, err := json.Marshal(m.Request.Body)
-	if err != nil {
-		return err
+	var b []byte
+
+	if m.Request.Body != nil {
+		b, err = json.Marshal(m.Request.Body)
+		if err != nil {
+			return err
+		}
 	}
-	b := bytes.NewBuffer([]byte(bvMap))
+
+	// b := bytes.NewBuffer([]byte(bvMap))
 
 	// Initialize client and the request
 	m.client = &http.Client{
@@ -120,7 +125,7 @@ func (m *Manager) Create() error {
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		},
 	}
-	m.req, err = http.NewRequest(m.Request.Method, m.Request.Host, b)
+	m.req, err = http.NewRequest(m.Request.Method, m.Request.Host, bytes.NewReader(b))
 	if err != nil {
 		return err
 	}
@@ -159,7 +164,7 @@ func (m *Manager) Send() ([]byte, error) {
 		return nil, err
 	}
 
-	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+	if resp.StatusCode < 200 && resp.StatusCode >= 300 {
 		// error more than likely
 		return nil, fmt.Errorf("Response Message: %s, Response Code: %v \nResponseBody: %s", resp.Status, resp.StatusCode, body)
 	}
