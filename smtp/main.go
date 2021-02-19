@@ -10,6 +10,11 @@ import (
 	gomail "gopkg.in/mail.v2"
 )
 
+type ActionError struct {
+	ErrorCode    string `json:"errorCode"`
+	ErrorMessage string `json:"errorMessage"`
+}
+
 // SMTPEmail is the object to control emailing
 type SMTPEmail struct {
 	From     string  `json:"from"`
@@ -21,30 +26,27 @@ type SMTPEmail struct {
 	Password string  `json:"password"`
 }
 
-// EndBody is the response of this library after a request
-type EndBody struct {
-	Error         string `json:"error"`
-	Response      string `json:"response"`
-	Status        int    `json:"statusCode"`
-	StatusMessage string `json:"status"`
-}
-
 func main() {
 	tm := &SMTPEmail{}
-	eb := &EndBody{}
-
+	g := ActionError{
+		ErrorCode:    "com.request.error",
+		ErrorMessage: "",
+	}
+	var err error
+	var data []byte
 	// read data in
-	data, err := ioutil.ReadFile("/direktiv-data/data.in")
+	data, err = ioutil.ReadFile("/direktiv-data/data.in")
 	if err != nil {
-		eb.Error = err.Error()
-		finishRunning(eb)
+		g.ErrorMessage = err.Error()
+		writeError(g)
 		return
 	}
 
 	err = json.Unmarshal(data, tm)
 	if err != nil {
-		eb.Error = err.Error()
-		finishRunning(eb)
+		g.ErrorMessage = err.Error()
+		writeError(g)
+		return
 	}
 
 	m := gomail.NewMessage()
@@ -65,15 +67,27 @@ func main() {
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 	if err := d.DialAndSend(m); err != nil {
-		eb.Error = err.Error()
+		g.ErrorMessage = err.Error()
+		writeError(g)
+		return
 	}
-	finishRunning(eb)
+
+	// Nothing can be returned
+	finishRunning([]byte{})
+}
+
+// writeError
+func writeError(g ActionError) {
+	b, _ := json.Marshal(g)
+	err := ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
+	if err != nil {
+		log.Fatal("can not write json error")
+		return
+	}
 }
 
 // finishRunning will write to a file and or print the json body to stdout and exits
-func finishRunning(eb *EndBody) {
-	ms, _ := json.Marshal(eb)
-	log.Printf("EB: %+v", eb)
-	_ = ioutil.WriteFile("/direktiv-data/data.out", []byte(ms), 0755)
+func finishRunning(b []byte) {
+	_ = ioutil.WriteFile("/direktiv-data/data.out", b, 0755)
 	os.Exit(0)
 }
