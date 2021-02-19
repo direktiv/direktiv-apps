@@ -72,7 +72,7 @@ func main() {
 			return
 		}
 	default:
-		g.ErrorMessage = fmt.Errorf("'%s' is not a valid type to use the twilio application", tm.TypeOf)
+		g.ErrorMessage = fmt.Errorf("'%s' is not a valid type to use the twilio application", tm.TypeOf).Error()
 		writeError(g)
 		return
 	}
