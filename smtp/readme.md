@@ -2,27 +2,27 @@
 
 ## Input
 
-A simple go application that sends an email via SMTP client. The following json input can be used to send an email.
+Sends an email via SMTP according to the input object:
 
 ```json
 {
-    "from": "",
-    "to": "",
-    "subject": "SMTP Email",
-    "message": "pog champ",
-    "server": "smtp.gmail.com",
-    "port": 587,
-    "password": ""
+    "to"      : "recipient@example.com",
+    "subject" : "SMTP Email",
+    "message" : "Hello, world!",
+    "port"    : 587,
+    "from"    : "sender@example.com",
+    "password": "NOT4REALPW",
+    "server"  : "smtp.example.com"
 }
 ```
 
 ## Output
 
-No output is provided upon success.
+No output is provided on success.
 
-### Error
+## Error
 
-If an error was to happen during the container running the output is written back to direktiv as the following
+In the case that an error is encountered, it will present in the following format:
 
 ```json
 {
