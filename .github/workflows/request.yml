@@ -65,16 +65,14 @@ jobs:
         context: .
         file: ./request/Dockerfile
         platforms: linux/amd64
-    
-    - name: Docker Hub Description
-      uses: peter-evans/dockerhub-description@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_PASSWORD }}
-        repository: vorteil/request
-        readme-filepath: ./request/readme.md
+
+    - name: push README to Dockerhub
+      uses: christian-korneck/update-container-description-action@v1
       env:
-        DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
-        DOCKERHUB_PASSWORD="${{ secrets.DOCKERHUB_PASSWORD }}"
-        DOCKERHUB_REPOSITORY="vorteil/request"
-        README_FILEPATH="./request/readme.md"
+        DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+      with:
+        destination_container-repo: vorteil/request
+        provider: dockerhub
+        short_description: 'A container that sends a simple http request'
+        readme_file: './request/readme.md'
