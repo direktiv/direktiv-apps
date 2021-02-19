@@ -82,4 +82,4 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: vorteil/twilio
-        readme: "./twilio-app/readme.md"
+        readme: "./store/readme.md"
