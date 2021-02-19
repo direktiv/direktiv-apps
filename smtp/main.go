@@ -29,7 +29,7 @@ type SMTPEmail struct {
 func main() {
 	tm := &SMTPEmail{}
 	g := ActionError{
-		ErrorCode:    "com.request.error",
+		ErrorCode:    "com.smtp.error",
 		ErrorMessage: "",
 	}
 	var err error
