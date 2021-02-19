@@ -9,10 +9,10 @@ Sends an email via SMTP according to the input object:
     "to"      : "recipient@example.com",
     "subject" : "SMTP Email",
     "message" : "Hello, world!",
-    "port"    : 587,
     "from"    : "sender@example.com",
     "password": "NOT4REALPW",
-    "server"  : "smtp.example.com"
+    "server"  : "smtp.example.com",
+    "port"    : 587
 }
 ```
 
