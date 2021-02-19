@@ -9,12 +9,16 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"os"
 	"strings"
 
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
+
+type ActionError struct {
+	ErrorCode    string `json:"errorCode"`
+	ErrorMessage string `json:"errorMessage"`
+}
 
 // TwilioMessage input struct to send an sms or email
 type TwilioMessage struct {
@@ -28,69 +32,60 @@ type TwilioMessage struct {
 	To          string `json:"to"`          // who we sending to
 }
 
-// EndBody is the response of this library after a request
-type EndBody struct {
-	Error         string `json:"error"`
-	Response      string `json:"response"`
-	Status        int    `json:"statusCode"`
-	StatusMessage string `json:"status"`
-}
-
 func main() {
-	// if len(os.Args) > 2 {
-	tm := &TwilioMessage{}
-	eb := &EndBody{}
+	var response []byte
 
-	// inputFile := os.Args[1]
-	// outputFile := os.Args[2]
+	tm := TwilioMessage{}
+	g := ActionError{
+		ErrorCode:    "com.twilio.error",
+		ErrorMessage: "",
+	}
 
 	// read data in
 	data, err := ioutil.ReadFile("/direktiv-data/data.in")
 	if err != nil {
-		eb.Error = err.Error()
-		finishRunning(eb)
+		g.ErrorMessage = err.Error()
+		writeError(g)
 		return
 	}
 
-	log.Printf("in data: %s", string(data))
-
 	err = json.Unmarshal(data, &tm)
 	if err != nil {
-		eb.Error = err.Error()
-		finishRunning(eb)
+		g.ErrorMessage = err.Error()
+		writeError(g)
+		return
 	}
 
 	switch tm.TypeOf {
 	case "email":
-		eb, err = SendEmail(tm)
+		response, err = SendEmail(&tm)
 		if err != nil {
-			fmt.Println(err, eb)
-			eb.Error = err.Error()
-			finishRunning(eb)
-
+			g.ErrorMessage = err.Error()
+			writeError(g)
+			return
 		}
 	case "sms":
-		eb, err = SendSMS(tm)
+		response, err = SendSMS(&tm)
 		if err != nil {
-			eb.Error = err.Error()
-			finishRunning(eb)
-
+			g.ErrorMessage = err.Error()
+			writeError(g)
+			return
 		}
+	default:
+		g.ErrorMessage = fmt.Errorf("'%s' is not a valid type to use the twilio application", tm.TypeOf)
+		writeError(g)
+		return
 	}
-	finishRunning(eb)
-	// }
+
+	finishRunning(response)
 }
 
 // SendEmail sends a message to the provided email from the input json
-func SendEmail(tm *TwilioMessage) (*EndBody, error) {
-	eb := &EndBody{}
+func SendEmail(tm *TwilioMessage) ([]byte, error) {
 
 	from := mail.NewEmail("", tm.From)
 	subject := tm.Subject
 	to := mail.NewEmail("", tm.To)
-
-	// from, subject header, send to, content, htmlContent
-	log.Printf("in data: %+v\n", tm)
 
 	message := mail.NewSingleEmail(from, subject, to, tm.Message, tm.HTMLMessage)
 	b := bytes.NewReader(mail.GetRequestBody(message))
@@ -108,29 +103,25 @@ func SendEmail(tm *TwilioMessage) (*EndBody, error) {
 	// client := sendgrid.NewSendClient(tm.Token)
 	resp, err := client.Do(req)
 	if err != nil {
-		return eb, err
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	br, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return eb, err
+		return nil, err
 	}
 
-	eb.Status = resp.StatusCode
 	if resp.StatusCode != 200 && resp.StatusCode != 202 {
-		eb.Error = string(br)
-
-	} else {
-		eb.Response = string(br)
+		// error more than likely
+		return nil, fmt.Errorf("Response Message: %s, Response Code: %v \nResponseBody: %s", resp.Status, resp.StatusCode, br)
 	}
 
-	return eb, nil
+	return br, nil
 }
 
 // SendSMS sends a sms to the provided mobile number from the input json
-func SendSMS(tm *TwilioMessage) (*EndBody, error) {
-	eb := &EndBody{}
+func SendSMS(tm *TwilioMessage) ([]byte, error) {
 	urlStr := fmt.Sprintf("https://api.twilio.com/2010-04-01/Accounts/%s/Messages.json", tm.Sid)
 	msgData := url.Values{}
 	msgData.Set("To", tm.To)
@@ -159,17 +150,30 @@ func SendSMS(tm *TwilioMessage) (*EndBody, error) {
 		return nil, err
 	}
 
-	eb.Status = resp.StatusCode
-	eb.StatusMessage = resp.Status
-	eb.Response = string(body)
-	eb.Error = ""
+	if resp.StatusCode != 200 && resp.StatusCode != 202 {
+		// error more than likely
+		return nil, fmt.Errorf("Response Message: %s, Response Code: %v \nResponseBody: %s", resp.Status, resp.StatusCode, body)
+	}
 
-	return eb, nil
+	return body, nil
 }
 
 // finishRunning will write to a file and or print the json body to stdout and exits
-func finishRunning(eb *EndBody) {
-	ms, _ := json.Marshal(eb)
-	_ = ioutil.WriteFile("/direktiv-data/data.out", []byte(ms), 0755)
-	os.Exit(0)
+func finishRunning(eb []byte) {
+	var err error
+	err = ioutil.WriteFile("/direktiv-data/data.out", eb, 0755)
+	if err != nil {
+		log.Fatal("can not write out data")
+		return
+	}
+}
+
+// writeError
+func writeError(g ActionError) {
+	b, _ := json.Marshal(g)
+	err := ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
+	if err != nil {
+		log.Fatal("can not write json error")
+		return
+	}
 }
