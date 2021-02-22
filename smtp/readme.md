@@ -1,5 +1,32 @@
 # SMTP
 
+
+## Direktiv
+An example workflow of using the container in a workflow on Direktiv.
+
+```yaml
+id: send-email
+functions:
+- id: send
+  image: vorteil/smtp
+description: "Initializes a smtp server to send an email" 
+states:
+- id: SendEmail
+  type: action
+  action:
+    secrets: ["EMAIL_USER", "EMAIL_PW"]
+    function: send
+    input: '{
+      "from": .secrets.EMAIL_USER,
+      "to": .email,
+      "subject": "An email from direktiv",
+      "message": "This email is really cool",
+      "server": "smtp.gmail.com",
+      "port": 587,
+      "password": .secrets.EMAIL_PW
+    }'
+```
+
 ## Input
 
 Sends an email via SMTP according to the input object:

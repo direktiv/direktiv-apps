@@ -1,6 +1,30 @@
 # Twilio
 Sends an email or SMS message using Twilio.
 
+## Direktiv
+An example workflow of using the container in a workflow on Direktiv.
+
+
+```yaml
+id: send-approval
+functions:
+- id: send
+  image: vorteil/twilio
+description: "Sends a sms to provided number" 
+states:
+- id: fire
+  type: action
+  action:
+    secrets: ["TWILIO_TOKEN", "TWILIO_SID", "TWILIO_PROVIDED_NUMBER"]
+    function: send
+    input: '{ "typeof": "sms",
+        "sid": .secrets.TWILIO_SID,
+        "token": .secrets.TWILIO_TOKEN,
+        "message": "A fun SMS message!",
+        "from": .secrets.TWILIO_PROVIDED_NUMBER,
+        "to": ("+" + (.number|tostring))}'
+```
+
 ## Input
 
 ### Email

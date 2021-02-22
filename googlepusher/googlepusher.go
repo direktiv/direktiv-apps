@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -58,6 +59,8 @@ func main() {
 		writeError(g)
 		return
 	}
+
+	fmt.Printf("KEY: \n%s\n", gi.Authentication.PrivateKey)
 
 	conf := &jwt.Config{
 		Email:      gi.Authentication.ClientEmail,

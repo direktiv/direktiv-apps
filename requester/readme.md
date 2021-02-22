@@ -2,6 +2,28 @@
 
 Perform a basic HTTP/S request.
 
+## Direktiv
+
+An example workflow of using the container in a workflow on Direktiv.
+
+
+```yaml
+id: request
+functions:
+- id: myrequest
+  image: vorteil/request
+description: "send a get request" 
+states:
+- id: hello
+  type: action
+  action: 
+    function: myrequest
+    input: '{
+        "method": "GET",
+        "host"  : "https://jsonplaceholder.typicode.com/posts"
+    }'
+```
+
 ## Input
 
 ```json
