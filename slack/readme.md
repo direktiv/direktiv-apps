@@ -1,20 +1,19 @@
-# Use request container to post to slack
+# Post a message to a Slack channel
 
-- Create an app assign it to your team for slack.
-- Use the request program to send the following input to hit your application to push a message
+- In Slack, create an app and assign it to your team.
+- Use `vorteil/request` to send the following request, substituting values where necessary.
 
 ```json
 {
-    "method": "POST",
-    "host": "URL TO YOUR SLACK WEBHOOK",
-    "body" : {
-        "text":"helloworld test"
+    "method"    : "POST",
+    "host"      : "SLACK_WEBHOOK_URL",
+    "body"      : {
+        "text"  : "Hello, world!"
     },
-    "headers" : {
-        "Content-type": "application/json"
+    "headers"   : {
+        "Content-Type" : "application/json"
     }
 }
 ```
 
-
-- The response will be a 200 if it is successful.
+The action will return a Status Code 200 if successful.
