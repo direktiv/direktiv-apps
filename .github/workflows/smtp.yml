@@ -1,7 +1,7 @@
 name: Smtp
 on:
   push:
-    branches: ["release-smtp"]
+    tags: "*"
 jobs:
   build:
     runs-on: ubuntu-latest
