@@ -1,13 +1,13 @@
 # Store
 
-Store appends to a google spreadsheet.
+Add a row to a 'Google Sheets' spreadsheet.
 
 ## Input
 
-- Grab a service account key.
-- Look at the client_email in the credentials.json and provide access for that email to the spreadsheet ID you wish to edit.
-- Enable the google sheets api for the project listed in the service account key.
-- Send the following input file so the program knows what to access and write to the spreadsheet
+- On a Google Cloud project, create a Service Account.
+- Download a JSON-format Service Account key file.
+- Enable the 'Google Sheets API' on the Google Cloud project.
+- Populate the following input object, using the `client_email` and `private_key` fields for their respective matching fields.
 
 ```json
 {
@@ -19,9 +19,11 @@ Store appends to a google spreadsheet.
     },
     "spreadSheetID": "SPREADSHEET_ID",
     "range": "A1",
-    "values": ["Hehe", "hehe2", "hehe3", "hehe4", "hehe5"]
+    "values": ["These", "are", "individual", "columns", "!"]
 }
 ```
+
+*Note: Replace `SPREADSHEET_ID` with the ID of whichever Google Sheets document should be targeted.*
 
 ## Output
 
