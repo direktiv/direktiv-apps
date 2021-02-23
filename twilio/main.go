@@ -104,7 +104,7 @@ func SendEmail(tm *TwilioMessage) ([]byte, error) {
 	}
 
 	if tm.Debug {
-		log.printf("Send to %s\n From %s\n  Body %s", tm.To, tm.From, tm.Message)
+		log.Printf("Send to %s\n From %s\n  Body %s", tm.To, tm.From, tm.Message)
 	}
 
 	req, _ := http.NewRequest("POST", "https://api.sendgrid.com/v3/mail/send", b)

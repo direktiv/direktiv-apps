@@ -88,7 +88,7 @@ func main() {
 // writeError
 func writeError(g ActionError) {
 	b, _ := json.Marshal(g)
-	err := ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
+	ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
 }
 
 // finishRunning will write to a file and or print the json body to stdout and exits
