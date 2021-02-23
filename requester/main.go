@@ -90,7 +90,7 @@ type Manager struct {
 // Request is the struct we unmarshal the JSON input
 type Request struct {
 	Method  string                 `json:"method"`
-	Host    string                 `json:"host"`
+	URL     string                 `json:"url"`
 	Debug   bool                   `json:"debug"`
 	Body    map[string]interface{} `json:"body"`
 	Headers map[string]interface{} `json:"headers"`
@@ -130,10 +130,10 @@ func (m *Manager) Create() error {
 	}
 
 	if m.Request.Debug {
-		log.Printf("Method: %s, Sending to %s", m.Request.Method, m.Request.Host)
+		log.Printf("Method: %s, Sending to %s", m.Request.Method, m.Request.URL)
 	}
 
-	m.req, err = http.NewRequest(m.Request.Method, m.Request.Host, bytes.NewReader(b))
+	m.req, err = http.NewRequest(m.Request.Method, m.Request.URL, bytes.NewReader(b))
 	if err != nil {
 		return err
 	}

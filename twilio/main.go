@@ -125,6 +125,10 @@ func SendEmail(tm *TwilioMessage) ([]byte, error) {
 		return nil, err
 	}
 
+	if tm.Debug {
+		log.Printf("Response Body: %s", br)
+	}
+
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		// error more than likely
 		return nil, fmt.Errorf("Response Message: %s, Response Code: %v \nResponseBody: %s", resp.Status, resp.StatusCode, br)
@@ -165,6 +169,10 @@ func SendSMS(tm *TwilioMessage) ([]byte, error) {
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	if tm.Debug {
+		log.Printf("Response Body: %s", body)
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
