@@ -26,6 +26,8 @@ states:
 
 ## Input
 
+Providing debug to the json struct will print everything during the process it runs.
+
 ```json
 {
     "method": "GET",

@@ -31,7 +31,7 @@ states:
 
 - Generate a token [here](https://app.sendgrid.com/settings/api_keys).
 - Use the following input object, substituting the values of the `token`, `to`, and `from` fields appropriately.
-
+- Adding debug to the json struct will output more of the application.
 ```json
     {
         "typeof"        : "email",

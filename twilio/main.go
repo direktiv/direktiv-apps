@@ -22,6 +22,7 @@ type ActionError struct {
 
 // TwilioMessage input struct to send an sms or email
 type TwilioMessage struct {
+	Debug       bool   `json:""debug`
 	TypeOf      string `json:"typeof"` // Email, sms
 	Sid         string `json:"sid"`
 	Token       string `json:"token"`
@@ -41,6 +42,7 @@ func main() {
 		ErrorMessage: "",
 	}
 
+	log.Printf("Reading in Data...")
 	// read data in
 	data, err := ioutil.ReadFile("/direktiv-data/data.in")
 	if err != nil {
@@ -58,6 +60,9 @@ func main() {
 
 	switch tm.TypeOf {
 	case "email":
+		if tm.Debug {
+			log.Printf("Sending email")
+		}
 		response, err = SendEmail(&tm)
 		if err != nil {
 			g.ErrorMessage = err.Error()
@@ -65,6 +70,9 @@ func main() {
 			return
 		}
 	case "sms":
+		if tm.Debug {
+			log.Printf("Sending sms")
+		}
 		response, err = SendSMS(&tm)
 		if err != nil {
 			g.ErrorMessage = err.Error()
@@ -77,7 +85,7 @@ func main() {
 		return
 	}
 
-	finishRunning(response)
+	finishRunning(response, g)
 }
 
 // SendEmail sends a message to the provided email from the input json
@@ -94,6 +102,11 @@ func SendEmail(tm *TwilioMessage) ([]byte, error) {
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		},
 	}
+
+	if tm.Debug {
+		log.printf("Send to %s\n From %s\n  Body %s", tm.To, tm.From, tm.Message)
+	}
+
 	req, _ := http.NewRequest("POST", "https://api.sendgrid.com/v3/mail/send", b)
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", tm.Token))
 	req.Header.Add("User-Agent", fmt.Sprintf("sendgrid/%s;go", sendgrid.Version))
@@ -127,6 +140,10 @@ func SendSMS(tm *TwilioMessage) ([]byte, error) {
 	msgData.Set("To", tm.To)
 	msgData.Set("From", tm.From)
 	msgData.Set("Body", tm.Message)
+
+	if tm.Debug {
+		log.Printf("Send to %s\nFrom %s\n Body: %s", tm.To, tm.From, tm.Message)
+	}
 	msgDataReader := *strings.NewReader(msgData.Encode())
 
 	client := &http.Client{
@@ -158,11 +175,12 @@ func SendSMS(tm *TwilioMessage) ([]byte, error) {
 }
 
 // finishRunning will write to a file and or print the json body to stdout and exits
-func finishRunning(eb []byte) {
+func finishRunning(eb []byte, g ActionError) {
 	var err error
 	err = ioutil.WriteFile("/direktiv-data/data.out", eb, 0755)
 	if err != nil {
-		log.Fatal("can not write out data")
+		g.ErrorMessage = err.Error()
+		writeError(g)
 		return
 	}
 }
@@ -170,9 +188,5 @@ func finishRunning(eb []byte) {
 // writeError
 func writeError(g ActionError) {
 	b, _ := json.Marshal(g)
-	err := ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
-	if err != nil {
-		log.Fatal("can not write json error")
-		return
-	}
+	ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
 }

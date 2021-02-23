@@ -14,17 +14,16 @@ states:
 - id: SendEmail
   type: action
   action:
-    secrets: ["EMAIL_USER", "EMAIL_PW"]
     function: send
     input: '{
-      "from": .secrets.EMAIL_USER,
-      "to": .email,
-      "subject": "An email from direktiv",
-      "message": "This email is really cool",
-      "server": "smtp.gmail.com",
-      "port": 587,
-      "password": .secrets.EMAIL_PW
-    }'
+    "to"      : "recipient@example.com",
+    "subject" : "SMTP Email",
+    "message" : "Hello, world!",
+    "from"    : "sender@example.com",
+    "password": "NOT4REALPW",
+    "server"  : "smtp.example.com",
+    "port"    : 587
+}'
 ```
 
 ## Input

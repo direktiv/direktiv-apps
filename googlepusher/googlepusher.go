@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -30,6 +29,7 @@ type GoogleServiceAccount struct {
 // GoogleInput takes the data required to talk to the sheets API
 type GoogleInput struct {
 	Authentication GoogleServiceAccount `json:"authentication"`
+	Debug          bool                 `json:"debug"`
 	SpreadsheetID  string               `json:"spreadSheetID"`
 	Range          string               `json:"range"`
 	Values         []interface{}        `json:"values"`
@@ -42,10 +42,11 @@ func main() {
 	gi := &GoogleInput{}
 
 	g := ActionError{
-		ErrorCode:    "com.googlepusher.error",
+		ErrorCode:    "com.store.error",
 		ErrorMessage: "",
 	}
 
+	log.Printf("Reading in Data...")
 	data, err := ioutil.ReadFile("/direktiv-data/data.in")
 	if err != nil {
 		g.ErrorMessage = err.Error()
@@ -59,8 +60,6 @@ func main() {
 		writeError(g)
 		return
 	}
-
-	fmt.Printf("KEY: \n%s\n", gi.Authentication.PrivateKey)
 
 	conf := &jwt.Config{
 		Email:      gi.Authentication.ClientEmail,
@@ -79,6 +78,9 @@ func main() {
 	ctx = context.WithValue(ctx, oauth2.HTTPClient, sslcli)
 
 	client := conf.Client(ctx)
+	if gi.Debug {
+		log.Printf("JWT has been created and verified")
+	}
 
 	service, err := sheets.New(client)
 	if err != nil {
@@ -86,10 +88,17 @@ func main() {
 		writeError(g)
 		return
 	}
-
+	if gi.Debug {
+		log.Printf("Create new sheets service")
+	}
 	var vr sheets.ValueRange
 	writeRange := gi.Range
 	vr.Values = append(vr.Values, gi.Values)
+
+	if gi.Debug {
+		log.Printf("Appending new sheet values")
+		log.Printf("Writing %v", vr.Values)
+	}
 
 	_, err = service.Spreadsheets.Values.Append(gi.SpreadsheetID, writeRange, &vr).ValueInputOption("RAW").Do()
 	if err != nil {
@@ -98,15 +107,16 @@ func main() {
 		return
 	}
 
-	finishRunning([]byte{})
+	finishRunning([]byte{}, g)
 }
 
 // finishRunning will write to a file and or print the json body to stdout and exits
-func finishRunning(eb []byte) {
+func finishRunning(eb []byte, g ActionError) {
 	var err error
 	err = ioutil.WriteFile("/direktiv-data/data.out", eb, 0755)
 	if err != nil {
-		log.Fatal("can not write out data")
+		g.ErrorMessage = err.Error()
+		writeError(g)
 		return
 	}
 }
@@ -114,9 +124,5 @@ func finishRunning(eb []byte) {
 // writeError
 func writeError(g ActionError) {
 	b, _ := json.Marshal(g)
-	err := ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
-	if err != nil {
-		log.Fatal("can not write json error")
-		return
-	}
+	ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
 }

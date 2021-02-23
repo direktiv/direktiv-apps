@@ -50,6 +50,7 @@ states:
 ```
 
 *Note: Replace `SPREADSHEET_ID` with the ID of whichever Google Sheets document should be targeted.*
+*Note: Providing 'debug' with the json struct will print everything about what the application is doing.
 
 ## Output
 

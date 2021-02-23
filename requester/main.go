@@ -24,6 +24,7 @@ func main() {
 	var err error
 	var data []byte
 
+	log.Printf("Reading in Data...")
 	// read data in
 	data, err = ioutil.ReadFile("/direktiv-data/data.in")
 	if err != nil {
@@ -40,6 +41,10 @@ func main() {
 		return
 	}
 
+	if requester.Request.Debug {
+		log.Printf("Requester has been initialized")
+	}
+
 	err = requester.Create()
 	if err != nil {
 		g.ErrorMessage = err.Error()
@@ -54,26 +59,23 @@ func main() {
 		return
 	}
 
-	finishRunning(resp)
+	finishRunning(resp, g)
 
 }
 
 // writeError
 func writeError(g ActionError) {
 	b, _ := json.Marshal(g)
-	err := ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
-	if err != nil {
-		log.Fatal("can not write json error")
-		return
-	}
+	ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
 }
 
 // finishRunning will write to a file and or print the json body to stdout and exits
-func finishRunning(eb []byte) {
+func finishRunning(eb []byte, g ActionError) {
 	var err error
 	err = ioutil.WriteFile("/direktiv-data/data.out", eb, 0755)
 	if err != nil {
-		log.Fatal("can not write out data")
+		g.ErrorMessage = err.Error()
+		writeError(g)
 		return
 	}
 }
@@ -89,6 +91,7 @@ type Manager struct {
 type Request struct {
 	Method  string                 `json:"method"`
 	Host    string                 `json:"host"`
+	Debug   bool                   `json:"debug"`
 	Body    map[string]interface{} `json:"body"`
 	Headers map[string]interface{} `json:"headers"`
 }
@@ -99,7 +102,6 @@ func (m *Manager) Initialize(bv []byte) error {
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -115,9 +117,10 @@ func (m *Manager) Create() error {
 		if err != nil {
 			return err
 		}
+		if m.Request.Debug {
+			log.Printf("Body provided: %s", b)
+		}
 	}
-
-	// b := bytes.NewBuffer([]byte(bvMap))
 
 	// Initialize client and the request
 	m.client = &http.Client{
@@ -125,6 +128,11 @@ func (m *Manager) Create() error {
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		},
 	}
+
+	if m.Request.Debug {
+		log.Printf("Method: %s, Sending to %s", m.Request.Method, m.Request.Host)
+	}
+
 	m.req, err = http.NewRequest(m.Request.Method, m.Request.Host, bytes.NewReader(b))
 	if err != nil {
 		return err
@@ -141,6 +149,9 @@ func (m *Manager) Create() error {
 			actualVal = strconv.FormatFloat(t, 'f', 6, 64)
 		case string:
 			actualVal = t
+		}
+		if m.Request.Debug {
+			log.Printf("Adding %s=%s", k, actualVal)
 		}
 		// Adding a header requires it to be a string so might as well sprintf
 		m.req.Header.Add(k, actualVal)
@@ -162,6 +173,10 @@ func (m *Manager) Send() ([]byte, error) {
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	if m.Request.Debug {
+		log.Printf("Response body: %s", body)
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
