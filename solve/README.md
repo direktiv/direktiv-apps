@@ -6,12 +6,12 @@ Expects input in the following format:
 
 ```json
 {
-	"expressions": ["2+2", "4-1", "10*3", "20/2"]
+	"x": "10*3"
 }
 ```
 
 Returns output in the following format:
 
 ```json
-["4", "3", "30", "10"]
+"30"
 ```
