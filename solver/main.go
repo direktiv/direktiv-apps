@@ -40,7 +40,7 @@ func main() {
 		// }
 
 		// for _, exp := range e2 {
-		expressionString, ok = exp.(string)
+		expressionString, ok = e.(string)
 		if !ok {
 			writeError("error.input.parse", fmt.Sprintf("index of expressions array was not of type string"))
 		}
