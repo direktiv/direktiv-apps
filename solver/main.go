@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"reflect"
 
 	"github.com/Knetic/govaluate"
 )
@@ -31,44 +30,44 @@ func main() {
 		writeError("error.input.parse", err.Error())
 	}
 
-	expressions := make([]string, 0)
+	var expressionString string
 
-	if e, ok := input["expressions"]; ok {
+	if e, ok := input["x"]; ok {
 
-		e2, ok := e.([]interface{})
+		// e2, ok := e.([]interface{})
+		// if !ok {
+		// 	writeError("error.input.parse", fmt.Sprintf("expressions field was of type %s", reflect.TypeOf(e)))
+		// }
+
+		// for _, exp := range e2 {
+		expressionString, ok = exp.(string)
 		if !ok {
-			writeError("error.input.parse", fmt.Sprintf("expressions field was of type %s", reflect.TypeOf(e)))
+			writeError("error.input.parse", fmt.Sprintf("index of expressions array was not of type string"))
 		}
 
-		for _, exp := range e2 {
-			e3, ok := exp.(string)
-			if !ok {
-				writeError("error.input.parse", fmt.Sprintf("index of expressions array was not of type string"))
-			}
-
-			expressions = append(expressions, e3)
-		}
+		// expressions = append(expressions, e3)
+		// }
 
 	} else {
 		writeError("error.input.parse", err.Error())
 	}
 
-	out := make([]string, 0)
-	for _, exp := range expressions {
-		expression, err := govaluate.NewEvaluableExpression(exp)
-		if err != nil {
-			writeError("error.math.invalid", err.Error())
-		}
-
-		res, err := expression.Evaluate(nil)
-		if err != nil {
-			writeError("error.math.eval", err.Error())
-		}
-
-		out = append(out, fmt.Sprintf("%v", res))
+	// out := make([]string, 0)
+	// for _, exp := range expressions {
+	expression, err := govaluate.NewEvaluableExpression(expressionString)
+	if err != nil {
+		writeError("error.math.invalid", err.Error())
 	}
 
-	writeOut(out)
+	res, err := expression.Evaluate(nil)
+	if err != nil {
+		writeError("error.math.eval", err.Error())
+	}
+
+	// out = append(out, fmt.Sprintf("%v", res))
+	// }
+
+	writeOut(fmt.Sprintf("%v", res))
 }
 
 func writeOut(x interface{}) {
