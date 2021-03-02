@@ -18,6 +18,8 @@ jobs:
       run: cp solver/Dockerfile ./solve/
     - name: Move-Readme
       run: cp solver/README.md ./solve/      
+    - name: Find-Govaluate
+      run: go get github.com/Knetic/govaluate
     - name: Build
       run: CGO_ENABLED=0 go build -o ./solve/solve solver/main.go
     - uses: actions/upload-artifact@v2
