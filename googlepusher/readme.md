@@ -2,6 +2,32 @@
 
 Add a row to a 'Google Sheets' spreadsheet.
 
+## Direktiv
+An example workflow of using the container in a workflow on Direktiv.
+```yaml
+id: store-excel
+functions: 
+- id: store
+  image: vorteil/store
+description: "Stores who accessed into excel"
+states:
+- id: storeExcel
+  type: action
+  action:
+    function: store
+    input: '{ "authentication": {
+    "authentication" : {
+        "type": "service_account",
+        "private_key": "PRIVATE KEY",
+        "client_email": "CLIENT_EMAIL",
+        "token_uri": "https://oauth2.googleapis.com/token",
+    },
+    "spreadSheetID": "SPREADSHEET_ID",
+    "range": "A1",
+    "values": ["These", "are", "individual", "columns", "!"]
+}'
+```
+
 ## Input
 
 - On a Google Cloud project, create a Service Account.
@@ -24,6 +50,7 @@ Add a row to a 'Google Sheets' spreadsheet.
 ```
 
 *Note: Replace `SPREADSHEET_ID` with the ID of whichever Google Sheets document should be targeted.*
+*Note: Providing 'debug' with the json struct will print everything about what the application is doing.
 
 ## Output
 

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
-	"os"
 
 	gomail "gopkg.in/mail.v2"
 )
@@ -17,6 +16,7 @@ type ActionError struct {
 
 // SMTPEmail is the object to control emailing
 type SMTPEmail struct {
+	Debug    bool    `json:"debug"`
 	From     string  `json:"from"`
 	To       string  `json:"to"`
 	Subject  string  `json:"subject"`
@@ -35,6 +35,7 @@ func main() {
 	var err error
 	var data []byte
 	// read data in
+	log.Printf("Reading in Data...")
 	data, err = ioutil.ReadFile("/direktiv-data/data.in")
 	if err != nil {
 		g.ErrorMessage = err.Error()
@@ -47,6 +48,14 @@ func main() {
 		g.ErrorMessage = err.Error()
 		writeError(g)
 		return
+	}
+
+	if tm.Debug {
+		log.Printf("Creating new message")
+		log.Printf("From: %s", tm.From)
+		log.Printf("To: %s", tm.To)
+		log.Printf("Subject: %s", tm.Subject)
+		log.Printf("Body: %s", tm.Message)
 	}
 
 	m := gomail.NewMessage()
@@ -73,21 +82,22 @@ func main() {
 	}
 
 	// Nothing can be returned
-	finishRunning([]byte{})
+	finishRunning([]byte{}, g)
 }
 
 // writeError
 func writeError(g ActionError) {
 	b, _ := json.Marshal(g)
-	err := ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
-	if err != nil {
-		log.Fatal("can not write json error")
-		return
-	}
+	ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
 }
 
 // finishRunning will write to a file and or print the json body to stdout and exits
-func finishRunning(b []byte) {
-	_ = ioutil.WriteFile("/direktiv-data/data.out", b, 0755)
-	os.Exit(0)
+func finishRunning(eb []byte, g ActionError) {
+	var err error
+	err = ioutil.WriteFile("/direktiv-data/data.out", eb, 0755)
+	if err != nil {
+		g.ErrorMessage = err.Error()
+		writeError(g)
+		return
+	}
 }

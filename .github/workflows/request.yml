@@ -1,7 +1,7 @@
 name: Request
 on:
   push:
-    branches: ["release-requester"]
+    tags: "*"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -43,8 +43,11 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}  
     
-    - name: Add SHORT_SHA env property with commit short sha
-      run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+    # - name: Add SHORT_SHA env property with commit short sha
+    #   run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+    - name: Get the version
+      id: get_version
+      run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
 
     - name: Build and Push
       id: docker_build
@@ -61,7 +64,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: vorteil/request:${{ env.SHORT_SHA }}
+        tags: vorteil/request:${{ steps.get_version.outputs.VERSION }}
         context: .
         file: ./request/Dockerfile
         platforms: linux/amd64

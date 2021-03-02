@@ -1,4 +1,30 @@
-# Post a message to a Slack channel
+## Direktiv
+An example workflow of using the container in a workflow on Direktiv.
+
+```yaml
+id: send-message
+functions:
+- id: send
+  image: vorteil/request
+description: "Sends the input" 
+states:
+- id: send-msg
+  type: action
+  action:
+    function: send
+    input: '{
+        "method": "POST",
+        "host": .secrets.SLACK_HELLO,
+        "body" : {
+            "text":"hello"
+        },
+        "headers" : {
+            "Content-type": "application/json"
+        }
+    }'
+```
+
+## Post a message to a Slack channel
 
 - In Slack, create an app and assign it to your team.
 - Use `vorteil/request` to send the following request, substituting values where necessary.
