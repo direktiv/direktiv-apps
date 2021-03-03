@@ -2,7 +2,6 @@ package direktivapps
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
 )
@@ -19,19 +18,16 @@ const errorPath = "/direktiv-data/error.json"
 
 // ReadIn reads data from dataInPath and returns struct provided with json fields
 func ReadIn(obj interface{}, g ActionError) {
-	fmt.Println("x")
 	f, err := os.Open(dataInPath)
 	if err != nil {
 		g.ErrorMessage = err.Error()
 		WriteError(g)
 	}
-	fmt.Println("y")
 
 	defer f.Close()
 
 	dec := json.NewDecoder(f)
 	dec.DisallowUnknownFields()
-	fmt.Println("z")
 
 	err = dec.Decode(obj)
 	if err != nil {
