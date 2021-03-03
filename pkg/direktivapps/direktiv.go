@@ -21,7 +21,7 @@ func ReadIn(obj interface{}, g ActionError) {
 	f, err := os.Open(dataInPath)
 	if err != nil {
 		g.ErrorMessage = err.Error()
-		WriteError()
+		WriteError(g)
 	}
 
 	defer f.Close()
