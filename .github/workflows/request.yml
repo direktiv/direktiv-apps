@@ -22,7 +22,11 @@ jobs:
     - name: Move-Dockerfile
       run: cp requester/Dockerfile ./request/
     - name: Move-Request-Readme
-      run: cp requester/readme.md ./request/      
+      run: cp requester/readme.md ./request/     
+    - name: Find-Direktivapps
+      run: go get github.com/vorteil/direktiv-apps/pkg/direktivapps
+    - name: Find-Requester
+      run: go get github.com/vorteil/direktiv-apps/pkg/requester 
     - name: Build
       run: CGO_ENABLED=0 go build -o ./request/request requester/main.go
     - uses: actions/upload-artifact@v2
