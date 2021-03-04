@@ -16,7 +16,7 @@ states:
 - id: postToDiscord
   type: action
   action:
-    function: discord-post
+    function: post
     input: .
 ```
 
@@ -28,7 +28,7 @@ The input needed to run the above workflow properly is the following:
 {
     "message": "",
     "tts": false,
-    "url": 
+    "url": "DISCORD_CHAT_WEBHOOK_URL"
 }
 ```
 
