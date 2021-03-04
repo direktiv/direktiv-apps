@@ -46,5 +46,5 @@ func main() {
 		direktivapps.WriteError(g)
 	}
 
-	direktiapps.WriteOut(resp, g)
+	direktivapps.WriteOut(resp, g)
 }
