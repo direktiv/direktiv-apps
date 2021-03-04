@@ -1,7 +1,13 @@
-name: Twilio
+name: twilio
 on:
-  push:
-    tags: "*"
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+      tags:
+        description: 'Test scenario tags'  
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -48,9 +54,12 @@ jobs:
     
     # - name: Add SHORT_SHA env property with commit short sha
     #   run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
-    - name: Get the version
-      id: get_version
-      run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+    # - name: Get the version
+    #   id: get_version
+    #   run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+
+    - name: chmod +x twilio binary
+      run: sudo chmod +x ./twilio-app/twilio-app
 
     - name: Build and Push
       id: docker_build

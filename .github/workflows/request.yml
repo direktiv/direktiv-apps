@@ -1,4 +1,4 @@
-name: Request
+name: request
 on: 
   workflow_dispatch:
     inputs:
