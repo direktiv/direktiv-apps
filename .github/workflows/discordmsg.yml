@@ -61,7 +61,7 @@ jobs:
         context: .
         file: ./discordmsg/Dockerfile
         platforms: linux/amd64
-  - name: Build and Push
+    - name: Build and Push
       id: docker_build2
       uses: docker/build-push-action@v2
       with:
