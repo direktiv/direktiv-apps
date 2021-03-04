@@ -1,5 +1,5 @@
 FROM scratch
 
-ADD googlechat /
+ADD googlemsg /
 
-CMD ["/googlechat"]
+CMD ["/googlemsg"]
