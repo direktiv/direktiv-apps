@@ -1,4 +1,4 @@
-module github.com/vorteil/direktiv-apps/requester
+module github.com/direktiv-apps/discord
 
 go 1.15
 

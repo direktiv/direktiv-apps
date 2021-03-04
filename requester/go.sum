@@ -1289,6 +1289,14 @@ github.com/vishvananda/netns v0.0.0-20210104183010-2eb08e3e575f h1:p4VB7kIXpOQvV
 github.com/vishvananda/netns v0.0.0-20210104183010-2eb08e3e575f/go.mod h1:DD4vA1DwXk04H54A1oHXtwZmA0grkVMdPxx/VGLCah0=
 github.com/vmware/govmomi v0.20.3/go.mod h1:URlwyTFZX72RmxtxuaFL2Uj3fD1JTvZdx59bHWk6aFU=
 github.com/vorteil/direktiv v0.0.0-20210217234937-054bb4623912 h1:VRGb5Pwh6JmVNvNtJkv4FnV8kERrRedIyI0qzE7BvSk=
+github.com/vorteil/direktiv-apps v0.0.0-20210303050309-c33ac8e20a66 h1:uOCppFJhy874NWqynpz8Vti+U4ktYqyLzcFSnCWMbHw=
+github.com/vorteil/direktiv-apps v0.0.0-20210303050309-c33ac8e20a66/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
+github.com/vorteil/direktiv-apps v0.0.0-20210303050421-51c69f566f9c h1:8UxIvBYhXCJMzbsmdqswmm/WQFehnPehfx/ooD9YQ8U=
+github.com/vorteil/direktiv-apps v0.0.0-20210303050421-51c69f566f9c/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
+github.com/vorteil/direktiv-apps v0.0.0-20210303210421-8d9968df0101 h1:4snuvmUed1kwhmOF9GMkcJz9Xiwe1keOH+fOAzwRsq8=
+github.com/vorteil/direktiv-apps v0.0.0-20210303210421-8d9968df0101/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
+github.com/vorteil/direktiv-apps v0.0.0-20210303210932-e6cafee4ca9d h1:3KPWhUwmMjBs6i1vj6FMA0N6N/zUJa2UNg98IiPM3wI=
+github.com/vorteil/direktiv-apps v0.0.0-20210303210932-e6cafee4ca9d/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
 github.com/vorteil/serverless-workflow-sdk-go v0.0.0-20201202224257-2fd97bd7f63d/go.mod h1:D8Rr0JEaAFKlzecx64dJvo75sQDH/LuefXd0T+ZLGGY=
 github.com/vorteil/vorteil v0.0.0-20210118015927-442f6212462c h1:/jN0aGYNG56xdl2SfAh/FTa285GSOqpFeHhPUFQADNI=
 github.com/vorteil/vorteil v0.0.0-20210118015927-442f6212462c/go.mod h1:hCnSQJSsmmV4VOp1/wI3i68+HZHM5Uus68gxE/PlLVg=

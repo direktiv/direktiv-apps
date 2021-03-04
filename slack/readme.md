@@ -5,7 +5,7 @@ An example workflow of using the container in a workflow on Direktiv.
 id: send-message
 functions:
 - id: send
-  image: vorteil/request
+  image: vorteil/slack
 description: "Sends the input" 
 states:
 - id: send-msg
@@ -13,32 +13,20 @@ states:
   action:
     function: send
     input: '{
-        "method": "POST",
-        "host": .secrets.SLACK_HELLO,
-        "body" : {
-            "text":"hello"
-        },
-        "headers" : {
-            "Content-type": "application/json"
-        }
+        "url": .secrets.SLACK_HELLO,
+        "message" : "this message gets posted to slack url"
     }'
 ```
 
 ## Post a message to a Slack channel
 
 - In Slack, create an app and assign it to your team.
-- Use `vorteil/request` to send the following request, substituting values where necessary.
+- Use `vorteil/slack` to send the following request, substituting values where necessary.
 
 ```json
 {
-    "method"    : "POST",
-    "host"      : "SLACK_WEBHOOK_URL",
-    "body"      : {
-        "text"  : "Hello, world!"
-    },
-    "headers"   : {
-        "Content-Type" : "application/json"
-    }
+   "url": "SLACK_WEBHOOK_URL",
+   "message": "This message gets posted in the slack channel the webhook is attached to"
 }
 ```
 

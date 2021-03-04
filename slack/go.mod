@@ -1,4 +1,4 @@
-module github.com/vorteil/direktiv-apps/requester
+module github.com/direktiv-apps/slack
 
 go 1.15
 
