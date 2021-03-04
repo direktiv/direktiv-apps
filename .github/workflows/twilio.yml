@@ -59,7 +59,7 @@ jobs:
     #   run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
 
     - name: chmod +x twilio binary
-      run: sudo chmod +x ./twilio-app/twilio-app
+      run: sudo chmod +x ./twilio-app/twilio
 
     - name: Build and Push
       id: docker_build
