@@ -57,7 +57,7 @@ jobs:
     #   run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
 
     - name: chmod +x smtp binary
-      run: sudo chmod +x ./smtp-app/smtp-app
+      run: sudo chmod +x ./smtp-app/smtp
 
     - name: Build and Push
       id: docker_build
