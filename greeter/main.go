@@ -47,7 +47,7 @@ func main() {
 	}
 
 	var rg ReturnGreeting
-	rg.Greeting = fmt.Sprintf("Welcome to Serverless Workflow, %s!", gr.Name)
+	rg.Greeting = fmt.Sprintf("Welcome to Direktiv, %s!", gr.Name)
 
 	bv, err := json.Marshal(rg)
 	if err != nil {
