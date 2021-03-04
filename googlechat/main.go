@@ -5,21 +5,20 @@ import (
 	"github.com/vorteil/direktiv-apps/pkg/requester"
 )
 
-// DiscordInformation is the struct provided to the webhook request
-type DiscordInformation struct {
+// GoogleChatInfo is the struct
+type GoogleChatInfo struct {
 	Message string `json:"message"`
 	URL     string `json:"url"`
-	TTS     bool   `json:"tts"`
 }
 
 func main() {
-
 	g := direktivapps.ActionError{
-		ErrorCode:    "com.discord.error",
+		ErrorCode:    "com.googlechat.error",
 		ErrorMessage: "",
 	}
+	var err error
 
-	obj := new(DiscordInformation)
+	obj := new(GoogleChatInfo)
 	direktivapps.ReadIn(obj, g)
 
 	mgr := requester.Manager{
@@ -27,8 +26,7 @@ func main() {
 			Method: "POST",
 			URL:    obj.URL,
 			Body: map[string]interface{}{
-				"content": obj.Message,
-				"tts":     obj.TTS,
+				"text": obj.Message,
 			},
 			Headers: map[string]interface{}{
 				"Content-Type": "application/json",
@@ -36,7 +34,7 @@ func main() {
 		},
 	}
 
-	err := mgr.Create()
+	err = mgr.Create()
 	if err != nil {
 		g.ErrorMessage = err.Error()
 		direktivapps.WriteError(g)
@@ -48,5 +46,5 @@ func main() {
 		direktivapps.WriteError(g)
 	}
 
-	direktivapps.WriteOut(resp, g)
+	direktiapps.WriteOut(resp, g)
 }
