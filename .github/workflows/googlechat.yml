@@ -18,8 +18,10 @@ jobs:
       run: cp googlechat/Dockerfile ./googlemsg/
     - name: Move-Readme
       run: cp googlechat/README.md ./googlemsg/      
-    - name: Find-Govaluate
-      run: go get github.com/Knetic/govaluate
+    - name: Find-Direktivapps
+      run: go get github.com/vorteil/direktiv-apps/pkg/direktivapps
+    - name: Find-Requester
+      run: go get github.com/vorteil/direktiv-apps/pkg/requester
     - name: Build
       run: CGO_ENABLED=0 go build -o ./googlemsg/googlemsg googlechat/main.go
     - uses: actions/upload-artifact@v2
