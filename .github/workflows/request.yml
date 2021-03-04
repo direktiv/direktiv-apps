@@ -44,6 +44,9 @@ jobs:
         name: request
         path: request
 
+
+    - name: chmod +x request binary
+      run: sudo chmod +x ./request/request    
     - name: Setup Docker Buildx
       uses: docker/setup-buildx-action@v1
 
