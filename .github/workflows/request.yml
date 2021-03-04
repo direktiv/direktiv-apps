@@ -1,8 +1,13 @@
 name: Request
-on:
+on: 
   workflow_dispatch:
-    tags:
-      description: 'Tag docker version uses'
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+      tags:
+        description: 'Test scenario tags'  
 jobs:
   build:
     runs-on: ubuntu-latest
