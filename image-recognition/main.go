@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 
 	vision "cloud.google.com/go/vision/apiv1"
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
@@ -22,6 +24,8 @@ type Details struct {
 	Violence    visionpb.Likelihood `json:"violenceLikelihood"`
 }
 
+const credFile = "/tmp/creds"
+
 func main() {
 
 	g := direktivapps.ActionError{
@@ -33,26 +37,31 @@ func main() {
 	obj := new(VisionAPIRecognition)
 
 	direktivapps.ReadIn(obj, g)
+	fmt.Println("a")
 
-	data, err := json.Marshal(obj.ServiceAccountKey)
+	err = ioutil.WriteFile(credFile, []byte(obj.ServiceAccountKey), 0777)
 	if err != nil {
 		g.ErrorMessage = err.Error()
 		direktivapps.WriteError(g)
 	}
 
-	visionClient, err := vision.NewImageAnnotatorClient(ctx, option.WithCredentialsJSON(data))
+	fmt.Println("b")
+
+	visionClient, err := vision.NewImageAnnotatorClient(ctx, option.WithCredentialsFile(credFile))
 	if err != nil {
 		g.ErrorMessage = err.Error()
 		direktivapps.WriteError(g)
 	}
 
 	img := vision.NewImageFromURI(obj.URL)
+	fmt.Println("c")
 
 	resp, err := visionClient.DetectSafeSearch(ctx, img, nil)
 	if err != nil {
 		g.ErrorMessage = err.Error()
 		direktivapps.WriteError(g)
 	}
+	fmt.Println("d")
 
 	var sfw bool
 	if resp.GetRacy() == visionpb.Likelihood_VERY_LIKELY || resp.GetRacy() == visionpb.Likelihood_LIKELY || resp.GetAdult() == visionpb.Likelihood_VERY_LIKELY ||
