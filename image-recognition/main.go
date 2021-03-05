@@ -11,8 +11,8 @@ import (
 )
 
 type VisionAPIRecognition struct {
-	ServiceAccountKey map[string]interface{} `json:"serviceAccountKey"`
-	URL               string                 `json:"url"`
+	ServiceAccountKey string `json:"serviceAccountKey"`
+	URL               string `json:"url"`
 }
 
 type Details struct {
