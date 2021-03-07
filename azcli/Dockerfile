@@ -1,13 +1,14 @@
-FROM alpine
+FROM alpine:3.9
 
 ADD azgo / 
 
-RUN apk update  
-RUN apk add bash py-pip 
-RUN apk add --no-cache ca-certificates
-RUN apk add --virtual=build gcc libffi-dev musl-dev openssl-dev  make
-RUN pip --no-cache-dir install -U pip
-RUN pip --no-cache-dir install azure-cli
-RUN apk del --purge build
 
+RUN \
+  apk update && \
+  apk add bash py-pip && \
+  apk add --virtual=build gcc libffi-dev musl-dev openssl-dev python-dev make && \
+  pip --no-cache-dir install -U pip && \
+  pip install azure-cli && \
+  apk del --purge build
+  
 CMD ["/azgo"]
