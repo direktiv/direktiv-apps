@@ -25,15 +25,15 @@ func main() {
 	obj := new(AzureDetails)
 	direktivapps.ReadIn(obj, g)
 
-	var generateLoginCommand []string
-	var generateExecCommand []string
-
-	generateLoginCommand = append(generateLoginCommand, "-m", "azure.cli", "login", "-u", obj.Name, "-p", obj.Password, "--tenant", obj.Tenant)
-	generateExecCommand = append(generateExecCommand, "-m", "azure.cli")
-	generateExecCommand = append(generateExecCommand, obj.Command...)
+	// Find path to azure cli
+	path, err := exec.LookPath("az")
+	if err != nil {
+		g.ErrorMessage = err.Error()
+		direktivapps.WriteError(g)
+	}
 
 	// Authenticate with the azcli using a service principal
-	cmd := exec.Command("/azure-cli/bin/python", generateLoginCommand...)
+	cmd := exec.Command(path, "login", "-u", obj.Name, "-p", obj.Password, "--tenant", obj.Tenant)
 	err = cmd.Run()
 	if err != nil {
 		g.ErrorMessage = err.Error()
@@ -41,7 +41,7 @@ func main() {
 	}
 
 	// Execute command provided via the input of container
-	cmd = exec.Command("/azure-cli/bin/python", generateExecCommand...)
+	cmd = exec.Command(path, obj.Command...)
 
 	resp, err := cmd.CombinedOutput()
 	if err != nil {
