@@ -2,6 +2,7 @@ FROM alpine:3.9
 
 RUN \
   apk update && \
+  apk add --no-cache ca-certificates && \
   apk add bash python3 py3-pip && \
   apk add --virtual=build gcc libffi-dev musl-dev openssl-dev python3-dev make && \
   python3 --version && \
