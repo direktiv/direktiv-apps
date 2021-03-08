@@ -24,10 +24,13 @@ var operations = map[string]operationValidatorFunc{
 	"update": updateOpValidator,
 }
 
-func wheres(input map[string]interface{}) (map[string]interface{}, error) {
+func wheres(input map[string]interface{}, required bool) (map[string]interface{}, error) {
 
 	x, ok := input["where"]
 	if !ok {
+		if !required {
+			return map[string]interface{}{}, nil
+		}
 		return nil, fmt.Errorf("required parameter 'where' missing")
 	}
 
@@ -37,6 +40,9 @@ func wheres(input map[string]interface{}) (map[string]interface{}, error) {
 	}
 
 	if len(wheres) == 0 {
+		if !required {
+			return map[string]interface{}{}, nil
+		}
 		return nil, fmt.Errorf("'where' parameter must specify at least one condition")
 	}
 
@@ -59,7 +65,7 @@ func wheresString(wheres map[string]interface{}) string {
 	var conditions []string
 
 	for k, v := range wheres {
-		key := "'" + strings.ReplaceAll(k, "'", "''") + "'"
+		key := `"` + strings.ReplaceAll(fmt.Sprintf("%v", k), `"`, `""`) + `"`
 		val := "'" + strings.ReplaceAll(fmt.Sprintf("%v", v), "'", "''") + "'"
 		conditions = append(conditions, fmt.Sprintf("%s=%s", key, val))
 	}
@@ -77,7 +83,7 @@ func deleteOpValidator(input map[string]interface{}) (operationDoerFunc, error) 
 	var err error
 	op := new(deleteOp)
 
-	op.wheres, err = wheres(input)
+	op.wheres, err = wheres(input, true)
 	if err != nil {
 		return nil, err
 	}
@@ -92,6 +98,7 @@ func (op *deleteOp) do(tx *sql.Tx, table string) (interface{}, error) {
 
 	wheres := wheresString(op.wheres)
 	query := fmt.Sprintf(`DELETE FROM %s WHERE %s`, table, wheres)
+	log.Println(query)
 	result, err := tx.Exec(query)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, fmt.Errorf("failed to delete: %w", err)
@@ -170,7 +177,7 @@ func (op *insertOp) do(tx *sql.Tx, table string) (interface{}, error) {
 		var keys, vals []string
 
 		for k, v := range record {
-			key := "'" + strings.ReplaceAll(k, "'", "''") + "'"
+			key := `"` + strings.ReplaceAll(fmt.Sprintf("%v", k), `"`, `""`) + `"`
 			val := "'" + strings.ReplaceAll(fmt.Sprintf("%v", v), "'", "''") + "'"
 			keys = append(keys, key)
 			vals = append(vals, val)
@@ -179,6 +186,7 @@ func (op *insertOp) do(tx *sql.Tx, table string) (interface{}, error) {
 		ks := strings.Join(keys, ", ")
 		vs := strings.Join(vals, ", ")
 		query := fmt.Sprintf(`INSERT INTO %s (%s) VALUES (%s)`, table, ks, vs)
+		log.Println(query)
 		result, err := tx.Exec(query)
 		if err != nil {
 			return nil, fmt.Errorf("failed to insert record %d: %w", i, err)
@@ -200,8 +208,9 @@ func (op *insertOp) do(tx *sql.Tx, table string) (interface{}, error) {
 }
 
 type selectOp struct {
-	fields []string
-	wheres map[string]interface{}
+	fields   []string
+	wildcard bool
+	wheres   map[string]interface{}
 }
 
 func selectOpValidator(input map[string]interface{}) (operationDoerFunc, error) {
@@ -209,7 +218,7 @@ func selectOpValidator(input map[string]interface{}) (operationDoerFunc, error) 
 	var err error
 	op := new(selectOp)
 
-	op.wheres, err = wheres(input)
+	op.wheres, err = wheres(input, false)
 	if err != nil {
 		return nil, err
 	}
@@ -221,9 +230,15 @@ func selectOpValidator(input map[string]interface{}) (operationDoerFunc, error) 
 		return nil, fmt.Errorf("required parameter 'fields' missing")
 	}
 
-	y, ok := x.([]interface{})
-	if !ok {
-		return nil, fmt.Errorf("'fields' parameter must be a JSON array of strings")
+	s, ok1 := x.(string)
+	y, ok2 := x.([]interface{})
+	if (!ok1 && !ok2) || (ok1 && s != "*") {
+		return nil, fmt.Errorf(`'fields' parameter must be "*" or a JSON array of strings`)
+	}
+
+	if ok1 {
+		op.wildcard = true
+		return op.do, nil
 	}
 
 	if len(y) == 0 {
@@ -248,14 +263,26 @@ func (op *selectOp) do(tx *sql.Tx, table string) (interface{}, error) {
 
 	aerr.ErrorCode = "sql.db.select"
 
-	var fields []string
-	for _, field := range op.fields {
-		fieldName := "'" + strings.ReplaceAll(field, "'", "''") + "'"
-		fields = append(fields, fieldName)
+	var fieldsStr string
+	if op.wildcard {
+		fieldsStr = "*"
+	} else {
+		var fields []string
+		for _, field := range op.fields {
+			fieldName := `"` + strings.ReplaceAll(field, `"`, `""`) + `"`
+			fields = append(fields, fieldName)
+		}
+		fieldsStr = strings.Join(fields, ", ")
 	}
 
-	wheres := wheresString(op.wheres)
-	query := fmt.Sprintf(`SELECT %s FROM %s WHERE %s`, fields, table, wheres)
+	var query string
+	if len(op.wheres) == 0 {
+		query = fmt.Sprintf(`SELECT %s FROM %s`, fieldsStr, table)
+	} else {
+		wheres := wheresString(op.wheres)
+		query = fmt.Sprintf(`SELECT %s FROM %s WHERE %s`, fieldsStr, table, wheres)
+	}
+	log.Println(query)
 	rows, err := tx.Query(query)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, fmt.Errorf("failed to select: %v", err)
@@ -266,9 +293,14 @@ func (op *selectOp) do(tx *sql.Tx, table string) (interface{}, error) {
 
 	for rows.Next() {
 
-		columns := make([]interface{}, len(op.fields))
-		columnPointers := make([]interface{}, len(op.fields))
-		for i, _ := range columns {
+		cols, err := rows.Columns()
+		if err != nil {
+			return nil, fmt.Errorf("failed to load columns from response: %v", err)
+		}
+
+		columns := make([]interface{}, len(cols))
+		columnPointers := make([]interface{}, len(cols))
+		for i, _ := range cols {
 			columnPointers[i] = &columns[i]
 		}
 
@@ -277,7 +309,7 @@ func (op *selectOp) do(tx *sql.Tx, table string) (interface{}, error) {
 		}
 
 		m := make(map[string]interface{})
-		for i, colName := range op.fields {
+		for i, colName := range cols {
 			val := columnPointers[i].(*interface{})
 			m[colName] = *val
 		}
@@ -302,7 +334,7 @@ func updateOpValidator(input map[string]interface{}) (operationDoerFunc, error) 
 	var err error
 	op := new(updateOp)
 
-	op.wheres, err = wheres(input)
+	op.wheres, err = wheres(input, true)
 	if err != nil {
 		return nil, err
 	}
@@ -344,7 +376,7 @@ func (op *updateOp) do(tx *sql.Tx, table string) (interface{}, error) {
 	var changes []string
 
 	for k, v := range op.set {
-		key := "'" + strings.ReplaceAll(k, "'", "''") + "'"
+		key := `"` + strings.ReplaceAll(fmt.Sprintf("%v", k), `"`, `""`) + `"`
 		val := "'" + strings.ReplaceAll(fmt.Sprintf("%v", v), "'", "''") + "'"
 		changes = append(changes, fmt.Sprintf("%s=%s", key, val))
 	}
@@ -353,6 +385,7 @@ func (op *updateOp) do(tx *sql.Tx, table string) (interface{}, error) {
 
 	wheres := wheresString(op.wheres)
 	query := fmt.Sprintf(`UPDATE %s SET %s WHERE %s`, table, sets, wheres)
+	log.Println(query)
 	result, err := tx.Exec(query)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, fmt.Errorf("failed to update: %w", err)
@@ -397,6 +430,8 @@ func validateInput(input *Input) ([]operationDoerFunc, error) {
 	if input.Table == "" {
 		return nil, errors.New("missing input parameter: 'table'")
 	}
+
+	input.Table = `"` + strings.ReplaceAll(input.Table, `"`, `""`) + `"`
 
 	if input.Transaction == nil {
 		return nil, errors.New("missing input parameter: 'transaction'")
