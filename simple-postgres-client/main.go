@@ -120,9 +120,9 @@ func insertOpValidator(input map[string]interface{}) (operationDoerFunc, error) 
 
 	var records []map[string]interface{}
 
-	x, ok := input["set"]
+	x, ok := input["data"]
 	if !ok {
-		return nil, fmt.Errorf("required parameter 'set' missing")
+		return nil, fmt.Errorf("required parameter 'data' missing")
 	}
 
 	type1, ok1 := x.([]map[string]interface{})
@@ -136,20 +136,20 @@ func insertOpValidator(input map[string]interface{}) (operationDoerFunc, error) 
 	}
 
 	if !ok1 && !ok2 {
-		return nil, fmt.Errorf("'set' parameter must be a JSON object or an array of JSON objects")
+		return nil, fmt.Errorf("'data' parameter must be a JSON object or an array of JSON objects")
 	}
 
 	if len(records) == 0 {
-		return nil, fmt.Errorf("'set' parameter must specify at least one record to add to the database")
+		return nil, fmt.Errorf("'data' parameter must specify at least one record to add to the database")
 	}
 
 	for i, rec := range records {
 		for k, v := range rec {
 			switch v.(type) {
 			case map[string]interface{}:
-				return nil, fmt.Errorf("'set' parameter has non-primitive parameter '%s' in record %d (it's a JSON object)", k, i)
+				return nil, fmt.Errorf("'data' parameter has non-primitive parameter '%s' in record %d (it's a JSON object)", k, i)
 			case []interface{}:
-				return nil, fmt.Errorf("'set' parameter has non-primitive parameter '%s' in record %d (it's an array)", k, i)
+				return nil, fmt.Errorf("'data' parameter has non-primitive parameter '%s' in record %d (it's an array)", k, i)
 			default:
 			}
 		}
