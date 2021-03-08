@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -85,6 +86,18 @@ func deleteOpValidator(input map[string]interface{}) (operationDoerFunc, error) 
 	var err error
 	op := new(deleteOp)
 
+	expect := map[string]bool{
+		"type":  true,
+		"where": true,
+	}
+
+	for k := range input {
+		_, expected := expect[k]
+		if !expected {
+			return nil, fmt.Errorf("unexpected parameter on 'delete' operation: %s", k)
+		}
+	}
+
 	op.wheres, err = wheres(input, true)
 	if err != nil {
 		return nil, err
@@ -117,6 +130,18 @@ type insertOp struct {
 func insertOpValidator(input map[string]interface{}) (operationDoerFunc, error) {
 
 	op := new(insertOp)
+
+	expect := map[string]bool{
+		"type": true,
+		"data": true,
+	}
+
+	for k := range input {
+		_, expected := expect[k]
+		if !expected {
+			return nil, fmt.Errorf("unexpected parameter on 'insert' operation: %s", k)
+		}
+	}
 
 	var records []map[string]interface{}
 
@@ -212,6 +237,19 @@ func selectOpValidator(input map[string]interface{}) (operationDoerFunc, error) 
 
 	var err error
 	op := new(selectOp)
+
+	expect := map[string]bool{
+		"type":   true,
+		"where":  true,
+		"fields": true,
+	}
+
+	for k := range input {
+		_, expected := expect[k]
+		if !expected {
+			return nil, fmt.Errorf("unexpected parameter on 'select' operation: %s", k)
+		}
+	}
 
 	op.wheres, err = wheres(input, false)
 	if err != nil {
@@ -328,6 +366,19 @@ func updateOpValidator(input map[string]interface{}) (operationDoerFunc, error) 
 
 	var err error
 	op := new(updateOp)
+
+	expect := map[string]bool{
+		"type":  true,
+		"where": true,
+		"set":   true,
+	}
+
+	for k := range input {
+		_, expected := expect[k]
+		if !expected {
+			return nil, fmt.Errorf("unexpected parameter on 'update' operation: %s", k)
+		}
+	}
 
 	op.wheres, err = wheres(input, true)
 	if err != nil {
@@ -492,7 +543,9 @@ func getInput() (*Input, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(data, input)
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	err = dec.Decode(input)
 	if err != nil {
 		return nil, err
 	}
