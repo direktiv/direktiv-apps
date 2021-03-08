@@ -33,7 +33,7 @@ func main() {
 	}
 
 	// Authenticate with the azcli using a service principal
-	cmd := exec.Command(path, "login", "-u", obj.Name, "-p", obj.Password, "--tenant", obj.Tenant)
+	cmd := exec.Command(path, "--service-principal", "login", "-u", obj.Name, "-p", obj.Password, "--tenant", obj.Tenant)
 	err = cmd.Run()
 	if err != nil {
 		g.ErrorMessage = err.Error()
