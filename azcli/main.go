@@ -33,9 +33,8 @@ func main() {
 		g.ErrorMessage = fmt.Sprintf("output: %s", resp)
 		direktivapps.WriteError(g)
 	}
-
 	// Allow azure to update itself without a tty
-	cmd = exec.Command("/usr/bin/az", "config", "set", "extension.use_dynamic_install=yes_without_prompt")
+	cmd = exec.Command("/usr/bin/az", "config", "set", "extension.use_dynamic_install=no")
 	resp, err = cmd.CombinedOutput()
 	if err != nil {
 		g.ErrorMessage = fmt.Sprintf("output: %s", resp)
