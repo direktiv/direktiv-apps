@@ -28,7 +28,8 @@ The input needed to run the above workflow properly is the following:
     "consumerKey": ".secrets.CONSUMER_KEY",
     "consumerSecret": ".secrets.CONSUMER_SECRET",
     "tokenKey": ".secrets.TOKEN_KEY",
-    "tokenSecret": ".secrets.TOKEN_SECRET"
+    "tokenSecret": ".secrets.TOKEN_SECRET",
+    "message": "This is getting tweeted :)"
 }
 ```
 
