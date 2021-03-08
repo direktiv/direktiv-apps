@@ -101,19 +101,12 @@ func (op *deleteOp) do(tx *sql.Tx, table string) (interface{}, error) {
 	wheres := wheresString(op.wheres)
 	query := fmt.Sprintf(`DELETE FROM %s WHERE %s`, table, wheres)
 	log.Println(query)
-	result, err := tx.Exec(query)
+	_, err := tx.Exec(query)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, fmt.Errorf("failed to delete: %w", err)
 	}
 
-	k, err := result.RowsAffected()
-	if err != nil {
-		return nil, fmt.Errorf("failed to lookup rows affected: %w", err)
-	}
-
-	return map[string]int64{
-		"rowsAffected": k,
-	}, nil
+	return map[string]interface{}{}, nil
 
 }
 
@@ -172,8 +165,6 @@ func (op *insertOp) do(tx *sql.Tx, table string) (interface{}, error) {
 
 	aerr.ErrorCode = "sql.db.insert"
 
-	var rowIds []int64
-
 	for i, record := range op.records {
 
 		var keys, vals, obscuredVals []string
@@ -200,23 +191,14 @@ func (op *insertOp) do(tx *sql.Tx, table string) (interface{}, error) {
 			log.Println(obscuredQuery)
 		}
 
-		result, err := tx.Exec(query)
+		_, err := tx.Exec(query)
 		if err != nil {
 			return nil, fmt.Errorf("failed to insert record %d: %w", i, err)
 		}
 
-		id, err := result.LastInsertId()
-		if err != nil {
-			return nil, fmt.Errorf("failed to lookup inserted row id: %w", err)
-		}
-
-		rowIds = append(rowIds, id)
-
 	}
 
-	return map[string][]int64{
-		"rowIds": rowIds,
-	}, nil
+	return map[string]interface{}{}, nil
 
 }
 
@@ -408,19 +390,12 @@ func (op *updateOp) do(tx *sql.Tx, table string) (interface{}, error) {
 		log.Println(obscuredQuery)
 	}
 
-	result, err := tx.Exec(query)
+	_, err := tx.Exec(query)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, fmt.Errorf("failed to update: %w", err)
 	}
 
-	k, err := result.RowsAffected()
-	if err != nil {
-		return nil, fmt.Errorf("failed to lookup rows affected: %w", err)
-	}
-
-	return map[string]int64{
-		"rowsAffected": k,
-	}, nil
+	return map[string]interface{}{}, nil
 
 }
 
