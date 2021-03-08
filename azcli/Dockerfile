@@ -8,7 +8,6 @@ RUN \
   python3 --version && \
   python3 -m pip --no-cache-dir install -U pip && \
   python3 -m pip --no-cache-dir install azure-cli && \
-  python3 -m pip --no-cache-dir install azure-cli-core && \
   apk del --purge build
 
 ADD azgo / 
