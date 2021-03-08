@@ -204,7 +204,7 @@ func (op *insertOp) do(tx *sql.Tx, table string) (interface{}, error) {
 		for k, v := range record {
 			key := `"` + strings.ReplaceAll(fmt.Sprintf("%v", k), `"`, `""`) + `"`
 			val := "'" + strings.ReplaceAll(fmt.Sprintf("%v", v), "'", "''") + "'"
-			obscuredVal := "'***'"
+			obscuredVal := "'****'"
 			keys = append(keys, key)
 			vals = append(vals, val)
 			obscuredVals = append(obscuredVals, obscuredVal)
