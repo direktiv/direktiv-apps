@@ -14,6 +14,8 @@ import (
 	_ "github.com/lib/pq"
 )
 
+var debug bool
+
 type operationDoerFunc func(tx *sql.Tx, table string) (interface{}, error)
 type operationValidatorFunc func(map[string]interface{}) (operationDoerFunc, error)
 
@@ -174,19 +176,30 @@ func (op *insertOp) do(tx *sql.Tx, table string) (interface{}, error) {
 
 	for i, record := range op.records {
 
-		var keys, vals []string
+		var keys, vals, obscuredVals []string
 
 		for k, v := range record {
 			key := `"` + strings.ReplaceAll(fmt.Sprintf("%v", k), `"`, `""`) + `"`
 			val := "'" + strings.ReplaceAll(fmt.Sprintf("%v", v), "'", "''") + "'"
+			obscuredVal := "'***'"
 			keys = append(keys, key)
 			vals = append(vals, val)
+			obscuredVals = append(obscuredVals, obscuredVal)
 		}
 
 		ks := strings.Join(keys, ", ")
 		vs := strings.Join(vals, ", ")
+		obscuredVs := strings.Join(obscuredVals, ", ")
+
 		query := fmt.Sprintf(`INSERT INTO %s (%s) VALUES (%s)`, table, ks, vs)
-		log.Println(query)
+		obscuredQuery := fmt.Sprintf(`INSERT INTO %s (%s) VALUES (%s)`, table, ks, obscuredVs)
+
+		if debug {
+			log.Println(query)
+		} else {
+			log.Println(obscuredQuery)
+		}
+
 		result, err := tx.Exec(query)
 		if err != nil {
 			return nil, fmt.Errorf("failed to insert record %d: %w", i, err)
@@ -373,19 +386,28 @@ func (op *updateOp) do(tx *sql.Tx, table string) (interface{}, error) {
 
 	aerr.ErrorCode = "sql.db.update"
 
-	var changes []string
+	var changes, obscuredChanges []string
 
 	for k, v := range op.set {
 		key := `"` + strings.ReplaceAll(fmt.Sprintf("%v", k), `"`, `""`) + `"`
 		val := "'" + strings.ReplaceAll(fmt.Sprintf("%v", v), "'", "''") + "'"
 		changes = append(changes, fmt.Sprintf("%s=%s", key, val))
+		obscuredChanges = append(changes, fmt.Sprintf("%s='****'", key))
 	}
 
 	sets := strings.Join(changes, ", ")
-
+	obscuredSets := strings.Join(obscuredChanges, ", ")
 	wheres := wheresString(op.wheres)
+
+	obscuredQuery := fmt.Sprintf(`UPDATE %s SET %s WHERE %s`, table, obscuredSets, wheres)
 	query := fmt.Sprintf(`UPDATE %s SET %s WHERE %s`, table, sets, wheres)
-	log.Println(query)
+
+	if debug {
+		log.Println(query)
+	} else {
+		log.Println(obscuredQuery)
+	}
+
 	result, err := tx.Exec(query)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, fmt.Errorf("failed to update: %w", err)
@@ -415,6 +437,7 @@ func writeError(g ActionError) {
 
 type Input struct {
 	Conn        string                   `json:"conn"`
+	Debug       bool                     `json:"debug"`
 	Table       string                   `json:"table"`
 	Transaction []map[string]interface{} `json:"transaction"`
 }
@@ -498,6 +521,8 @@ func getInput() (*Input, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	debug = input.Debug
 
 	return input, nil
 
