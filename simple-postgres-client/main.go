@@ -114,12 +114,19 @@ func (op *deleteOp) do(tx *sql.Tx, table string) (interface{}, error) {
 	wheres := wheresString(op.wheres)
 	query := fmt.Sprintf(`DELETE FROM %s WHERE %s`, table, wheres)
 	log.Println(query)
-	_, err := tx.Exec(query)
+	result, err := tx.Exec(query)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, fmt.Errorf("failed to delete: %w", err)
 	}
 
-	return map[string]interface{}{}, nil
+	k, err := result.RowsAffected()
+	if err != nil {
+		return nil, fmt.Errorf("failed to lookup rows affected: %w", err)
+	}
+
+	return map[string]int64{
+		"rowsAffected": k,
+	}, nil
 
 }
 
@@ -441,12 +448,19 @@ func (op *updateOp) do(tx *sql.Tx, table string) (interface{}, error) {
 		log.Println(obscuredQuery)
 	}
 
-	_, err := tx.Exec(query)
+	result, err := tx.Exec(query)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, fmt.Errorf("failed to update: %w", err)
 	}
 
-	return map[string]interface{}{}, nil
+	k, err := result.RowsAffected()
+	if err != nil {
+		return nil, fmt.Errorf("failed to lookup rows affected: %w", err)
+	}
+
+	return map[string]int64{
+		"rowsAffected": k,
+	}, nil
 
 }
 
