@@ -70,10 +70,11 @@ func wheresString(wheres map[string]interface{}) string {
 	for k, v := range wheres {
 		key := `"` + strings.ReplaceAll(fmt.Sprintf("%v", k), `"`, `""`) + `"`
 		val := "'" + strings.ReplaceAll(fmt.Sprintf("%v", v), "'", "''") + "'"
+		expr := fmt.Sprintf("%s=%s", key, val)
 		if v == nil {
-			val = "NULL"
+			expr = fmt.Sprintf("%s IS NULL", key)
 		}
-		conditions = append(conditions, fmt.Sprintf("%s=%s", key, val))
+		conditions = append(conditions, expr)
 	}
 
 	return strings.Join(conditions, " AND ")
