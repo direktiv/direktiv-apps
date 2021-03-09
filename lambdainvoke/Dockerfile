@@ -1,6 +1,7 @@
-FROM scratch
+FROM alpine:3.12.4
 
-COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+RUN apk add --no-cache ca-certificates
 ADD lambda /
 
 CMD ["/lambda"]
