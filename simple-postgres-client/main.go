@@ -70,6 +70,9 @@ func wheresString(wheres map[string]interface{}) string {
 	for k, v := range wheres {
 		key := `"` + strings.ReplaceAll(fmt.Sprintf("%v", k), `"`, `""`) + `"`
 		val := "'" + strings.ReplaceAll(fmt.Sprintf("%v", v), "'", "''") + "'"
+		if v == nil {
+			val = "NULL"
+		}
 		conditions = append(conditions, fmt.Sprintf("%s=%s", key, val))
 	}
 
@@ -204,6 +207,9 @@ func (op *insertOp) do(tx *sql.Tx, table string) (interface{}, error) {
 		for k, v := range record {
 			key := `"` + strings.ReplaceAll(fmt.Sprintf("%v", k), `"`, `""`) + `"`
 			val := "'" + strings.ReplaceAll(fmt.Sprintf("%v", v), "'", "''") + "'"
+			if v == nil {
+				val = "NULL"
+			}
 			obscuredVal := "'****'"
 			keys = append(keys, key)
 			vals = append(vals, val)
@@ -431,6 +437,9 @@ func (op *updateOp) do(tx *sql.Tx, table string) (interface{}, error) {
 	for k, v := range op.set {
 		key := `"` + strings.ReplaceAll(fmt.Sprintf("%v", k), `"`, `""`) + `"`
 		val := "'" + strings.ReplaceAll(fmt.Sprintf("%v", v), "'", "''") + "'"
+		if v == nil {
+			val = "NULL"
+		}
 		changes = append(changes, fmt.Sprintf("%s=%s", key, val))
 		obscuredChanges = append(changes, fmt.Sprintf("%s='****'", key))
 	}
