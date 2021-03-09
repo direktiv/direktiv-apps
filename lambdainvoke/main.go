@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -56,9 +55,6 @@ func main() {
 		g.ErrorMessage = err.Error()
 		direktivapps.WriteError(g)
 	}
-
-	fmt.Printf("RESULT: %+v", result)
-	fmt.Printf("RESULT PAYLOAD: %s", result.Payload)
 
 	direktivapps.WriteOut([]byte(result.Payload), g)
 }
