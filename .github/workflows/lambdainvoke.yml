@@ -22,7 +22,7 @@ jobs:
     - name: Move-Dockerfile
       run: cp lambdainvoke/Dockerfile ./lambda/
     - name: Move-lambda-Readme
-      run: cp lambdainvoke/readme.md ./lambda/     
+      run: cp lambdainvoke/README.md ./lambda/     
     - name: Find-Direktivapps
       run: go get github.com/vorteil/direktiv-apps/pkg/direktivapps
     - name: Find-AWS-Dependencies
@@ -88,4 +88,4 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: vorteil/lambda
-        readme: "./lambda/readme.md"
+        readme: "./lambda/README.md"
