@@ -441,7 +441,7 @@ func (op *updateOp) do(tx *sql.Tx, table string) (interface{}, error) {
 			val = "NULL"
 		}
 		changes = append(changes, fmt.Sprintf("%s=%s", key, val))
-		obscuredChanges = append(changes, fmt.Sprintf("%s='****'", key))
+		obscuredChanges = append(obscuredChanges, fmt.Sprintf("%s='****'", key))
 	}
 
 	sets := strings.Join(changes, ", ")
