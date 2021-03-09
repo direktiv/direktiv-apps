@@ -25,6 +25,8 @@ jobs:
       run: cp simple-postgres-client/README.md ./simplepostgresclient/      
     - name: Find-Direktivapps
       run: go get github.com/vorteil/direktiv-apps/pkg/direktivapps
+    - name: Get-Postgres-Package
+      run: go get github.com/lib/pq
     - name: Build
       run: CGO_ENABLED=0 go build -o ./simplepostgresclient/simplepostgresclient simple-postgres-client/main.go
     - uses: actions/upload-artifact@v2
