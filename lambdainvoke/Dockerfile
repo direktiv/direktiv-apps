@@ -1,5 +1,5 @@
 FROM scratch
 
-ADD lambda /lambda
+ADD lambda /
 
 CMD ["/lambda"]
