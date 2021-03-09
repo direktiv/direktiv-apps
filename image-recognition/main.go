@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"io/ioutil"
 
 	vision "cloud.google.com/go/vision/apiv1"
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
@@ -11,8 +12,8 @@ import (
 )
 
 type VisionAPIRecognition struct {
-	ServiceAccountKey map[string]interface{} `json:"serviceAccountKey"`
-	URL               string                 `json:"url"`
+	ServiceAccountKey string `json:"serviceAccountKey"`
+	URL               string `json:"url"`
 }
 
 type Details struct {
@@ -21,6 +22,8 @@ type Details struct {
 	Adult       visionpb.Likelihood `json:"adultLikelihood"`
 	Violence    visionpb.Likelihood `json:"violenceLikelihood"`
 }
+
+const credFile = "/tmp/creds"
 
 func main() {
 
@@ -34,13 +37,13 @@ func main() {
 
 	direktivapps.ReadIn(obj, g)
 
-	data, err := json.Marshal(obj.ServiceAccountKey)
+	err = ioutil.WriteFile(credFile, []byte(obj.ServiceAccountKey), 0777)
 	if err != nil {
 		g.ErrorMessage = err.Error()
 		direktivapps.WriteError(g)
 	}
 
-	visionClient, err := vision.NewImageAnnotatorClient(ctx, option.WithCredentialsJSON(data))
+	visionClient, err := vision.NewImageAnnotatorClient(ctx, option.WithCredentialsFile(credFile))
 	if err != nil {
 		g.ErrorMessage = err.Error()
 		direktivapps.WriteError(g)
