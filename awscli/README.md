@@ -26,8 +26,8 @@ The input needed to run the above workflow properly is the following:
 
 ```json
 {
-    "key": .secrets.ACCESS_KEY,
-    "secret": .secrets.ACCESS_SECRET,
+    "access-key": .secrets.ACCESS_KEY,
+    "access-secret": .secrets.ACCESS_SECRET,
     "command": ["iam", "get-account-summary"]
 }
 ```
