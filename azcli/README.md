@@ -1,6 +1,6 @@
 # Azcli
 
-Executes an azure cli command using a golang wrapper to authenticate with
+Executes any azure cli command using a golang wrapper to provide the authentication before executing.
 
 ## Direktiv
 
