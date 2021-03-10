@@ -1,20 +1,20 @@
-# LambdaInvoke
+# GoogleInvoke
 
-Executes a cloud function on aws using their golang SDK.
+Executes a cloud function on google using a client authenticated via a service account key.
 
 ## Direktiv
 
 ```yaml
 id: invoke-function
 functions:
-- id: post
-  image: vorteil/lambda
+- id: invoke
+  image: vorteil/googleinvoke
 description: "Invokes a cloud function based on the given details"
 states:
 - id: invoke-cloud
   type: action
   action:
-    function: post
+    function: invoke
     input: .
 ```
 
@@ -24,18 +24,17 @@ The following input is needed for the cloud function to be invoked successfully.
 
 ```json
 {
-    "key": .secrets.AWS-KEY,
-    "secret": .secrets.AWS-SECRET,
-    "region": "us-east-2",
+    "region": "us-east1",
     "function": "helloworld",
+    "serviceAccountKey": .secrets.SERVICE_ACCOUNT_KEY,
+    "method": "POST",
     "body": {
-        "any": "data"
+        "message": "hello"
     }
 }
 ```
 
-**NOTE:** The `body`  field is optional.
-
+**NOTE:** The `body` field is optional.
 
 ## Output
 
@@ -43,11 +42,11 @@ The output will be the response of the cloud function json marshalled for the ab
 
 ## Error
 
-In the case that an error is encoutnered, it will present in the following format:
+In the case that an error is encountered, it will present in the following format:
 
 ```json
 {
-    "errorCode": "com.lambdainvoke.error",
+    "errorCode": "com.googleinvoke.error",
     "errorMsg": "Something went wrong"
 }
 ```
