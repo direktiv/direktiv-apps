@@ -1,41 +1,40 @@
-# LambdaInvoke
+# AzureInvoke
 
-Executes a cloud function on aws using their golang SDK.
+Executes a cloud function on azure using the function name, function app and function key as authentication to do so. 
 
 ## Direktiv
 
 ```yaml
 id: invoke-function
 functions:
-- id: post
-  image: vorteil/lambda
+- id: invoke
+  image: vorteil/azureinvoke
 description: "Invokes a cloud function based on the given details"
 states:
 - id: invoke-cloud
   type: action
   action:
-    function: post
+    function: invoke
     input: .
 ```
 
-## Input
+## Input 
 
 The following input is needed for the cloud function to be invoked successfully.
 
 ```json
 {
-    "key": .secrets.AWS-KEY,
-    "secret": .secrets.AWS-SECRET,
-    "region": "us-east-2",
-    "function": "helloworld",
+    "function-app": "hello-direktiv",
+    "function-name": "direktivTrigger",
+    "function-key": .secrets.HELLO_DIREKTIV_KEY,
     "body": {
-        "any": "data"
+        "data": "sent to function",
+        "x": "y"
     }
 }
 ```
 
-**NOTE:** The `body`  field is optional.
-
+**NOTE:** The `body` field is optional.
 
 ## Output
 
@@ -47,7 +46,7 @@ In the case that an error is encountered, it will present in the following forma
 
 ```json
 {
-    "errorCode": "com.lambdainvoke.error",
+    "errorCode": "com.azureinvoke.error",
     "errorMsg": "Something went wrong"
 }
 ```
