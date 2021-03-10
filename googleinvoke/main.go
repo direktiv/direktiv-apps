@@ -103,5 +103,11 @@ func main() {
 		direktivapps.WriteError(g)
 	}
 
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		// error more than likely
+		g.ErrorMessage = fmt.Sprintf("Response Message: %s, Response Code: %v \nResponseBody: %s", resp.Status, resp.StatusCode, body)
+		direktivapps.WriteError(g)
+	}
+
 	direktivapps.WriteOut(bv, g)
 }
