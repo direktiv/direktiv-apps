@@ -26,7 +26,7 @@ jobs:
     - name: Find-Direktivapps
       run: go get github.com/vorteil/direktiv-apps/pkg/direktivapps
     - name: Find-AWS-Dependencies
-      run: go get  github.com/aws/aws-sdk-go/aws  github.com/aws/aws-sdk-go/aws/credentials github.com/aws/aws-sdk-go/aws/session github.com/aws/aws-sdk-go/service/google
+      run: go get golang.org/x/oauth2 golang.org/x/oauth2/jwt 
     - name: Build
       run: CGO_ENABLED=0 go build -o ./google/google googleinvoke/main.go
     - uses: actions/upload-artifact@v2
