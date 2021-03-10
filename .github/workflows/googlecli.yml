@@ -65,7 +65,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: vorteil/googlecli:latest
+        tags: vorteil/gcloud:latest
         context: .
         file: ./google/Dockerfile
         platforms: linux/amd64
@@ -75,7 +75,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: vorteil/googlecli:${{ github.event.inputs.tags }}
+        tags: vorteil/gcloud:${{ github.event.inputs.tags }}
         context: .
         file: ./google/Dockerfile
         platforms: linux/amd64
@@ -85,5 +85,5 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-        repository: vorteil/googlecli
+        repository: vorteil/gcloud
         readme: "./google/README.md"
