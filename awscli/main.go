@@ -8,12 +8,6 @@ import (
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 )
 
-const credsPath = "credentials"
-const confAws = `[default]
-aws_access_key_id=%s
-aws_secret_access_key=%s
-`
-
 // AwsInputDetails ...
 type AwsInputDetails struct {
 	Key     string   `json:"access-key"`
@@ -33,7 +27,7 @@ func main() {
 	direktivapps.ReadIn(obj, g)
 
 	os.Setenv("AWS_ACCESS_KEY_ID", obj.Key)
-	os.Setenv("AWS_SECRET_ACCES_KEY", obj.Secret)
+	os.Setenv("AWS_SECRET_ACCESS_KEY", obj.Secret)
 	os.Setenv("AWS_DEFAULT_REGION", obj.Region)
 
 	cmd := exec.Command("/usr/bin/aws", obj.Command...)
