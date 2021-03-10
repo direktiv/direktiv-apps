@@ -45,9 +45,9 @@ func main() {
 	resp, err = cmd.CombinedOutput()
 	if err != nil {
 		if len(resp) > 0 {
-			g.ErrorMessage = fmt.Sprintf("failed auth: %s", resp)
+			g.ErrorMessage = fmt.Sprintf("%s", resp)
 		} else {
-			g.ErrorMessage = fmt.Sprintf("failed auth: %s", err.Error())
+			g.ErrorMessage = fmt.Sprintf("%s", err.Error())
 		}
 		direktivapps.WriteError(g)
 	}
