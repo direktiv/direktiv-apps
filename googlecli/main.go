@@ -30,18 +30,25 @@ func main() {
 		direktivapps.WriteError(g)
 	}
 
-	cmd := exec.Command("/usr/bin/gcloud", "auth", "activate-service-account", "--key-file", "/key.json")
+	cmd := exec.Command("/root/google-cloud-sdk/bin/gcloud", "auth", "activate-service-account", "--key-file", "/key.json")
 	resp, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Printf("resp len = %v ERROR = %s\n", len(resp), err)
-		g.ErrorMessage = fmt.Sprintf("failed auth: %s", resp)
+		if len(resp) > 0 {
+			g.ErrorMessage = fmt.Sprintf("failed auth: %s", resp)
+		} else {
+			g.ErrorMessage = fmt.Sprintf("failed auth: %s", err.Error())
+		}
 		direktivapps.WriteError(g)
 	}
 
-	cmd = exec.Command("/usr/bin/gcloud", obj.Command...)
+	cmd = exec.Command("/root/google-cloud-sdk/bin/gcloud", obj.Command...)
 	resp, err = cmd.CombinedOutput()
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("%s", resp)
+		if len(resp) > 0 {
+			g.ErrorMessage = fmt.Sprintf("failed auth: %s", resp)
+		} else {
+			g.ErrorMessage = fmt.Sprintf("failed auth: %s", err.Error())
+		}
 		direktivapps.WriteError(g)
 	}
 
