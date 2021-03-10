@@ -33,6 +33,7 @@ func main() {
 	cmd := exec.Command("/usr/bin/gcloud", "auth", "activate-service-account", "--key-file", "/key.json")
 	resp, err := cmd.CombinedOutput()
 	if err != nil {
+		fmt.Printf("resp len = %v ERROR = %s\n", len(resp), err)
 		g.ErrorMessage = fmt.Sprintf("failed auth: %s", resp)
 		direktivapps.WriteError(g)
 	}
