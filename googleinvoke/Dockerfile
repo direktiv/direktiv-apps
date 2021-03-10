@@ -1,4 +1,4 @@
 FROM scratch
-ADD googlecloudfunc /
+ADD google /
 
-CMD ["/googlecloudfunc"]
+CMD ["/google"]
