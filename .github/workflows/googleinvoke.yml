@@ -67,7 +67,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: vorteil/google:latest
+        tags: vorteil/googleinvoke:latest
         context: .
         file: ./google/Dockerfile
         platforms: linux/amd64
