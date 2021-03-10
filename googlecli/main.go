@@ -30,7 +30,7 @@ func main() {
 		direktivapps.WriteError(g)
 	}
 
-	cmd := exec.Command("/usr/bin/gcloud", "auth", "activate-service-account", "/key.json")
+	cmd := exec.Command("/usr/bin/gcloud", "auth", "activate-service-account", "--key-file", "/key.json")
 	resp, err := cmd.CombinedOutput()
 	if err != nil {
 		g.ErrorMessage = fmt.Sprintf("failed auth: %s", resp)
