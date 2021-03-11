@@ -25,6 +25,9 @@ func main() {
 	obj := new(InputContainerDetails)
 	direktivapps.ReadIn(obj, g)
 
+	// json format flag
+	obj.Command = append(obj.Command, `--format="json"`)
+
 	if obj.Project == "" {
 		g.ErrorMessage = "input project cannot be empty"
 		direktivapps.WriteError(g)
