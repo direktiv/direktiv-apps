@@ -24,7 +24,7 @@ jobs:
     - name: Move-Readme
       run: cp smtp/readme.md ./smtp-app/
     - name: Find-GoMail
-      run: go get gopkg.in/mail.v2
+      run: go get gopkg.in/mail.v2 github.com/vorteil/direktiv-apps/pkg/direktivapps
     - name: Build
       run: CGO_ENABLED=0 go build -o ./smtp-app/smtp ./smtp/main.go
     - uses: actions/upload-artifact@v2

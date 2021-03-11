@@ -28,7 +28,7 @@ jobs:
       run: cp googlepusher/readme.md ./store/
     
     - name: Find-Oauth2
-      run: go get golang.org/x/oauth2
+      run: go get golang.org/x/oauth2 github.com/vorteil/direktiv-apps/pkg/direktivapps
     - name: Find-JWT
       run: go get golang.org/x/oauth2/jwt
     - name: Find-Sheets

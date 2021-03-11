@@ -22,7 +22,9 @@ jobs:
     - name: Move-Dockerfile
       run: cp greeter/Dockerfile ./greeting/
     - name: Move-Readme
-      run: cp greeter/readme.md ./greeting/      
+      run: cp greeter/readme.md ./greeting/  
+    - name: Go Get Direktivapps
+      run: go get github.com/vorteil/direktiv-apps/pkg/direktivapps    
     - name: Build
       run: CGO_ENABLED=0 go build -o ./greeting/greeting greeter/main.go
     - uses: actions/upload-artifact@v2

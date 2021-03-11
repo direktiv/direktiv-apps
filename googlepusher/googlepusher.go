@@ -3,20 +3,14 @@ package main
 import (
 	"context"
 	"crypto/tls"
-	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net/http"
 
+	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/jwt"
 	sheets "google.golang.org/api/sheets/v4"
 )
-
-type ActionError struct {
-	ErrorCode    string `json:"errorCode"`
-	ErrorMessage string `json:"errorMessage"`
-}
 
 // GoogleServiceAccount is a struct mimicing the service account key json file
 type GoogleServiceAccount struct {
@@ -39,32 +33,19 @@ type GoogleInput struct {
 const AuthURL = "https://www.googleapis.com/auth/spreadsheets"
 
 func main() {
-	gi := &GoogleInput{}
 
-	g := ActionError{
+	g := direktivapps.ActionError{
 		ErrorCode:    "com.store.error",
 		ErrorMessage: "",
 	}
 
-	log.Printf("Reading in Data...")
-	data, err := ioutil.ReadFile("/direktiv-data/data.in")
-	if err != nil {
-		g.ErrorMessage = err.Error()
-		writeError(g)
-		return
-	}
-
-	err = json.Unmarshal(data, gi)
-	if err != nil {
-		g.ErrorMessage = err.Error()
-		writeError(g)
-		return
-	}
+	obj := new(GoogleInput)
+	direktivapps.ReadIn(obj, g)
 
 	conf := &jwt.Config{
-		Email:      gi.Authentication.ClientEmail,
-		PrivateKey: []byte(gi.Authentication.PrivateKey),
-		TokenURL:   gi.Authentication.TokenURI,
+		Email:      obj.Authentication.ClientEmail,
+		PrivateKey: []byte(obj.Authentication.PrivateKey),
+		TokenURL:   obj.Authentication.TokenURI,
 		Scopes: []string{
 			AuthURL,
 		},
@@ -78,51 +59,33 @@ func main() {
 	ctx = context.WithValue(ctx, oauth2.HTTPClient, sslcli)
 
 	client := conf.Client(ctx)
-	if gi.Debug {
+	if obj.Debug {
 		log.Printf("JWT has been created and verified")
 	}
 
 	service, err := sheets.New(client)
 	if err != nil {
 		g.ErrorMessage = err.Error()
-		writeError(g)
-		return
+		direktivapps.WriteError(g)
 	}
-	if gi.Debug {
+
+	if obj.Debug {
 		log.Printf("Create new sheets service")
 	}
 	var vr sheets.ValueRange
-	writeRange := gi.Range
+	writeRange := obj.Range
 	vr.Values = append(vr.Values, gi.Values)
 
-	if gi.Debug {
+	if obj.Debug {
 		log.Printf("Appending new sheet values")
 		log.Printf("Writing %v", vr.Values)
 	}
 
-	_, err = service.Spreadsheets.Values.Append(gi.SpreadsheetID, writeRange, &vr).ValueInputOption("RAW").Do()
+	_, err = service.Spreadsheets.Values.Append(obj.SpreadsheetID, writeRange, &vr).ValueInputOption("RAW").Do()
 	if err != nil {
 		g.ErrorMessage = err.Error()
-		writeError(g)
-		return
+		direktivapps.WriteError(g)
 	}
 
-	finishRunning([]byte{}, g)
-}
-
-// finishRunning will write to a file and or print the json body to stdout and exits
-func finishRunning(eb []byte, g ActionError) {
-	var err error
-	err = ioutil.WriteFile("/direktiv-data/data.out", eb, 0755)
-	if err != nil {
-		g.ErrorMessage = err.Error()
-		writeError(g)
-		return
-	}
-}
-
-// writeError
-func writeError(g ActionError) {
-	b, _ := json.Marshal(g)
-	ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
+	direktivapps.WriteOut([]byte{}, g)
 }

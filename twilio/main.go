@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"crypto/tls"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -13,12 +12,8 @@ import (
 
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
+	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 )
-
-type ActionError struct {
-	ErrorCode    string `json:"errorCode"`
-	ErrorMessage string `json:"errorMessage"`
-}
 
 // TwilioMessage input struct to send an sms or email
 type TwilioMessage struct {
@@ -34,58 +29,41 @@ type TwilioMessage struct {
 }
 
 func main() {
-	var response []byte
 
-	tm := TwilioMessage{}
-	g := ActionError{
+	g := direktivapps.ActionError{
 		ErrorCode:    "com.twilio.error",
 		ErrorMessage: "",
 	}
 
-	log.Printf("Reading in Data...")
-	// read data in
-	data, err := ioutil.ReadFile("/direktiv-data/data.in")
-	if err != nil {
-		g.ErrorMessage = err.Error()
-		writeError(g)
-		return
-	}
-
-	err = json.Unmarshal(data, &tm)
-	if err != nil {
-		g.ErrorMessage = err.Error()
-		writeError(g)
-		return
-	}
-
+	tm := new(TwilioMessage)
+	direktivapps.ReadIn(tm, g)
+	var response []byte
+	var err error
 	switch tm.TypeOf {
 	case "email":
 		if tm.Debug {
 			log.Printf("Sending email")
 		}
-		response, err = SendEmail(&tm)
+		response, err = SendEmail(tm)
 		if err != nil {
 			g.ErrorMessage = err.Error()
-			writeError(g)
-			return
+			direktivapps.WriteError(g)
 		}
 	case "sms":
 		if tm.Debug {
 			log.Printf("Sending sms")
 		}
-		response, err = SendSMS(&tm)
+		response, err = SendSMS(tm)
 		if err != nil {
 			g.ErrorMessage = err.Error()
-			writeError(g)
-			return
+			direktivapps.WriteError(g)
 		}
 	default:
 		g.ErrorMessage = fmt.Errorf("'%s' is not a valid type to use the twilio application", tm.TypeOf).Error()
-		writeError(g)
-		return
+		direktivapps.WriteError(g)
 	}
 
-	finishRunning(response, g)
+	direktivapps.WriteOut(response, g)
 }
 
 // SendEmail sends a message to the provided email from the input json
@@ -180,21 +158,4 @@ func SendSMS(tm *TwilioMessage) ([]byte, error) {
 		return nil, fmt.Errorf("Response Message: %s, Response Code: %v \nResponseBody: %s", resp.Status, resp.StatusCode, body)
 	}
 	return body, nil
-}
-
-// finishRunning will write to a file and or print the json body to stdout and exits
-func finishRunning(eb []byte, g ActionError) {
-	var err error
-	err = ioutil.WriteFile("/direktiv-data/data.out", eb, 0755)
-	if err != nil {
-		g.ErrorMessage = err.Error()
-		writeError(g)
-		return
-	}
-}
-
-// writeError
-func writeError(g ActionError) {
-	b, _ := json.Marshal(g)
-	ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
 }

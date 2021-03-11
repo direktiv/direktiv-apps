@@ -15,7 +15,7 @@ states:
   type: action
   action:
     function: store
-    input: '{ "authentication": {
+    input: '{ 
     "authentication" : {
         "type": "service_account",
         "private_key": "PRIVATE KEY",

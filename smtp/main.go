@@ -2,10 +2,9 @@ package main
 
 import (
 	"crypto/tls"
-	"encoding/json"
-	"io/ioutil"
 	"log"
 
+	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 	gomail "gopkg.in/mail.v2"
 )
 
@@ -27,28 +26,13 @@ type SMTPEmail struct {
 }
 
 func main() {
-	tm := &SMTPEmail{}
-	g := ActionError{
+	g := direktivapps.ActionError{
 		ErrorCode:    "com.smtp.error",
 		ErrorMessage: "",
 	}
-	var err error
-	var data []byte
-	// read data in
-	log.Printf("Reading in Data...")
-	data, err = ioutil.ReadFile("/direktiv-data/data.in")
-	if err != nil {
-		g.ErrorMessage = err.Error()
-		writeError(g)
-		return
-	}
 
-	err = json.Unmarshal(data, tm)
-	if err != nil {
-		g.ErrorMessage = err.Error()
-		writeError(g)
-		return
-	}
+	tm := new(SMTPEmail)
+	direktivapps.ReadIn(tm, g)
 
 	if tm.Debug {
 		log.Printf("Creating new message")
@@ -77,27 +61,9 @@ func main() {
 
 	if err := d.DialAndSend(m); err != nil {
 		g.ErrorMessage = err.Error()
-		writeError(g)
-		return
+		direktivapps.WriteError(g)
 	}
 
 	// Nothing can be returned
-	finishRunning([]byte{}, g)
-}
-
-// writeError
-func writeError(g ActionError) {
-	b, _ := json.Marshal(g)
-	ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
-}
-
-// finishRunning will write to a file and or print the json body to stdout and exits
-func finishRunning(eb []byte, g ActionError) {
-	var err error
-	err = ioutil.WriteFile("/direktiv-data/data.out", eb, 0755)
-	if err != nil {
-		g.ErrorMessage = err.Error()
-		writeError(g)
-		return
-	}
+	direktivapps.WriteOut([]byte{}, g)
 }
