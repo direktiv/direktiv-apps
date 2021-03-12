@@ -4,13 +4,13 @@ Executes a gcloud cli command using a golang wrapper to provide authentication v
 
 ## Direktiv
 
-An example workflow of listing the instances on a gcloud project.
+An example workflow that lists all instances in a Google cloud project
 
 ```yaml
 id: get-instances-list
 functions:
 - id: post
-  image: vorteil/gcloud:latest
+  image: vorteil/gcloud:v1
   size: medium
 description: "Displays a gcp project instances"
 states:
@@ -27,15 +27,22 @@ The input needed to run the above workflow properly is the following:
 
 ```json
 {
-    "project": .secrets.PROJECT,
-    "serviceAccountKey": .secrets.SERVICE_ACCOUNT_KEY,
-    "command": ["compute", "instances", "list"]
+       "project": "GCP_PROJECT",
+       "serviceAccountKey": "SERVICE_ACCOUNT_KEY",
+       "command": ["compute", "instances", "list"]
 }
 ```
 
+When authenticating with the CLI nothing will be logged to the stdout of the container.
+
+The `SERVICE_ACCOUNT_KEY` is a string of a Google Cloud service account json key.
+
+To generate a service account key please refer to [Google Clouds documentation](https://cloud.google.com/iam/docs/creating-managing-service-account-keys).
+
 ## Output
 
-If the action is successfuly, the gcloud container shall respond with the command execution as `json`.
+The gcloud container will append "--format=json" to the command array when executing, so the container will respond in `json` format.
+
 
 ## Error 
 
