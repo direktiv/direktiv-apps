@@ -1,5 +1,5 @@
 FROM scratch
 
-ADD debug /
+ADD debugdirektiv /
 
 CMD ["debug"]
