@@ -26,7 +26,7 @@ jobs:
     - name: Find-Direktivapps
       run: go mod download
     - name: Build
-      run: CGO_ENABLED=0 go build -o ./influx/influx influxdb/main.go
+      run: cd influxdb && CGO_ENABLED=0 go build -o ../influx/influx main.go
     - uses: actions/upload-artifact@v2
       with:
         name: influx
