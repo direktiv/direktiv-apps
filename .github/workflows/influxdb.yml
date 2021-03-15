@@ -24,7 +24,7 @@ jobs:
     - name: Move-influx-Readme
       run: cp influxdb/README.md ./influx/     
     - name: Find-Direktivapps
-      run: go get github.com/influxdata/influxdb-client-go github.com/vorteil/direktiv-apps/pkg/direktivapps
+      run: go mod download
     - name: Build
       run: CGO_ENABLED=0 go build -o ./influx/influx influxdb/main.go
     - uses: actions/upload-artifact@v2

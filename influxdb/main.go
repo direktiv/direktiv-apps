@@ -63,7 +63,7 @@ func main() {
 }
 
 // WriteData writes a point with measurement to influxdb
-func WriteData(wapi api.WriteAPIBlocking, obj *InputFluxDetails, g *direktivapps.ActionError) ([]byte, error) {
+func WriteData(wapi api.WriteAPIBlocking, obj *InputFluxDetails, g direktivapps.ActionError) ([]byte, error) {
 	p := influxdb2.NewPointWithMeasurement(obj.Measurement)
 
 	// Add tags to point
