@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
@@ -51,6 +52,7 @@ func main() {
 			direktivapps.WriteError(g)
 		}
 	default:
+		fmt.Printf("QUERY: %s\n", obj.Query)
 		qapi := client.QueryAPI(obj.Organisation)
 		bv, err = QueryData(qapi, obj.Query)
 		if err != nil {
