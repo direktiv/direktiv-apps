@@ -1,7 +1,7 @@
 FROM alpine:3.12.4
 
-ADD logger /
+ADD gcpprint /
 
 RUN apk add --no-cache ca-certificates
 
-CMD ["/logger"]
+CMD ["/gcprint"]

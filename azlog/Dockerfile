@@ -1,5 +1,5 @@
 FROM scratch
 
-ADD logger /
+ADD azprint /
 
-CMD ["/logger"]
+CMD ["/azprint"]
