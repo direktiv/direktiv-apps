@@ -31,7 +31,6 @@ func main() {
 		g.ErrorMessage = err.Error()
 		direktivapps.WriteError(g)
 	}
-
 	ctx := context.Background()
 
 	// create a gcp logging client
@@ -40,11 +39,10 @@ func main() {
 		g.ErrorMessage = err.Error()
 		direktivapps.WriteError(g)
 	}
-	defer client.Close()
-
 	logger := client.Logger(obj.LogName).StandardLogger(logging.Info)
 
 	logger.Println(obj.Message)
+	client.Close()
 
 	// Write empty to notified its finished
 	direktivapps.WriteOut([]byte{}, g)

@@ -12,6 +12,7 @@ functions:
 - id: log
   image: vorteil/azlog:v1
 description: "Log a message to Azure Analytics Workspace"
+states:
 - id: log-hello
   type: action
   action:
