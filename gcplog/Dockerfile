@@ -4,4 +4,4 @@ ADD gcpprint /
 
 RUN apk add --no-cache ca-certificates
 
-CMD ["/gcprint"]
+CMD ["/gcpprint"]
