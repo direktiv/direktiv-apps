@@ -82,17 +82,16 @@ func main() {
 		direktivapps.WriteError(g)
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		g.ErrorMessage = fmt.Sprintf("Response Message: %s, Response Code: %v \nResponseBody: %s", resp.Status, resp.StatusCode, body)
-		direktivapps.WriteError(g)
-	}
 
 	bv, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		g.ErrorMessage = err.Error()
 		direktivapps.WriteError(g)
 	}
-
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		g.ErrorMessage = fmt.Sprintf("Response Message: %s, Response Code: %v \nResponseBody: %s", resp.Status, resp.StatusCode, bv)
+		direktivapps.WriteError(g)
+	}
 	direktivapps.WriteOut(bv, g)
 }
 
