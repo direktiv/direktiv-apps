@@ -2,6 +2,14 @@
 
 Simple containers that run on Direktiv.
 
+## Cloud Logging
+
+| Image | Description | How To Use |
+| ---------------- | -------------------------- | ----------- |
+| [vorteil/awslog](https://hub.docker.com/r/vorteil/awslog) | Writes a log line to AWS Cloudwatch | [README](https://github.com/vorteil/direktiv-apps/tree/master/awslog) |
+| [vorteil/azlog](https://hub.docker.com/r/vorteil/azlog)  | Writes a log line to Azure Cloud | [README](https://github.com/vorteil/direktiv-apps/tree/master/azlog) |
+| [vorteil/gcplog](https://hub.docker.com/r/vorteil/gcplog) | Writes a log line to Google Cloud | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcplog) |
+
 ## Cloud Functions
 
 | Image | Description | How To Use |
@@ -50,7 +58,7 @@ Simple containers that run on Direktiv.
 | Image | Description | How To Use |
 | ------------- | ------------- | ---------- |
 | [vorteil/simplepostgresclient](https://hub.docker.com/r/vorteil/simplepostgresclient) | Connects to a postgres database and allows simple sql commands. | [README](https://github.com/vorteil/direktiv-apps/tree/master/simple-postgres-client)
-
+| [vorteil/influxdb](https://hub.docker.com/r/vorteil/influxdb) | Connects to an InfluxDB service to write or list data | [README](https://github.com/vorteil/direktiv-apps/tree/master/influxdb)|
 
 ## General Demos
 
