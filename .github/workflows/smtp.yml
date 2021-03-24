@@ -1,13 +1,9 @@
 name: smtp
 on:
   workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
+     inputs:
       tags:
-        description: 'Test scenario tags'  
+        description: 'Version Tag'
 jobs:
   build:
     runs-on: ubuntu-latest

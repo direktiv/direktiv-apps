@@ -1,4 +1,4 @@
-name: awsprint
+name: awslog
 on:
   workflow_dispatch:
     inputs:

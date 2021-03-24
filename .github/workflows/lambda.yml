@@ -1,13 +1,9 @@
-name: azinvoke
+name: lambda
 on: 
   workflow_dispatch:
     inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
       tags:
-        description: 'Test scenario tags'  
+        description: 'Version Tag'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,33 +14,35 @@ jobs:
       with:
         go-version: 1.15
     - name: Create-AppDir
-      run: mkdir azureinvoke
+      run: mkdir lambda
     - name: Move-Dockerfile
-      run: cp azinvoke/Dockerfile ./azureinvoke/
-    - name: Move-azureinvoke-Readme
-      run: cp azinvoke/README.md ./azureinvoke/     
+      run: cp lambdainvoke/Dockerfile ./lambda/
+    - name: Move-lambda-Readme
+      run: cp lambdainvoke/README.md ./lambda/     
     - name: Find-Direktivapps
-      run: go get github.com/vorteil/direktiv-apps/pkg/direktivapps github.com/vorteil/direktiv-apps/pkg/requester
+      run: go get github.com/vorteil/direktiv-apps/pkg/direktivapps
+    - name: Find-AWS-Dependencies
+      run: go get  github.com/aws/aws-sdk-go/aws  github.com/aws/aws-sdk-go/aws/credentials github.com/aws/aws-sdk-go/aws/session github.com/aws/aws-sdk-go/service/lambda
     - name: Build
-      run: CGO_ENABLED=0 go build -o ./azureinvoke/azureinvoke azinvoke/main.go
+      run: CGO_ENABLED=0 go build -o ./lambda/lambda lambdainvoke/main.go
     - uses: actions/upload-artifact@v2
       with:
-        name: azureinvoke
-        path: azureinvoke
+        name: lambda
+        path: lambda
 
   release:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - name: Download azureinvoke Application
+    - name: Download lambda Application
       uses: actions/download-artifact@v2
       with:
-        name: azureinvoke
-        path: azureinvoke
+        name: lambda
+        path: lambda
 
 
-    - name: chmod +x azureinvoke binary
-      run: sudo chmod +x ./azureinvoke/azureinvoke    
+    - name: chmod +x lambda binary
+      run: sudo chmod +x ./lambda/lambda    
     - name: Setup Docker Buildx
       uses: docker/setup-buildx-action@v1
 
@@ -65,9 +63,9 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: vorteil/azinvoke:latest
+        tags: vorteil/lambda:latest
         context: .
-        file: ./azureinvoke/Dockerfile
+        file: ./lambda/Dockerfile
         platforms: linux/amd64
 
     - name: Build and Push
@@ -75,9 +73,9 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: vorteil/azinvoke:${{ github.event.inputs.tags }}
+        tags: vorteil/lambda:${{ github.event.inputs.tags }}
         context: .
-        file: ./azureinvoke/Dockerfile
+        file: ./lambda/Dockerfile
         platforms: linux/amd64
 
     - name: Sync
@@ -85,5 +83,5 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-        repository: vorteil/azinvoke
-        readme: "./azureinvoke/README.md"
+        repository: vorteil/lambda
+        readme: "./lambda/README.md"

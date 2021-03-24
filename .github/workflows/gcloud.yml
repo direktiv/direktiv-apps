@@ -1,13 +1,9 @@
-name: twitter
-on:
+name: gcloud
+on: 
   workflow_dispatch:
     inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
       tags:
-        description: 'Test scenario tags'  
+        description: 'Version Tag'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,32 +14,33 @@ jobs:
       with:
         go-version: 1.15
     - name: Create-AppDir
-      run: mkdir tweet
+      run: mkdir google
     - name: Move-Dockerfile
-      run: cp twitter/Dockerfile ./tweet/
-    - name: Move-Readme
-      run: cp twitter/README.md ./tweet/      
+      run: cp googlecli/Dockerfile ./google/
+    - name: Move-google-Readme
+      run: cp googlecli/README.md ./google/     
     - name: Find-Direktivapps
       run: go get github.com/vorteil/direktiv-apps/pkg/direktivapps
-    - name: Find-oauth1
-      run: go get github.com/dghubble/oauth1
-    - name: Find-Twitter
-      run: go get github.com/dghubble/go-twitter/twitter
     - name: Build
-      run: CGO_ENABLED=0 go build -o ./tweet/tweet twitter/main.go
+      run: CGO_ENABLED=0 go build -o ./google/google googlecli/main.go
     - uses: actions/upload-artifact@v2
       with:
-        name: tweet
-        path: tweet
+        name: google
+        path: google
+
   release:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - name: Download tweet Application
+    - name: Download google Application
       uses: actions/download-artifact@v2
       with:
-        name: tweet
-        path: tweet
+        name: google
+        path: google
+
+
+    - name: chmod +x google binary
+      run: sudo chmod +x ./google/google    
     - name: Setup Docker Buildx
       uses: docker/setup-buildx-action@v1
 
@@ -53,20 +50,20 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}  
     
+    # - name: Add SHORT_SHA env property with commit short sha
+    #   run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
     # - name: Get the version
     #   id: get_version
     #   run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
-    - name: chmod +x tweet binary
-      run: sudo chmod +x ./tweet/tweet
 
     - name: Build and Push
       id: docker_build
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: vorteil/tweet:latest
+        tags: vorteil/gcloud:latest
         context: .
-        file: ./tweet/Dockerfile
+        file: ./google/Dockerfile
         platforms: linux/amd64
 
     - name: Build and Push
@@ -74,9 +71,9 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: vorteil/tweet:${{ github.event.inputs.tags }}
+        tags: vorteil/gcloud:${{ github.event.inputs.tags }}
         context: .
-        file: ./tweet/Dockerfile
+        file: ./google/Dockerfile
         platforms: linux/amd64
 
     - name: Sync
@@ -84,5 +81,5 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-        repository: vorteil/tweet
-        readme: "./tweet/README.md"
+        repository: vorteil/gcloud
+        readme: "./google/README.md"
