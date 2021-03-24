@@ -1,0 +1,5 @@
+{
+    "access-key": "",
+    "access-secret": "",
+    "command": ["iam", "get-account-summary"]
+}

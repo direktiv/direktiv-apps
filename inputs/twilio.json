@@ -1,0 +1,8 @@
+{
+    "typeof"    : "sms",
+    "sid"       : "TWILIO_SID",
+    "token"     : "TWILIO_TOKEN",
+    "message"   : "RECIPIENT_NAME",
+    "from"      : "TWILIO_FROM_NUM",
+    "to"        : "RECIPIENT_NUM"
+}

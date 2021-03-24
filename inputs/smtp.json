@@ -1,0 +1,9 @@
+{
+    "to"      : "recipient@example.com",
+    "subject" : "SMTP Email",
+    "message" : "Hello, world!",
+    "from"    : "sender@example.com",
+    "password": "NOT4REALPW",
+    "server"  : "smtp.example.com",
+    "port"    : 587
+}

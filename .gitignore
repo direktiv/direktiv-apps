@@ -1,1 +1,3 @@
 *.json
+
+!inputs/*.json

@@ -1,0 +1,10 @@
+{
+    "method": "GET",
+    "url": "https://google.com",
+    "body": {
+        "hello": "world"
+    },
+    "headers": {
+        "Content-Type": "application/json"
+    }
+}

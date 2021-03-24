@@ -1,0 +1,9 @@
+{
+    "key": "",
+    "secret": "",
+    "region": "us-east-2",
+    "function": "",
+    "body": {
+        "any": "data"
+    }
+}

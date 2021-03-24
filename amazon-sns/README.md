@@ -29,7 +29,7 @@ The input required to run the above workflow properly is the following:
     "key": .secrets.AMAZON_KEY,
     "secret": .secrets.AMAZON_SECRET,
     "region": "ap-southeast-2",
-    "topic-arn": "",
+    "topic-arn": .secrets.TOPIC_ARN,
     "message": "Hello World!"
 }
 ```

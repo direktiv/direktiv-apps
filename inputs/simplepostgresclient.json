@@ -1,0 +1,13 @@
+{
+    "conn": "POSTGRES CONNECTION STRING",
+    "table": "POSTGRES TABLE NAME",
+    "transaction": [
+        {
+            "type": "select",
+            "where": {
+              "a": 1
+            },
+            "fields": "*"
+        }
+    ]
+}
