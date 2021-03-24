@@ -1,0 +1,75 @@
+name: google-pubsub
+on:
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Version Tag'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Go
+      uses: actions/setup-go@v2
+      with: 
+        go-version: 1.15
+    - name: Create App-Dir
+      run: mkdir googlepubsub
+    - name: Move Dockerfile
+      run: cp google-pubsub/Dockerfile ./googlepubsub/
+    - name: Move Readme
+      run: cp google-pubsub/README.md ./googlepubsub/
+    - name:
+      run: cd google-pubsub && CGO_ENABLED=0 go build -o ../googlepubsub/google-pubsub main.go
+    - uses: actions/upload-artifact@v2
+      with:
+        name: googlepubsub
+        path: googlepubsub
+  releases:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download googlepubsub Application
+      uses: actions/download-artifact@v2
+      with:
+        name: googlepubsub
+        path: googlepubsub
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    
+    - name: Login to Dockerhub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    
+    - name: chmod +x googlepubsub binary
+      run: sudo chmod +x ./googlepubsub/google-pubsub
+    
+    - name: Build and Push
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with: 
+        push: true
+        tags: vorteil/google-pubsub:latest
+        context: .
+        file: ./googlepubsub/Dockerfile
+        platforms: linux/amd64
+    
+    - name: Build and Push version
+      id: docker_build2
+      uses: docker/build-push-action@v2
+      with: 
+        push: true
+        tags: vorteil/google-pubsub:${{ github.event.inputs.tags }}
+        context: .
+        file: ./googlepubsub/Dockerfile
+        platforms: linux/amd64
+    
+    - name: Sync
+      uses: ms-jpq/sync-dockerhub-readme@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: vorteil/google-pubsub
+        readme: "./googlepubsub/README.md"
