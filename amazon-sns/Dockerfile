@@ -1,6 +1,6 @@
 FROM scratch
 
 ADD ./amazonsns/amazon-sns / 
-ADD ./amazonsns/networking/etc /
+ADD ./amazonsns/networking/ /
 
-CMD ["amazon-sns"]
+CMD ["/amazon-sns"]
