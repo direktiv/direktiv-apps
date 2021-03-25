@@ -1,6 +1,6 @@
 FROM scratch
 
-ADD ./azure-servicebus/azure-servicebus / 
-ADD ./azure-servicebus/networking/ /
+ADD ./azureservicebus/azure-servicebus / 
+ADD ./azureservicebus/networking/ /
 
 CMD ["/azure-servicebus"]
