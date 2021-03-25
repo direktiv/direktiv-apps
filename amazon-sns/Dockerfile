@@ -1,5 +1,5 @@
 FROM scratch
 
-ADD amazon-sns / 
+ADD ./amazonsns/amazon-sns / 
 
 CMD ["amazon-sns"]
