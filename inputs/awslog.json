@@ -1,8 +1,0 @@
-{
-    "key": "",
-    "secret": "",
-    "region": "us-east-2",
-    "log-group": "",
-    "log-stream": "",
-    "message": "Hello Log Message"
-}

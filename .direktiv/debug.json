@@ -1,0 +1,8 @@
+{
+    "id": "debug",
+    "desc": "Prints the input provided back to the user",
+    "image": "vorteil/debug",
+    "input": {
+       "any": "data gets printed"
+    }
+}

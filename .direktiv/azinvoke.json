@@ -1,0 +1,18 @@
+{
+    "id": "azinvoke",
+    "desc": "Invokes an Azure Cloud Function",
+    "image": "vorteil/azinvoke",
+    "input": {
+        "function-app": "",
+        "function-name": "",
+        "function-key": "",
+        "body": {
+            "data": "sent to function",
+            "x": "y"
+        }
+    }
+}
+
+
+
+

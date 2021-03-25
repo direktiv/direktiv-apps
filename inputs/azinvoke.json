@@ -1,9 +1,0 @@
-{
-    "function-app": "",
-    "function-name": "",
-    "function-key": "",
-    "body": {
-        "data": "sent to function",
-        "x": "y"
-    }
-}

@@ -1,0 +1,15 @@
+{
+    "id": "azgo",
+    "desc": "A golang Azure CLI wrapper",
+    "image": "vorteil/azgo",
+    "input": {
+        "name": "SERVICE_PRINCIPAL_APPNAME",
+        "password": "SERVICE_PRINCIPAL_APPPW",
+        "tenant": "SERVICE_PRINCIPAL_APPTENANT",
+        "command": ["account", "show"]
+    }
+}
+
+
+
+

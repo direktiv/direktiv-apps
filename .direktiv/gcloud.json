@@ -1,0 +1,10 @@
+{
+    "id": "gcloud",
+    "desc": "A golang gcloud wrapper",
+    "image": "vorteil/gcloud",
+    "input": {
+        "project": "GCP_PROJECT",
+        "serviceAccountKey": "SERVICE_ACCOUNT_KEY",
+        "command": ["compute", "instances", "list"]
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "id": "simple-postgres-client",
+    "desc": "Interacts with a postgres server",
+    "image": "vorteil/simplepostgresclient",
+    "input": {
+        "conn": "POSTGRES CONNECTION STRING",
+        "table": "POSTGRES TABLE NAME",
+        "transaction": [
+            {
+                "type": "select",
+                "where": {
+                  "a": 1
+                },
+                "fields": "*"
+            }
+        ]
+    }
+}

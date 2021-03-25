@@ -1,0 +1,16 @@
+{
+    "id": "awslog",
+    "desc": "Writes a message to Amazon Cloudwatch",
+    "image": "vorteil/awslog",
+    "input": {
+        "key": "",
+        "secret": "",
+        "region": "us-east-2",
+        "log-group": "",
+        "log-stream": "",
+        "message": "Hello Log Message"
+    }
+}
+
+
+

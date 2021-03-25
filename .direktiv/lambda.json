@@ -1,0 +1,14 @@
+{
+    "id": "lambda",
+    "desc": "Invokes an Amazon Lambda Function",
+    "image": "vorteil/lambda",
+    "input": {
+        "key": "",
+        "secret": "",
+        "region": "us-east-2",
+        "function": "",
+        "body": {
+            "any": "data"
+        }
+    }
+}

@@ -1,4 +1,0 @@
-{
-    "message": "This message will be posted to slack chat",
-    "url": "SLACK_CHAT_WEBHOOK_URL"
-  }

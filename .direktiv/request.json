@@ -1,0 +1,15 @@
+{
+    "id": "request",
+    "desc": "Sends a generic HTTP request",
+    "image": "vorteil/request",
+    "input": {
+        "method": "GET",
+        "url": "https://google.com",
+        "body": {
+            "hello": "world"
+        },
+        "headers": {
+            "Content-Type": "application/json"
+        }
+    }
+}

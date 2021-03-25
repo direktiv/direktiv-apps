@@ -1,7 +1,0 @@
-{
-    "consumerKey": "CONSUMER_KEY",
-    "consumerSecret": "CONSUMER_SECRET",
-    "tokenKey": "TOKEN_KEY",
-    "tokenSecret": "TOKEN_SECRET",
-    "message": "This is getting tweeted :)"
-}

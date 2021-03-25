@@ -1,0 +1,12 @@
+{
+    "id": "amazon-sns",
+    "desc": "Sends a message to Simple Notification Service",
+    "image": "vorteil/amazon-sns",
+    "input": {
+        "key": "",
+        "secret": "",
+        "region": "ap-southeast-2",
+        "topic-arn": "",
+        "message": "Hello World!"
+    }
+}

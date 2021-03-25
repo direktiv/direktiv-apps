@@ -1,0 +1,11 @@
+{
+    "id": "awsgo",
+    "desc": "A golang AWS CLI wrapper",
+    "image": "vorteil/awsgo",
+    "input": {
+        "access-key": "",
+        "access-secret": "",
+        "command": ["iam", "get-account-summary"]
+    }
+}
+

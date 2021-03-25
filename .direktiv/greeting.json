@@ -1,0 +1,8 @@
+{
+    "id": "greeting",
+    "desc": "Responds with a greeting",
+    "image": "vorteil/greeting",
+    "input": {
+        "name": "Trent"
+    }
+}

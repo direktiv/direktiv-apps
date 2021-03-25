@@ -1,0 +1,11 @@
+{
+    "id": "gcplog",
+    "desc": "Writes a message to Google's Stackdriver Logging",
+    "image": "vorteil/gcplog",
+    "input": {
+        "serviceAccountKey": "",
+        "message": "Hello Log Message",
+        "project-id": "",
+        "log-name": ""
+    }
+}

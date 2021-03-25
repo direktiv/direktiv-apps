@@ -1,0 +1,10 @@
+{
+    "id": "discordmsg",
+    "desc": "Writes a message to a Discord Channel",
+    "image": "vorteil/discordmsg",
+    "input": {
+        "message": "HELLO WORLD",
+        "tts": false,
+        "url": "DISCORD_CHAT_WEBHOOK_URL"
+    }
+}
