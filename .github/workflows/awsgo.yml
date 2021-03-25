@@ -22,7 +22,12 @@ jobs:
     - name: Go Get Direktivapps
       run: go get github.com/vorteil/direktiv-apps/pkg/direktivapps
     - name:
-      run: CGO_ENABLED=0 go build -o ./awsgo/awsgo awscli/main.go
+      run: CGO_ENABLED=0 go build -o ./awsgo/awsgo -ldflags="-s -w" awscli/main.go
+    - name: UPX-Compress
+      run: |
+        wget https://github.com/upx/upx/releases/download/v3.96/upx-3.96-amd64_linux.tar.xz
+        tar -xf upx-3.96-amd64_linux.tar.xz
+        cd upx-3.96-amd64_linux && ./upx ../awsgo/awsgo
     - uses: actions/upload-artifact@v2
       with:
         name: awsgo

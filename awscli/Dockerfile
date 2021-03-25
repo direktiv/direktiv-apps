@@ -10,6 +10,6 @@ RUN \
   python3 -m pip --no-cache-dir install awscli && \
   apk del --purge build
 
-ADD awsgo /
+ADD ./awsgo/awsgo /
 
 CMD ["/awsgo"]
