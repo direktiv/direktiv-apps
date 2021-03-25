@@ -1,5 +1,5 @@
 FROM scratch
 
-ADD azprint /
+ADD ./azprint/azprint /
 
 CMD ["/azprint"]

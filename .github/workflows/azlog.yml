@@ -20,7 +20,12 @@ jobs:
     - name: Move Readme
       run: cp azlog/README.md ./azprint/
     - name:
-      run: cd azlog && CGO_ENABLED=0 go build -o ../azprint/azprint main.go
+      run: cd azlog && CGO_ENABLED=0 go build -o ../azprint/azprint -ldflags="-s -w" main.go
+    - name: UPX-Compress
+      run: |
+        wget https://github.com/upx/upx/releases/download/v3.96/upx-3.96-amd64_linux.tar.xz
+        tar -xf upx-3.96-amd64_linux.tar.xz
+        cd upx-3.96-amd64_linux && ./upx ../azprint/azprint
     - uses: actions/upload-artifact@v2
       with:
         name: azprint
