@@ -20,6 +20,8 @@ jobs:
     - name: Move Readme
       run: cp amazon-sns/README.md ./amazonsns/
     - name:
+      run: ls /etc/ssl/certs
+    - name:
       run: cd amazon-sns && CGO_ENABLED=0 go build -o ../amazonsns/amazon-sns -ldflags="-s -w" main.go 
     - name: UPX-Compress
       run: |
