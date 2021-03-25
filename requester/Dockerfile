@@ -1,5 +1,5 @@
 FROM scratch
 
-ADD request /request
+ADD ./request/request /
 
-CMD ["/request/request"]
+CMD ["/request"]

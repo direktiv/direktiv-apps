@@ -40,7 +40,7 @@ func ReadIn(obj interface{}, g ActionError) {
 func WriteError(g ActionError) {
 	b, _ := json.Marshal(g)
 	ioutil.WriteFile(errorPath, b, 0755)
-	os.Exit(1)
+	os.Exit(0)
 }
 
 // WriteOut writes out data to outPath
