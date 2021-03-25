@@ -1,7 +1,6 @@
 FROM scratch
 
 ADD ./amazonsns/amazon-sns / 
-RUN mkdir -p /etc/ssl/certs 
-ADD ./amazonsns/ca-certificates.crt /etc/ssl/certs/
+ADD ./amazonsns/etc /
 
 CMD ["amazon-sns"]
