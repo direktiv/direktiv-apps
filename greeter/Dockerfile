@@ -1,5 +1,5 @@
 FROM scratch
 
-ADD greeting /
+ADD ./greeting/greeting /
 
 CMD ["/greeting"]
