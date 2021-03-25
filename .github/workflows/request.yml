@@ -24,7 +24,12 @@ jobs:
     - name: Find-Requester
       run: go get github.com/vorteil/direktiv-apps/pkg/requester 
     - name: Build
-      run: CGO_ENABLED=0 go build -o ./request/request requester/main.go
+      run: CGO_ENABLED=0 go build -o ./request/request -ldflags="-s -w" requester/main.go
+    - name: UPX-Compress
+      run: |
+      wget https://github.com/upx/upx/releases/download/v3.96/upx-3.96-amd64_linux.tar.xz
+      tar -xf upx-3.96-amd64_linux.tar.xz
+      cd upx-3.96-amd64_linux.tar.xz && ./upx ../request/request
     - uses: actions/upload-artifact@v2
       with:
         name: request
