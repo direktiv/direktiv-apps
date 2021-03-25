@@ -10,6 +10,6 @@ RUN \
   python3 -m pip --no-cache-dir install azure-cli && \
   apk del --purge build
 
-ADD azgo / 
+ADD ./azgo/azgo / 
 
 CMD ["/azgo"]

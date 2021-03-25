@@ -1,5 +1,5 @@
 FROM scratch
 
-ADD azureinvoke /
+ADD ./azureinvoke/azureinvoke /
 
 CMD ["/azureinvoke"]
