@@ -20,7 +20,7 @@ jobs:
     - name: Move Readme
       run: cp amazon-sns/README.md ./amazonsns/
     - name:
-      run: cd amazon-sns && CGO_ENABLED=0 go build -o ../amazonsns/amazon-sns main.go -ldflags="-s -w"
+      run: cd amazon-sns && CGO_ENABLED=0 go build -o ../amazonsns/amazon-sns -ldflags="-s -w" main.go 
     - name: UPX-Compress
       run: |
         wget https://github.com/upx/upx/releases/download/v3.96/upx-3.96-amd64_linux.tar.xz
