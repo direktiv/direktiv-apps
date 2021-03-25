@@ -43,7 +43,8 @@ jobs:
         path: amazonsns
     - name: Setup Docker Buildx
       uses: docker/setup-buildx-action@v1
-    
+    - name: Copy certs
+      run: cp /etc/ssl/certs/ca-certificates.crt ./amazonsns/
     - name: Login to Dockerhub
       uses: docker/login-action@v1
       with:
