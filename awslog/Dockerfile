@@ -1,7 +1,6 @@
-FROM alpine:3.12.4
+FROM scratch
 
-ADD awsprint /
-
-RUN apk add --no-cache ca-certificates
+ADD ./awsprint/awsprint /
+ADD ./awsprint/networking/ /
 
 CMD ["/awsprint"]
