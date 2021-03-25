@@ -29,7 +29,7 @@ jobs:
       run: |
         wget https://github.com/upx/upx/releases/download/v3.96/upx-3.96-amd64_linux.tar.xz
         tar -xf upx-3.96-amd64_linux.tar.xz
-        cd upx-3.96-amd64_linux.tar.xz && ./upx ../request/request
+        cd upx-3.96-amd64_linux && ./upx ../request/request
     - uses: actions/upload-artifact@v2
       with:
         name: request
