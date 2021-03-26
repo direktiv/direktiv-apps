@@ -56,7 +56,9 @@ func main() {
 	}
 	defer client.Close()
 
-	resp, err := client.Translate(ctx, []string{obj.Message}, lang, nil)
+	resp, err := client.Translate(ctx, []string{obj.Message}, lang, &translate.Options{
+		Format: "text",
+	})
 	if err != nil {
 		g.ErrorMessage = err.Error()
 		direktivapps.WriteError(g)
@@ -67,7 +69,7 @@ func main() {
 	}
 
 	var output OutputMessage
-	fmt.Println("Translated: %s\n", resp[0].Text)
+	fmt.Println("Translated: %v\n", resp[0].Text)
 	output.Message = resp[0].Text
 
 	data, err := json.Marshal(output)
