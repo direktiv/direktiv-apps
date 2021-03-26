@@ -1,4 +1,4 @@
-name: google-pubsub
+name: google-translator
 on:
   workflow_dispatch:
     inputs:
@@ -14,56 +14,56 @@ jobs:
       with: 
         go-version: 1.15
     - name: Create App-Dir
-      run: mkdir googlepubsub
+      run: mkdir googletranslator
     - name: Move Dockerfile
-      run: cp google-pubsub/Dockerfile ./googlepubsub/
+      run: cp google-translator/Dockerfile ./googletranslator/
     - name: Move Readme
-      run: cp google-pubsub/README.md ./googlepubsub/
+      run: cp google-translator/README.md ./googletranslator/
     - name:
       run: ls /etc/ssl/certs
     - name:
-      run: cd google-pubsub && CGO_ENABLED=0 go build -o ../googlepubsub/google-pubsub -ldflags="-s -w" main.go 
+      run: cd google-translator && CGO_ENABLED=0 go build -o ../googletranslator/google-translator -ldflags="-s -w" main.go 
     - name: UPX-Compress
       run: |
         wget https://github.com/upx/upx/releases/download/v3.96/upx-3.96-amd64_linux.tar.xz
         tar -xf upx-3.96-amd64_linux.tar.xz
-        cd upx-3.96-amd64_linux && ./upx ../googlepubsub/google-pubsub
+        cd upx-3.96-amd64_linux && ./upx ../googletranslator/google-translator
     - uses: actions/upload-artifact@v2
       with:
-        name: googlepubsub
-        path: googlepubsub
+        name: googletranslator
+        path: googletranslator
   releases:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - name: Download googlepubsub Application
+    - name: Download googletranslator Application
       uses: actions/download-artifact@v2
       with:
-        name: googlepubsub
-        path: googlepubsub
+        name: googletranslator
+        path: googletranslator
     - name: Setup Docker Buildx
       uses: docker/setup-buildx-action@v1
     - name: Copy certs
       run: |
-        mkdir -p ./googlepubsub/networking/etc/ssl/certs/ 
-        cp /etc/ssl/certs/ca-certificates.crt ./googlepubsub/networking/etc/ssl/certs/
+        mkdir -p ./googletranslator/networking/etc/ssl/certs/ 
+        cp /etc/ssl/certs/ca-certificates.crt ./googletranslator/networking/etc/ssl/certs/
     - name: Login to Dockerhub
       uses: docker/login-action@v1
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
     
-    - name: chmod +x googlepubsub binary
-      run: sudo chmod +x ./googlepubsub/google-pubsub
+    - name: chmod +x googletranslator binary
+      run: sudo chmod +x ./googletranslator/google-translator
     
     - name: Build and Push
       id: docker_build
       uses: docker/build-push-action@v2
       with: 
         push: true
-        tags: vorteil/google-pubsub:latest
+        tags: vorteil/google-translator:latest
         context: .
-        file: ./googlepubsub/Dockerfile
+        file: ./googletranslator/Dockerfile
         platforms: linux/amd64
     
     - name: Build and Push version
@@ -71,9 +71,9 @@ jobs:
       uses: docker/build-push-action@v2
       with: 
         push: true
-        tags: vorteil/google-pubsub:${{ github.event.inputs.tags }}
+        tags: vorteil/google-translator:${{ github.event.inputs.tags }}
         context: .
-        file: ./googlepubsub/Dockerfile
+        file: ./googletranslator/Dockerfile
         platforms: linux/amd64
     
     - name: Sync
@@ -81,5 +81,5 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-        repository: vorteil/google-pubsub
-        readme: "./googlepubsub/README.md"
+        repository: vorteil/google-translator
+        readme: "./googletranslator/README.md"

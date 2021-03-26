@@ -1,5 +1,6 @@
 FROM scratch
 
-ADD google-pubsub / 
+ADD ./googlepubsub/google-pubsub / 
+ADD ./googlepubsub/networking/ /
 
-CMD ["google-pubsub"]
+CMD ["/google-pubsub"]

@@ -1,4 +1,4 @@
-name: google-pubsub
+name: google-sentiment-check
 on:
   workflow_dispatch:
     inputs:
@@ -14,56 +14,56 @@ jobs:
       with: 
         go-version: 1.15
     - name: Create App-Dir
-      run: mkdir googlepubsub
+      run: mkdir googlesentimentcheck
     - name: Move Dockerfile
-      run: cp google-pubsub/Dockerfile ./googlepubsub/
+      run: cp google-sentiment-check/Dockerfile ./googlesentimentcheck/
     - name: Move Readme
-      run: cp google-pubsub/README.md ./googlepubsub/
+      run: cp google-sentiment-check/README.md ./googlesentimentcheck/
     - name:
       run: ls /etc/ssl/certs
     - name:
-      run: cd google-pubsub && CGO_ENABLED=0 go build -o ../googlepubsub/google-pubsub -ldflags="-s -w" main.go 
+      run: cd google-sentiment-check && CGO_ENABLED=0 go build -o ../googlesentimentcheck/google-sentiment-check -ldflags="-s -w" main.go 
     - name: UPX-Compress
       run: |
         wget https://github.com/upx/upx/releases/download/v3.96/upx-3.96-amd64_linux.tar.xz
         tar -xf upx-3.96-amd64_linux.tar.xz
-        cd upx-3.96-amd64_linux && ./upx ../googlepubsub/google-pubsub
+        cd upx-3.96-amd64_linux && ./upx ../googlesentimentcheck/google-sentiment-check
     - uses: actions/upload-artifact@v2
       with:
-        name: googlepubsub
-        path: googlepubsub
+        name: googlesentimentcheck
+        path: googlesentimentcheck
   releases:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - name: Download googlepubsub Application
+    - name: Download googlesentimentcheck Application
       uses: actions/download-artifact@v2
       with:
-        name: googlepubsub
-        path: googlepubsub
+        name: googlesentimentcheck
+        path: googlesentimentcheck
     - name: Setup Docker Buildx
       uses: docker/setup-buildx-action@v1
     - name: Copy certs
       run: |
-        mkdir -p ./googlepubsub/networking/etc/ssl/certs/ 
-        cp /etc/ssl/certs/ca-certificates.crt ./googlepubsub/networking/etc/ssl/certs/
+        mkdir -p ./googlesentimentcheck/networking/etc/ssl/certs/ 
+        cp /etc/ssl/certs/ca-certificates.crt ./googlesentimentcheck/networking/etc/ssl/certs/
     - name: Login to Dockerhub
       uses: docker/login-action@v1
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
     
-    - name: chmod +x googlepubsub binary
-      run: sudo chmod +x ./googlepubsub/google-pubsub
+    - name: chmod +x googlesentimentcheck binary
+      run: sudo chmod +x ./googlesentimentcheck/google-sentiment-check
     
     - name: Build and Push
       id: docker_build
       uses: docker/build-push-action@v2
       with: 
         push: true
-        tags: vorteil/google-pubsub:latest
+        tags: vorteil/google-sentiment-check:latest
         context: .
-        file: ./googlepubsub/Dockerfile
+        file: ./googlesentimentcheck/Dockerfile
         platforms: linux/amd64
     
     - name: Build and Push version
@@ -71,9 +71,9 @@ jobs:
       uses: docker/build-push-action@v2
       with: 
         push: true
-        tags: vorteil/google-pubsub:${{ github.event.inputs.tags }}
+        tags: vorteil/google-sentiment-check:${{ github.event.inputs.tags }}
         context: .
-        file: ./googlepubsub/Dockerfile
+        file: ./googlesentimentcheck/Dockerfile
         platforms: linux/amd64
     
     - name: Sync
@@ -81,5 +81,5 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-        repository: vorteil/google-pubsub
-        readme: "./googlepubsub/README.md"
+        repository: vorteil/google-sentiment-check
+        readme: "./googlesentimentcheck/README.md"
