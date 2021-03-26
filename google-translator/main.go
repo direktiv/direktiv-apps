@@ -22,7 +22,7 @@ type InputTranslatorGoogle struct {
 }
 
 type OutputMessage struct {
-	Message []byte `json:"message"`
+	Message string `json:"message"`
 }
 
 func main() {
@@ -68,7 +68,7 @@ func main() {
 
 	var output OutputMessage
 	fmt.Println("Translated: %s\n", resp[0].Text)
-	output.Message = []byte(resp[0].Text)
+	output.Message = resp[0].Text
 
 	data, err := json.Marshal(output)
 	if err != nil {
