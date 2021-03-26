@@ -1,6 +1,6 @@
 FROM scratch
 
-ADD ./azureupload/azureupload /
+ADD ./azureupload/azure-upload /
 ADD ./azureupload/networking/ /
 
 CMD ["/azure-upload"]
