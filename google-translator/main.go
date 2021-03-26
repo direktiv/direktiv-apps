@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
@@ -21,7 +22,7 @@ type InputTranslatorGoogle struct {
 }
 
 type OutputMessage struct {
-	Message string `json:"message"`
+	Message []byte `json:"message"`
 }
 
 func main() {
@@ -66,7 +67,8 @@ func main() {
 	}
 
 	var output OutputMessage
-	output.Message = resp[0].Text
+	fmt.Println("Translated: %s\n", resp[0].Text)
+	output.Message = []byte(resp[0].Text)
 
 	data, err := json.Marshal(output)
 	if err != nil {
