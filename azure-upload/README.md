@@ -28,7 +28,7 @@ The input required to run the above workflow properly is the following:
 {
     "container": "azure-container",
     "storage-account": "storage-account",
-    "storage-key": .secrets.AZURE_STORAGE_KEY,
+    "storage-account-key": .secrets.AZURE_STORAGE_KEY,
     "data": "base64 decoded string",
     "upload-name": "test"
 }
