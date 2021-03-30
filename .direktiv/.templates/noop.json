@@ -1,0 +1,13 @@
+{
+    "name": "noop",
+    "desc": "A simple 'no-op' state that returns 'Hello world!'",
+    "payload": {
+        "id": "noop",
+        "description": "A simple 'no-op' state that returns 'Hello world!'",
+        "states": [{
+            "id": "helloworld",
+            "type": "noop",
+            "transform": "{ result: \"Hello world!\" }"
+        }]    
+    }
+}
