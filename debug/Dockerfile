@@ -1,5 +1,5 @@
 FROM scratch
 
-ADD debugdirektiv /
+ADD ./debugdirektiv/debug /
 
-CMD ["debug"]
+CMD ["/debug"]
