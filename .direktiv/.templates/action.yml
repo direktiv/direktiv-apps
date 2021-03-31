@@ -1,0 +1,13 @@
+id: httpget
+functions:
+- id: httprequest
+  image: vorteil/request:v1
+states:
+- id: getter 
+  type: action
+  action:
+    function: httprequest
+    input: '{
+      "method": "GET",
+      "url": "https://www.example.com/",
+    }'
