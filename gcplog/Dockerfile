@@ -1,7 +1,15 @@
-FROM alpine:3.12.4
+FROM golang:1.15-buster as build
 
-ADD gcpprint /
+WORKDIR /go/src/app
+ADD . /go/src/app
+RUN go get -d -v 
+RUN CGO_ENABLED=0 go build -o /gcplog -ldflags="-s -w" main.go
 
-RUN apk add --no-cache ca-certificates
+FROM alpine:latest as certs
+RUN apk --update add ca-certificates
 
-CMD ["/gcpprint"]
+FROM scratch
+
+COPY --from=build /gcplog /
+COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+CMD ["/gcplog"]

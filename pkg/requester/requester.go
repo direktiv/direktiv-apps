@@ -2,7 +2,6 @@ package requester
 
 import (
 	"bytes"
-	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -45,11 +44,7 @@ func (m *Manager) Create() error {
 	}
 
 	// Initialize client and the request
-	m.client = &http.Client{
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-		},
-	}
+	m.client = &http.Client{}
 
 	if m.Request.Debug {
 		log.Printf("Method: %s, Sending to %s", m.Request.Method, m.Request.URL)

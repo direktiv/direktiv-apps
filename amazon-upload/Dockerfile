@@ -1,6 +1,14 @@
+FROM golang:1.15-buster as build
+
+WORKDIR /go/src/app
+ADD . /go/src/app
+RUN go get -d -v 
+RUN CGO_ENABLED=0 go build -o /amazon-upload -ldflags="-s -w" main.go
+
+FROM alpine:latest as certs
+RUN apk --update add ca-certificates
+
 FROM scratch
-
-ADD ./amazonupload/amazon-upload /
-ADD ./amazonupload/networking/ /
-
+COPY --from=build /amazon-upload /
+COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 CMD ["/amazon-upload"]

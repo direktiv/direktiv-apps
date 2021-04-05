@@ -1,3 +1,10 @@
+FROM golang:1.15-buster as build
+
+WORKDIR /go/src/app
+ADD . /go/src/app
+RUN go get -d -v 
+RUN CGO_ENABLED=0 go build -o /azgo -ldflags="-s -w" main.go
+
 FROM alpine:3.9
 
 RUN \
@@ -7,9 +14,9 @@ RUN \
   apk add --virtual=build gcc libffi-dev musl-dev openssl-dev python3-dev make && \
   python3 --version && \
   python3 -m pip --no-cache-dir install -U pip && \
-  python3 -m pip --no-cache-dir install awscli && \
+  python3 -m pip --no-cache-dir install azure-cli && \
   apk del --purge build
 
-ADD ./awsgo/awsgo /
+COPY --from=build /azgo /
 
-CMD ["/awsgo"]
+CMD ["/azgo"]

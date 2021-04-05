@@ -69,7 +69,7 @@ func main() {
 	}
 
 	var output OutputMessage
-	fmt.Println("Translated: %v\n", resp[0].Text)
+	fmt.Printf("Translated: %v\n", resp[0].Text)
 	output.Message = resp[0].Text
 
 	data, err := json.Marshal(output)

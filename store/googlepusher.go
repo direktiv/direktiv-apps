@@ -74,7 +74,7 @@ func main() {
 	}
 	var vr sheets.ValueRange
 	writeRange := obj.Range
-	vr.Values = append(vr.Values, gi.Values)
+	vr.Values = append(vr.Values, obj.Values)
 
 	if obj.Debug {
 		log.Printf("Appending new sheet values")

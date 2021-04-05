@@ -3,13 +3,12 @@ FROM golang:1.15-buster as build
 WORKDIR /go/src/app
 ADD . /go/src/app
 RUN go get -d -v 
-RUN CGO_ENABLED=0 go build -o /azinvoke -ldflags="-s -w" main.go
+RUN CGO_ENABLED=0 go build -o /lambda -ldflags="-s -w" main.go
 
 FROM alpine:latest as certs
 RUN apk --update add ca-certificates
 
 FROM scratch
-
-COPY --from=build /azinvoke /
+COPY --from=build /lambda /
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-CMD ["/azinvoke"]
+CMD ["/lambda"]

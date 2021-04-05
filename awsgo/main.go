@@ -34,6 +34,7 @@ func main() {
 	resp, err := cmd.CombinedOutput()
 	if err != nil {
 		g.ErrorMessage = fmt.Sprintf("%s", resp)
+		direktivapps.WriteError(g)
 	}
 
 	direktivapps.WriteOut(resp, g)
