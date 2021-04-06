@@ -59,6 +59,7 @@ func main() {
 	readme := fmt.Sprintf(`# Direktiv Apps
 
 Simple Containers that run on Direktiv
+
 <em>Generated from '%s'</em>
 
 
