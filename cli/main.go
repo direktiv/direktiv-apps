@@ -66,7 +66,7 @@ Simple Containers that run on Direktiv
 | Image | Description | How to Use |
 | ----- | ----------- | ---------- |
 %s
-`, addImages, os.Getenv("SHA"))
+`, os.Getenv("SHA"), addImages)
 
 	fmt.Printf("%s", readme)
 
