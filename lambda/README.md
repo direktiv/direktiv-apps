@@ -1,9 +1,9 @@
-+++
+---
 {
   "image": "vorteil/lambda",
   "desc": "Executes a cloud function on aws using their golang SDK."
 }
-+++
+---
 # LambdaInvoke
 
 Executes a cloud function on aws using their golang SDK.

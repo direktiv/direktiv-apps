@@ -1,9 +1,9 @@
-+++
+---
 {
   "image": "vorteil/googlemsg",
   "desc": "Writes a google message to a webhook URL."
 }
-+++
+---
 
 # GoogleMessage
 

@@ -1,9 +1,9 @@
-+++
+---
 {
   "image": "vorteil/gcplog",
   "desc": "Writes a log line to a stackdriver logging implementation"
 }
-+++
+---
 
 # GCPLog
 

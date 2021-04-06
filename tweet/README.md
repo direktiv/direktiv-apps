@@ -1,9 +1,9 @@
-+++
+---
 {
   "image": "vorteil/tweet",
   "desc": "Tweets a message to a twitter account."
 }
-+++
+---
 
 # Tweet
 

@@ -1,9 +1,9 @@
-+++
+---
 {
   "image": "vorteil/smtp",
   "desc": "A simple smtp client to send an email"
 }
-+++
+---
 
 # SMTP
 

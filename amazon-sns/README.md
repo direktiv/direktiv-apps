@@ -1,9 +1,9 @@
-+++
+---
 {
   "image": "vorteil/amazon-sns",
   "desc": "Writes a message to Amazon's Simple Notification Service"
 }
-+++
+---
 
 # Amazon SNS
 

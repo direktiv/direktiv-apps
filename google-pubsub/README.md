@@ -1,9 +1,9 @@
-+++
+---
 {
   "image": "vorteil/google-pubsub",
   "desc": "Writes a message to Google's Pubsub service."
 }
-+++
+---
 
 
 # Google Pubsub

@@ -1,9 +1,9 @@
-+++
+---
 {
   "image": "vorteil/discordmsg",
   "desc": "Writes a discord message to a webhook URL."
 }
-+++
+---
 
 # DiscordMessage
 

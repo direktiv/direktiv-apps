@@ -1,9 +1,9 @@
-+++
+---
 {
   "image": "vorteil/google-upload",
   "desc": "Uploads a base64 encoded string to a bucket on Google."
 }
-+++
+---
 
 # Google Upload
 

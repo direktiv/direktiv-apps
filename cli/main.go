@@ -14,7 +14,7 @@ var ignoreFiles = []string{".direktiv", ".git", ".github", ".gitignore", "Makefi
 
 func main() {
 	m := front.NewMatter()
-	m.Handle("+++", front.JSONHandler)
+	m.Handle("---", front.JSONHandler)
 
 	dirs, err := ioutil.ReadDir("../")
 	if err != nil {
@@ -43,12 +43,12 @@ func main() {
 			f, _, err := m.Parse(bytes.NewReader(data))
 			if err != nil {
 				fmt.Printf(`Please provide a frontmatter like the following at the top of the %s/README.md for the container.
-+++
+---
 {
 	"image": "vorteil/test"
 	"desc": "This container does stuff"
 }
-+++
+---
 `, name)
 				return
 			}

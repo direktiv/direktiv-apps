@@ -1,9 +1,9 @@
-+++
+---
 {
   "image": "vorteil/solve",
   "desc": "Solves math expressions"
 }
-+++
+---
 
 ## Solve
 

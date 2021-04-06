@@ -1,9 +1,9 @@
-+++
+---
 {
   "image": "vorteil/azure-upload",
   "desc": "Uploads a base64 encoded string to a blob on Azure."
 }
-+++
+---
 
 # Azure Upload
 

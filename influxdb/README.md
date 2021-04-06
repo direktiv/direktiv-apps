@@ -1,9 +1,9 @@
-+++
+---
 {
   "image": "vorteil/influxdb",
   "desc": "A container that provides the opportunities to write or query data on an InfluxDB instance."
 }
-+++
+---
 # Influxdb
 
 A container that provides the opportunities to write or query data on an InfluxDB instance.

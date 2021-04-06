@@ -1,9 +1,9 @@
-+++
+---
 {
   "image": "vorteil/slackmsg",
   "desc": "Writes a message to a slack webhook url"
 }
-+++
+---
 ## SlackMessage
 
 Writes a message to a slack webhook url

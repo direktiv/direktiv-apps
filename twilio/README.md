@@ -1,9 +1,9 @@
-+++
+---
 {
   "image": "vorteil/twilio",
   "desc": "Sends an email or SMS message using Twilio."
 }
-+++
+---
 
 # Twilio
 Sends an email or SMS message using Twilio.

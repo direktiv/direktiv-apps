@@ -1,9 +1,9 @@
-+++
+---
 {
   "image": "vorteil/debug",
   "desc": "Prints all the information that direktiv sends to the container"
 }
-+++
+---
 
 # Debug
 
