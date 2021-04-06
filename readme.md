@@ -2,7 +2,7 @@
 
 Simple Containers that run on Direktiv
 
-<em>Generated from 'c381fc'</em>
+<em>Generated from ''</em>
 
 
 ## Containers
