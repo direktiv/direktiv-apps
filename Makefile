@@ -17,6 +17,6 @@ build-singular:
 	docker build ${CONTAINER} --tag ${REPOSITORY}/${CONTAINER}:${VERSION}
 	docker push ${REPOSITORY}/${CONTAINER}:latest
 	docker push ${REPOSITORY}/${CONTAINER}:${VERSION}
-	cd ${CONTAINER} && 	docker pushrm --provider docker docker.io/${REPOSITORY}/${CONTAINER}
+	cd ${CONTAINER} && docker pushrm docker.io/${REPOSITORY}/${CONTAINER}
 
 # build all containers using provided version variable
