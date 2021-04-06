@@ -1,4 +1,4 @@
-REPOSITORY := trentis
+REPOSITORY := vorteil
 
 # dependencies
 .PHONY: dependencies
