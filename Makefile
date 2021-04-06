@@ -4,9 +4,9 @@ REPOSITORY := vorteil
 .PHONY: dependencies
 dependencies:
 	echo "fetching dependencies"
-	mkdir -p ./docker/cli-plugins
+	mkdir -p /home/runner/.docker/cli-plugins
 	wget https://github.com/christian-korneck/docker-pushrm/releases/download/v1.7.0/docker-pushrm_linux_amd64
-	cp ./docker-pushrm_linux_amd64 ~/.docker/cli-plugins/docker-pushrm
+	cp ./docker-pushrm_linux_amd64 /home/runner/.docker/cli-plugins/docker-pushrm
 	chmod +x ~/.docker/cli-plugins/docker-pushrm
 
 # build a singular container using provided environment variable
@@ -20,3 +20,6 @@ build-singular:
 	cd ${CONTAINER} && docker pushrm docker.io/${REPOSITORY}/${CONTAINER}
 
 # build all containers using provided version variable
+.PHONY: all
+all:
+   echo "building all containers with version ${VERSION}"
