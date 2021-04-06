@@ -22,4 +22,4 @@ build-singular:
 # build all containers using provided version variable
 .PHONY: all
 all:
-   echo "building all containers with version ${VERSION}"
+	echo "building all containers with version ${VERSION}"
