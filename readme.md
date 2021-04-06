@@ -1,68 +1,41 @@
 # Direktiv Apps
+<em>Generated on commit</em>
 
-Simple containers that run on Direktiv.
+Simple Containers that run on Direktiv
 
-## Cloud Logging
+## Containers
 
-| Image | Description | How To Use |
-| ---------------- | -------------------------- | ----------- |
-| [vorteil/awslog](https://hub.docker.com/r/vorteil/awslog) | Writes a log line to AWS Cloudwatch | [README](https://github.com/vorteil/direktiv-apps/tree/master/awslog) |
-| [vorteil/azlog](https://hub.docker.com/r/vorteil/azlog)  | Writes a log line to Azure Cloud | [README](https://github.com/vorteil/direktiv-apps/tree/master/azlog) |
-| [vorteil/gcplog](https://hub.docker.com/r/vorteil/gcplog) | Writes a log line to Google Cloud | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcplog) |
+| Image | Description | How to Use |
+| ----- | ----------- | ---------- |
+| [vorteil/amazon-sns](https://hub.docker.com/r/vorteil/amazon-sns) | Writes a message to Amazon's Simple Notification Service | [README](https://github.com/vorteil/direktiv-apps/tree/master/amazon-sns) |
+| [vorteil/amazon-upload](https://hub.docker.com/r/vorteil/amazon-upload) | Uploads a base64 encoded string to a blob on Amazon. | [README](https://github.com/vorteil/direktiv-apps/tree/master/amazon-upload) |
+| [vorteil/awsgo](https://hub.docker.com/r/vorteil/awsgo) | Executes any cli command with aws using a golang wrapper to provide the authentication before executing. | [README](https://github.com/vorteil/direktiv-apps/tree/master/awsgo) |
+| [vorteil/awslog](https://hub.docker.com/r/vorteil/awslog) | Writes a log line to aws cloudwatch logs with provided log stream and group. | [README](https://github.com/vorteil/direktiv-apps/tree/master/awslog) |
+| [vorteil/azgo](https://hub.docker.com/r/vorteil/azgo) | Executes any azure cli command using a golang wrapper to provide the authentication before executing. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azgo) |
+| [vorteil/azinvoke](https://hub.docker.com/r/vorteil/azinvoke) | Executes a cloud function on azure using the function name, function app and function key as authentication to do so. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azinvoke) |
+| [vorteil/azlog](https://hub.docker.com/r/vorteil/azlog) | Writes a log line to Azure Log Analytics Workspace. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azlog) |
+| [vorteil/azure-servicebus](https://hub.docker.com/r/vorteil/azure-servicebus) | Writes a message to Azure's Servicebus | [README](https://github.com/vorteil/direktiv-apps/tree/master/azure-servicebus) |
+| [vorteil/azure-upload](https://hub.docker.com/r/vorteil/azure-upload) | Uploads a base64 encoded string to a blob on Azure. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azure-upload) |
+| [vorteil/debug](https://hub.docker.com/r/vorteil/debug) | Prints all the information that direktiv sends to the container | [README](https://github.com/vorteil/direktiv-apps/tree/master/debug) |
+| [vorteil/discordmsg](https://hub.docker.com/r/vorteil/discordmsg) | Writes a discord message to a webhook URL. | [README](https://github.com/vorteil/direktiv-apps/tree/master/discordmsg) |
+| [vorteil/gcloud](https://hub.docker.com/r/vorteil/gcloud) | Executes a gcloud cli command using a golang wrapper to provide authentication via service account key file. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud) |
+| [vorteil/gcplog](https://hub.docker.com/r/vorteil/gcplog) | Writes a log line to a stackdriver logging implementation | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcplog) |
+| [vorteil/google-pubsub](https://hub.docker.com/r/vorteil/google-pubsub) | Writes a message to Google's Pubsub service. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-pubsub) |
+| [vorteil/google-sentiment-check](https://hub.docker.com/r/vorteil/google-sentiment-check) | Reads a string and tells you the sentiment of the written text. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-sentiment-check) |
+| [vorteil/google-translator](https://hub.docker.com/r/vorteil/google-translator) | Reads a string and converts it to the targeted language. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-translator) |
+| [vorteil/google-upload](https://hub.docker.com/r/vorteil/google-upload) | Uploads a base64 encoded string to a bucket on Google. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-upload) |
+| [vorteil/googleinvoke](https://hub.docker.com/r/vorteil/googleinvoke) | Executes a cloud function on google using a client authenticated via a service account key. | [README](https://github.com/vorteil/direktiv-apps/tree/master/googleinvoke) |
+| [vorteil/googlemsg](https://hub.docker.com/r/vorteil/googlemsg) | Writes a google message to a webhook URL. | [README](https://github.com/vorteil/direktiv-apps/tree/master/googlemsg) |
+| [vorteil/greeting](https://hub.docker.com/r/vorteil/greeting) | Outputs a greeting | [README](https://github.com/vorteil/direktiv-apps/tree/master/greeting) |
+| [vorteil/imagerecognition](https://hub.docker.com/r/vorteil/imagerecognition) | Checks an image to see if it is safe for work and responds with content is likely to be racy, adult or violence themed. | [README](https://github.com/vorteil/direktiv-apps/tree/master/imagerecognition) |
+| [vorteil/influxdb](https://hub.docker.com/r/vorteil/influxdb) | A container that provides the opportunities to write or query data on an InfluxDB instance. | [README](https://github.com/vorteil/direktiv-apps/tree/master/influxdb) |
+| [vorteil/lambda](https://hub.docker.com/r/vorteil/lambda) | Executes a cloud function on aws using their golang SDK. | [README](https://github.com/vorteil/direktiv-apps/tree/master/lambda) |
+| [vorteil/request](https://hub.docker.com/r/vorteil/request) | Perform a basic HTTP/S request. | [README](https://github.com/vorteil/direktiv-apps/tree/master/request) |
+| [vorteil/simplepostgresclient](https://hub.docker.com/r/vorteil/simplepostgresclient) | Perform simple interactions on a PostgreSQL database.  | [README](https://github.com/vorteil/direktiv-apps/tree/master/simplepostgresclient) |
+| [vorteil/slackmsg](https://hub.docker.com/r/vorteil/slackmsg) | Writes a message to a slack webhook url | [README](https://github.com/vorteil/direktiv-apps/tree/master/slackmsg) |
+| [vorteil/smtp](https://hub.docker.com/r/vorteil/smtp) | A simple smtp client to send an email | [README](https://github.com/vorteil/direktiv-apps/tree/master/smtp) |
+| [vorteil/solve](https://hub.docker.com/r/vorteil/solve) | Solves math expressions | [README](https://github.com/vorteil/direktiv-apps/tree/master/solve) |
+| [vorteil/store](https://hub.docker.com/r/vorteil/store) | Add a row to a 'Google Sheets' spreadsheet. | [README](https://github.com/vorteil/direktiv-apps/tree/master/store) |
+| [vorteil/tweet](https://hub.docker.com/r/vorteil/tweet) | Tweets a message to a twitter account. | [README](https://github.com/vorteil/direktiv-apps/tree/master/tweet) |
+| [vorteil/twilio](https://hub.docker.com/r/vorteil/twilio) | Sends an email or SMS message using Twilio. | [README](https://github.com/vorteil/direktiv-apps/tree/master/twilio) |
 
-## Cloud Functions
-
-| Image | Description | How To Use |
-| ------------- | ------------- | ---------- |
-| [vorteil/azinvoke](https://hub.docker.com/r/vorteil/azinvoke) | Executes an azure cloud function via authentication using function keys. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azinvoke) |
-| [vorteil/lambda](https://hub.docker.com/r/vorteil/lambda) | Executes an aws cloud function via authentication using access tokens. | [README](https://github.com/vorteil/direktiv-apps/tree/master/lambdainvoke) |
-| [vorteil/googleinvoke](https://hub.docker.com/r/vorteil/googleinvoke) | Executes a google cloud function via authentication using service account key | [README](https://github.com/vorteil/direktiv-apps/tree/master/googleinvoke) |
-
-## CLIs
-
-| Image | Description | How To Use |
-| ------------- | ------------- | ---------- |
-| [vorteil/azgo](https://hub.docker.com/r/vorteil/azgo)  | Executes azure CLI commands using authentication provided by a service principal account.  | [README](https://github.com/vorteil/direktiv-apps/tree/master/azcli) |
-| [vorteil/gcloud](https://hub.docker.com/r/vorteil/gcloud) | Executes a gcloud command using authentication provided by the service account key file.| [README](https://github.com/vorteil/direktiv-apps/tree/master/googlecli)|
-| [vorteil/awsgo](https://hub.docker.com/r/vorteil/awsgo) | Executes an aws cli command using authentication provided by an access token. | [README](https://github.com/vorteil/direktiv-apps/tree/master/awscli) |
-
-
-## Utility
-
-| Image | Description | How To Use |
-| ------------- | ------------- | ---------- |
-| [vorteil/request](https://hub.docker.com/r/vorteil/request) | Sends a http request and returns the entire output. | [README](https://github.com/vorteil/direktiv-apps/tree/master/requester)|
-| [vorteil/twilio](https://hub.docker.com/r/vorteil/twilio) | Sends an email or a sms message. | [README](https://github.com/vorteil/direktiv-apps/tree/master/twilio) | 
-| [vorteil/tweet](https://hub.docker.com/r/vorteil/tweet) | Tweets a message out. | [README](https://github.com/vorteil/direktiv-apps/tree/master/twitter) |
-| [vorteil/store](https://hub.docker.com/r/vorteil/store) | Appends to a google spreadsheet. | [README](https://github.com/vorteil/direktiv-apps/tree/master/googlepusher) |
-| [vorteil/smtp](https://hub.docker.com/r/vorteil/smtp) | Creates a smtp client to send an email. | [README](https://github.com/vorteil/direktiv-apps/tree/master/smtp) |
-
-## Chat Applications
-
-| Image | Description | How To Use |
-| ------------- | ------------- | ---------- |
-| [vorteil/discordmsg](https://hub.docker.com/r/vorteil/discordmsg) | Sends a message to a discord channel from the provided webhook url. | [README](https://github.com/vorteil/direktiv-apps/tree/master/discord)|
-| [vorteil/googlemsg](https://hub.docker.com/r/vorteil/googlemsg) | Sends a message to a google chat channel from the provided webhook url. | [README](https://github.com/vorteil/direktiv-apps/tree/master/googlechat) |
-| [vorteil/slackmsg](https://hub.docker.com/r/vorteil/slackmsg) | Sends a message to a slack chat channel from the provided webhook url. | [README](https://github.com/vorteil/direktiv-apps/tree/master/slack) |
-
-
-## AI
-
-| Image | Description | How To Use |
-| ------------- | ------------- | ---------- |
-| [vorteil/imagerecognition](https://hub.docker.com/r/vorteil/imagerecognition) | Using the google vision api it will read an image URL and return whether it is safe for work. | [README](https://github.com/vorteil/direktiv-apps/tree/master/image-recognition)
-
-
-## Databases
-
-| Image | Description | How To Use |
-| ------------- | ------------- | ---------- |
-| [vorteil/simplepostgresclient](https://hub.docker.com/r/vorteil/simplepostgresclient) | Connects to a postgres database and allows simple sql commands. | [README](https://github.com/vorteil/direktiv-apps/tree/master/simple-postgres-client)
-| [vorteil/influxdb](https://hub.docker.com/r/vorteil/influxdb) | Connects to an InfluxDB service to write or list data | [README](https://github.com/vorteil/direktiv-apps/tree/master/influxdb)|
-
-## General Demos
-
-| Image | Description | How To Use |
-| ------------- | ------------- | ---------- |
-| [vorteil/solve](https://hub.docker.com/r/vorteil/solve) | Solves an array of expressions and returns the answers. | [README](https://github.com/vorteil/direktiv-apps/tree/master/solver) |
-| [vorteil/greeting](https://hub.docker.com/r/vorteil/greeting) | Returns a message to greet you | [README](https://github.com/vorteil/direktiv-apps/tree/master/greeter) |
