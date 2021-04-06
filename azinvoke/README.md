@@ -1,3 +1,10 @@
++++
+{
+  "image": "vorteil/azinvoke",
+  "desc": "Executes a cloud function on azure using the function name, function app and function key as authentication to do so."
+}
++++
+
 # AzureInvoke
 
 Executes a cloud function on azure using the function name, function app and function key as authentication to do so. 

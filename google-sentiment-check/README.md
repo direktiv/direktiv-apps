@@ -1,3 +1,10 @@
++++
+{
+  "image": "vorteil/google-sentiment-check",
+  "desc": "Reads a string and tells you the sentiment of the written text."
+}
++++
+
 # Google Sentiment Check
 
 Reads a string and tells you the sentiment of the written text.

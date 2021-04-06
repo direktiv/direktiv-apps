@@ -1,3 +1,10 @@
++++
+{
+  "image": "vorteil/awsgo",
+  "desc": "Executes any cli command with aws using a golang wrapper to provide the authentication before executing."
+}
++++
+
 # Awscli
 
 Executes any cli command with aws using a golang wrapper to provide the authentication before executing.

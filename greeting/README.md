@@ -1,3 +1,10 @@
++++
+{
+  "image": "vorteil/greeting",
+  "desc": "Outputs a greeting"
+}
++++
+
 # Greeting
 
 Outputs a greeting

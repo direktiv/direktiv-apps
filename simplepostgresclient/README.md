@@ -1,3 +1,9 @@
++++
+{
+  "image": "vorteil/simplepostgresclient",
+  "desc": "Perform simple interactions on a PostgreSQL database. "
+}
++++
 # Simple Postgres Client
 
 Perform simple interactions on a PostgreSQL database. 

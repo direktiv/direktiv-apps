@@ -1,3 +1,9 @@
++++
+{
+  "image": "vorteil/imagerecognition",
+  "desc": "Checks an image to see if it is safe for work and responds with content is likely to be racy, adult or violence themed."
+}
++++
 # ImageRecognition
 
 Checks an image to see if it is safe for work and responds with content is likely to be racy, adult or violence themed.
@@ -10,7 +16,7 @@ An example workflow of using the container on Direktiv.
 id: check-image
 functions:
 - id: check
-  image: vorteil/checkimage
+  image: vorteil/imagerecognition
 description: "Evaluates an image using Google Vision API"
 states:
 - id: checkImage

@@ -1,3 +1,10 @@
++++
+{
+  "image": "vorteil/azlog",
+  "desc": "Writes a log line to Azure Log Analytics Workspace."
+}
++++
+
 # AzureLog
 
 Writes a log line to Azure Log Analytics Workspace.

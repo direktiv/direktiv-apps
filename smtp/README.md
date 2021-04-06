@@ -1,5 +1,11 @@
-# SMTP
++++
+{
+  "image": "vorteil/smtp",
+  "desc": "A simple smtp client to send an email"
+}
++++
 
+# SMTP
 
 ## Direktiv
 An example workflow of using the container in a workflow on Direktiv.

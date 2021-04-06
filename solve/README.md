@@ -1,3 +1,10 @@
++++
+{
+  "image": "vorteil/solve",
+  "desc": "Solves math expressions"
+}
++++
+
 ## Solve
 
 Solves math expressions using the [Knetiv/govaluate](https://github.com/Knetic/govaluate) Golang package. 
