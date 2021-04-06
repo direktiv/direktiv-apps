@@ -7,7 +7,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run cli to generate markdown
       run : |
-        cd cli && SHA=$(echo ${GITHUB_SHA} | cut -c1-8) go run main.go
+        cd cli && GITHUB_SHA=${GITHUB_SHA} SHA=$(echo ${GITHUB_SHA} | cut -c1-8) go run main.go
         cd ../ && rm readme.md
         cp /tmp/newreadme.md readme.md
     - name: Commit & Push Changes

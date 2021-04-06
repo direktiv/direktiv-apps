@@ -60,7 +60,7 @@ func main() {
 
 Simple Containers that run on Direktiv
 
-<em>Generated from '%s'</em>
+<em>created by [%s](https://github.com/vorteil/direktiv-apps/tree/%s)</em>
 
 
 ## Containers
@@ -68,7 +68,7 @@ Simple Containers that run on Direktiv
 | Image | Description | How to Use |
 | ----- | ----------- | ---------- |
 %s
-`, os.Getenv("SHA"), addImages)
+`, os.Getenv("SHA"), os.Getenv("GITHUB_SHA"), addImages)
 
 	fmt.Printf("%s", readme)
 
