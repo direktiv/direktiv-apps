@@ -18,4 +18,5 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: run singular
       run: |
+        make dependencies
         make build-singular VERSION=${{ github.event.inputs.tags }} CONTAINER=${{ github.event.inputs.container }}
