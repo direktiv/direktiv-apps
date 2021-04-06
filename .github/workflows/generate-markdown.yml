@@ -5,9 +5,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: benjlevesque/short-sha@v1.2
+      id: short-sha
+      with:
+        length: 6
+    - run: echo $SHA
+      env: 
+        SHA: ${{ steps.short-sha.outputs.sha }}
+    - run: echo $SHA
+      env: 
+        SHA: ${{ env.SHA }}
     - name: Run cli to generate markdown
       run : |
-        cd cli && go run main.go
+        cd cli && SHA=${{ env.SHA }} go run main.go
         cd ../ && rm readme.md
         cp /tmp/newreadme.md readme.md
     - name: Commit & Push Changes

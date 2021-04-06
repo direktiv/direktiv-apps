@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	"github.com/gernest/front"
@@ -56,7 +57,7 @@ func main() {
 	}
 
 	readme := fmt.Sprintf(`# Direktiv Apps
-<em>Generated on commit</em>
+<em>Generated markdown from %s</em>
 
 Simple Containers that run on Direktiv
 
@@ -65,7 +66,7 @@ Simple Containers that run on Direktiv
 | Image | Description | How to Use |
 | ----- | ----------- | ---------- |
 %s
-`, addImages)
+`, addImages, os.Getenv("SHA"))
 
 	fmt.Printf("%s", readme)
 
