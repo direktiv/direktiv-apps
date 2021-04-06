@@ -9,7 +9,7 @@ jobs:
     - name: Run cli to generate markdown
       run : |
         cd cli && go run main.go
-        rm readme.md
+        cd ../ && rm readme.md
         cp /tmp/newreadme.md readme.md
     - name: Commit & Push Changes
       uses: actions-js/push@master
