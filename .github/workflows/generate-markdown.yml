@@ -1,6 +1,5 @@
 name: generate-markdown
-on: 
-  workflow_dispatch:
+on: push
 jobs:
   publish:
     runs-on: ubuntu-latest
