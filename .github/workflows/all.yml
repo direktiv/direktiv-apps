@@ -16,4 +16,5 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: run all
       run: |
+        make dependencies
         make all VERSION=${{ github.event.inputs.tags }}

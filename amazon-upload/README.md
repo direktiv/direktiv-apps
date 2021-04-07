@@ -1,3 +1,10 @@
+---
+{
+  "image": "vorteil/amazon-upload",
+  "desc": "Uploads a base64 encoded string to a blob on Amazon."
+}
+---
+
 # Amazon Upload
 
 Uploads a base64 encoded string to a blob on Amazon.

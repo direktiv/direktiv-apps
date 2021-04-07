@@ -1,3 +1,10 @@
+---
+{
+  "image": "vorteil/azure-servicebus",
+  "desc": "Writes a message to Azure's Servicebus"
+}
+---
+
 # Azure Servicebus
 
 Writes a message to Azure's Servicebus

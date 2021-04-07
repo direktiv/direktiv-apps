@@ -1,3 +1,10 @@
+---
+{
+  "image": "vorteil/store",
+  "desc": "Add a row to a 'Google Sheets' spreadsheet."
+}
+---
+
 # Store
 
 Add a row to a 'Google Sheets' spreadsheet.

@@ -1,3 +1,11 @@
+---
+{
+  "image": "vorteil/gcloud",
+  "desc": "Executes a gcloud cli command using a golang wrapper to provide authentication via service account key file."
+}
+---
+
+
 # Googlecli
 
 Executes a gcloud cli command using a golang wrapper to provide authentication via service account key file.

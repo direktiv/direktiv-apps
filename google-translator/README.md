@@ -1,3 +1,10 @@
+---
+{
+  "image": "vorteil/google-translator",
+  "desc": "Reads a string and converts it to the targeted language."
+}
+---
+
 # Google Translator
 
 Reads a string and converts it to the targeted language.
