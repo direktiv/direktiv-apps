@@ -2,7 +2,7 @@
 
 Simple Containers that run on Direktiv
 
-<em>created by [15aa8990](https://github.com/vorteil/direktiv-apps/tree/15aa8990cb5f0ccf0373f48bdc684a9f132a5180)</em>
+<em>created by [fda0b3c4](https://github.com/vorteil/direktiv-apps/tree/fda0b3c4359ce1849aaca9fad8d845508865885e)</em>
 
 
 ## Containers
@@ -11,6 +11,7 @@ Simple Containers that run on Direktiv
 | ----- | ----------- | ---------- |
 | [vorteil/amazon-sns](https://hub.docker.com/r/vorteil/amazon-sns) | Writes a message to Amazon's Simple Notification Service | [README](https://github.com/vorteil/direktiv-apps/tree/master/amazon-sns) |
 | [vorteil/amazon-upload](https://hub.docker.com/r/vorteil/amazon-upload) | Uploads a base64 encoded string to a blob on Amazon. | [README](https://github.com/vorteil/direktiv-apps/tree/master/amazon-upload) |
+| [vorteil/awsgo](https://hub.docker.com/r/vorteil/aws-ec2-run) | Run an amazon ec2 instance on aws. | [README](https://github.com/vorteil/direktiv-apps/tree/master/aws-ec2-run) |
 | [vorteil/awsgo](https://hub.docker.com/r/vorteil/awsgo) | Executes any cli command with aws using a golang wrapper to provide the authentication before executing. | [README](https://github.com/vorteil/direktiv-apps/tree/master/awsgo) |
 | [vorteil/awslog](https://hub.docker.com/r/vorteil/awslog) | Writes a log line to aws cloudwatch logs with provided log stream and group. | [README](https://github.com/vorteil/direktiv-apps/tree/master/awslog) |
 | [vorteil/azgo](https://hub.docker.com/r/vorteil/azgo) | Executes any azure cli command using a golang wrapper to provide the authentication before executing. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azgo) |
@@ -39,6 +40,7 @@ Simple Containers that run on Direktiv
 | [vorteil/kafka](https://hub.docker.com/r/vorteil/kafka) | Writes a message to a Kafka service | [README](https://github.com/vorteil/direktiv-apps/tree/master/kafka) |
 | [vorteil/lambda](https://hub.docker.com/r/vorteil/lambda) | Executes a cloud function on aws using their golang SDK. | [README](https://github.com/vorteil/direktiv-apps/tree/master/lambda) |
 | [vorteil/rabbitmq](https://hub.docker.com/r/vorteil/rabbitmq) | Writes a message to the RabbitMQ Service | [README](https://github.com/vorteil/direktiv-apps/tree/master/rabbitmq) |
+| [vorteil/redis](https://hub.docker.com/r/vorteil/redis) | Sets and gets on a redis memory store. | [README](https://github.com/vorteil/direktiv-apps/tree/master/redis) |
 | [vorteil/request](https://hub.docker.com/r/vorteil/request) | Perform a basic HTTP/S request. | [README](https://github.com/vorteil/direktiv-apps/tree/master/request) |
 | [vorteil/simplepostgresclient](https://hub.docker.com/r/vorteil/simplepostgresclient) | Perform simple interactions on a PostgreSQL database.  | [README](https://github.com/vorteil/direktiv-apps/tree/master/simplepostgresclient) |
 | [vorteil/slackmsg](https://hub.docker.com/r/vorteil/slackmsg) | Writes a message to a slack webhook url | [README](https://github.com/vorteil/direktiv-apps/tree/master/slackmsg) |
