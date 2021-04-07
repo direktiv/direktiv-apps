@@ -4,7 +4,7 @@
   "desc": "Starts a compute engine instance on google cloud."
 }
 ---
-# GCloud Instance Delete
+# GCloud Instance Start
 
 Start a google cloud compute instance using googe apis and a simple golang app to provide authentication via service account key file.
 
@@ -20,7 +20,7 @@ functions:
   image: vorteil/gcloud-instance-start:v1
   size: medium
 states:
-- id: deleteInstance
+- id: startInstance
   type: action
   action:
     function: gcpStartInstance

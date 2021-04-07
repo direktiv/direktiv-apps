@@ -4,7 +4,7 @@
   "desc": "Stop a compute engine instance on google cloud."
 }
 ---
-# GCloud Instance Delete
+# GCloud Instance Stop
 
 Stop a google cloud compute instance using googe apis and a simple golang app to provide authentication via service account key file.
 
@@ -20,7 +20,7 @@ functions:
   image: vorteil/gcloud-instance-stop:v1
   size: medium
 states:
-- id: deleteInstance
+- id: stopInstance
   type: action
   action:
     function: gcpStopInstance
