@@ -1,29 +1,30 @@
 ---
 {
-  "image": "vorteil/gcloud-instance-delete",
-  "desc": "Delete a compute engine instance on google cloud."
+  "image": "vorteil/gcloud-instance-stop",
+  "desc": "Stop a compute engine instance on google cloud."
 }
 ---
-# GCloud Instance Delete
+# GCloud Instance Stop
 
-Delete a google cloud compute instance using googe apis and a simple golang app to provide authentication via service account key file.
+Stop a google cloud compute instance using googe apis and a simple golang app to provide authentication via service account key file.
 
 ## Direktiv
 
-An example workflow that deletes an example instance named `example-instance-name` in the `us-central1-a` zone.
+An example workflow that stops an example instance named `example-instance-name` in the `us-central1-a` zone.
 
 ```yaml
-id: gcloud-delete-compute-instance
-description: "Deletes a gcp project instance"
+id: gcloud-stop-compute-instance
+description: "Stop a gcp project instance"
 functions:
-- id: gcpDeleteInstance
-  image: vorteil/gcloud-instance-delete:v1
+- id: gcpStopInstance
+  image: vorteil/gcloud-instance-stop:v1
   size: medium
 states:
-- id: deleteInstance
+- id: stopInstance
   type: action
   action:
-    function: gcpDeleteInstance
+    function: gcpStopInstance
+    secrets: ["GCP_SERVICE_ACCOUNT_KEY"]
     input: .
 ```
 
@@ -55,7 +56,7 @@ In the case that an error is encountered, it will present in the following forma
 
 ```json
 {
-    "errorCode": "com.gcloud-instance-delete.error",
+    "errorCode": "com.gcloud-instance-stop.error",
     "errorMsg": "Something went wrong"
 }
 ```
