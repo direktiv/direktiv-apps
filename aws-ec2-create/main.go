@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"reflect"
 	"text/template"
 
 	"bytes"
@@ -18,9 +19,9 @@ type InputInstanceDetails struct {
 	// Auth
 	Key    string `json:"access-key" validate:"required"`
 	Secret string `json:"access-secret" validate:"required"`
-	Region string `json:"region" validate:"required"`
 
 	// Required
+	Region       string `json:"region" validate:"required"`
 	ImageID      string `json:"image-id" validate:"required"`
 	InstanceType string `json:"instance-type" validate:"required"`
 
@@ -55,19 +56,28 @@ func main() {
 	obj := new(InputInstanceDetails)
 	direktivapps.ReadIn(obj, g)
 
-	// Validate Input
+	// Create Validator
 	v := validator.New()
-	errArr := v.Struct(obj)
-	if errArr != nil {
-		for _, e := range errArr.(validator.ValidationErrors) {
-			if fe, ok := e.(validator.FieldError); ok {
-				log.Printf("Input Error: %s is %s\n", fe.Field(), fe.Tag())
-			} else {
-				log.Println(e)
-			}
+	v.RegisterTagNameFunc(func(fld reflect.StructField) string {
+		name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
+
+		if name == "-" {
+			return ""
 		}
 
-		g.ErrorMessage = "Invalid input"
+		return name
+	})
+
+	// Validate Input
+	errArr := v.Struct(obj)
+	if errArr != nil {
+		invalidFields := make([]string, 0)
+		for _, e := range errArr.(validator.ValidationErrors) {
+			log.Printf("Input Error: %s is %s\n", e.Field(), e.Tag())
+			invalidFields = append(invalidFields, e.Field())
+		}
+
+		g.ErrorMessage = fmt.Sprintf("Invalid input: Fields [%s] are required", strings.Join(invalidFields, ","))
 		direktivapps.WriteError(g)
 	}
 
