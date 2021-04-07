@@ -3,7 +3,7 @@ FROM golang:1.15-buster as build
 WORKDIR /go/src/app
 ADD . /go/src/app
 RUN go get -d -v 
-RUN CGO_ENABLED=0 go build -o /aws-ec2-run -ldflags="-s -w" main.go
+RUN CGO_ENABLED=0 go build -o /aws-ec2-create -ldflags="-s -w" main.go
 
 FROM alpine:3.9
 RUN \
@@ -16,6 +16,6 @@ RUN \
   python3 -m pip --no-cache-dir install awscli && \
   apk del --purge build
 
-COPY --from=build /aws-ec2-run /
+COPY --from=build /aws-ec2-create /
 
-CMD ["/aws-ec2-run"]
+CMD ["/aws-ec2-create"]

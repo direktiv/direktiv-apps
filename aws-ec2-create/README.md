@@ -1,30 +1,30 @@
 ---
 {
-  "image": "vorteil/awsgo",
-  "desc": "Run an amazon ec2 instance on aws."
+  "image": "vorteil/aws-ec2-create",
+  "desc": "Creates an amazon ec2 instance on aws."
 }
 ---
 
-# AWS EC2 Run Instance
+# AWS EC2 Create Instance
 
-Run a new amazon ec2 instance using the aws cli and a simple golang app to provide the authentication before executing.
+Create a new amazon ec2 instance using the aws cli and a simple golang app to provide the authentication before executing.
 
 ## Direktiv
 
-An example workflow that run an example instance named `example-instance-name`.
+An example workflow that creates an example instance named `example-instance-name`.
 
 ```yaml
-id: aws-run-ec2-instance
-description: "Run a new ec2 instance"
+id: aws-create-ec2-instance
+description: "Create a new ec2 instance"
 functions:
-- id: awsRunInstance
-  image: vorteil/aws-ec2-run:v1
+- id: awsCreateInstance
+  image: vorteil/aws-ec2-create:v1
   size: medium
 states:
-- id: runInstance
+- id: createInstance
   type: action
   action:
-    function: awsRunInstance
+    function: awsCreateInstance
     input: .
 ```
 
@@ -62,7 +62,7 @@ In the case that an error is encountered, it will present in the following forma
 
 ```json
 {
-    "errorCode": "com.aws-ec2-run.error",
+    "errorCode": "com.aws-ec2-create.error",
     "errorMsg": "Something went wrong"
 }
 ```

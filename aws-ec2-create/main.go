@@ -47,7 +47,7 @@ const (
 
 func main() {
 	g := direktivapps.ActionError{
-		ErrorCode:    "com.aws-ec2-run.error",
+		ErrorCode:    "com.aws-ec2-create.error",
 		ErrorMessage: "",
 	}
 

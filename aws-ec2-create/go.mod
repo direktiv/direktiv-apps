@@ -1,4 +1,4 @@
-module github.com/vorteil/direktiv-apps/aws-ec2-run
+module github.com/vorteil/direktiv-apps/aws-ec2-create
 
 go 1.15
 
