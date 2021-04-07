@@ -2,7 +2,7 @@
 
 Simple Containers that run on Direktiv
 
-<em>created by [05581783](https://github.com/vorteil/direktiv-apps/tree/05581783ecf70b4afbba0d423202c96b0351640a)</em>
+<em>created by [4944070e](https://github.com/vorteil/direktiv-apps/tree/4944070e603d075dea1b4cd7396bd3c8c85b794b)</em>
 
 
 ## Containers
@@ -24,6 +24,8 @@ Simple Containers that run on Direktiv
 | [vorteil/gcloud](https://hub.docker.com/r/vorteil/gcloud) | Executes a gcloud cli command using a golang wrapper to provide authentication via service account key file. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud) |
 | [vorteil/gcloud-instance-create](https://hub.docker.com/r/vorteil/gcloud-instance-create) | Create a compute engine instance on google cloud. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud-instance-create) |
 | [vorteil/gcloud-instance-delete](https://hub.docker.com/r/vorteil/gcloud-instance-delete) | Delete a compute engine instance on google cloud. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud-instance-delete) |
+| [vorteil/gcloud-instance-start](https://hub.docker.com/r/vorteil/gcloud-instance-start) | Starts a compute engine instance on google cloud. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud-instance-start) |
+| [vorteil/gcloud-instance-stop](https://hub.docker.com/r/vorteil/gcloud-instance-stop) | Stop a compute engine instance on google cloud. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud-instance-stop) |
 | [vorteil/gcplog](https://hub.docker.com/r/vorteil/gcplog) | Writes a log line to a stackdriver logging implementation | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcplog) |
 | [vorteil/google-pubsub](https://hub.docker.com/r/vorteil/google-pubsub) | Writes a message to Google's Pubsub service. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-pubsub) |
 | [vorteil/google-sentiment-check](https://hub.docker.com/r/vorteil/google-sentiment-check) | Reads a string and tells you the sentiment of the written text. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-sentiment-check) |
