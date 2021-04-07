@@ -2,15 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/go-playground/validator"
 	"log"
 	"os"
 	"os/exec"
-	"reflect"
 	"text/template"
 
 	"bytes"
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/vorteil/direktiv-apps/pkg/validator"
 	"strings"
 )
 
@@ -56,28 +55,15 @@ func main() {
 	obj := new(InputInstanceDetails)
 	direktivapps.ReadIn(obj, g)
 
-	// Create Validator
-	v := validator.New()
-	v.RegisterTagNameFunc(func(fld reflect.StructField) string {
-		name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
-
-		if name == "-" {
-			return ""
-		}
-
-		return name
-	})
-
 	// Validate Input
-	errArr := v.Struct(obj)
-	if errArr != nil {
-		invalidFields := make([]string, 0)
-		for _, e := range errArr.(validator.ValidationErrors) {
-			log.Printf("Input Error: %s is %s\n", e.Field(), e.Tag())
-			invalidFields = append(invalidFields, e.Field())
+	v := validator.CreateValidator()
+
+	if missingFields := v.ValidateRequired(obj); len(missingFields) > 0 {
+		for _, mf := range missingFields {
+			log.Printf("Input Error: %s is required\n", mf)
 		}
 
-		g.ErrorMessage = fmt.Sprintf("Invalid input: Fields [%s] are required", strings.Join(invalidFields, ","))
+		g.ErrorMessage = fmt.Sprintf("Invalid input: Fields [%s] are required", strings.Join(missingFields, ","))
 		direktivapps.WriteError(g)
 	}
 

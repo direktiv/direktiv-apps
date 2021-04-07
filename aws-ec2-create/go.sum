@@ -12,6 +12,10 @@ github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/vorteil/direktiv-apps v0.0.0-20210407040033-8b5bd4028c2e h1:m8RDjawG+WIfCMeWqGYIuLJDJeHvh3u0ZesJWBgbXsU=
 github.com/vorteil/direktiv-apps v0.0.0-20210407040033-8b5bd4028c2e/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
+github.com/vorteil/direktiv-apps v0.0.0-20210407222821-a448c1a72c86 h1:jeelyv25y5ZwXdGWNYObtUKnrID2t9Ulva23Yl3/sek=
+github.com/vorteil/direktiv-apps v0.0.0-20210407222821-a448c1a72c86/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
+github.com/vorteil/direktiv-apps v0.0.0-20210407225944-09443177654f h1:BO5hbTfdU6rIJuy8N4wEqGrG+h5MovoFhs/DgXxMuqE=
+github.com/vorteil/direktiv-apps v0.0.0-20210407225944-09443177654f/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
 golang.org/x/text v0.3.2/go.mod h1:bEr9sfX3Q8Zfm5fL9x+3itogRgK3+ptLWKqgva+5dAk=
 golang.org/x/tools v0.0.0-20180917221912-90fa682c2a6e/go.mod h1:n7NCudcB/nEzxVGmLbDWY5pfWTLqBcC2KZ6jyYvM4mQ=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
