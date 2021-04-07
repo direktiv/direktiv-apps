@@ -1,4 +1,9 @@
-
+---
+{
+  "image": "vorteil/gcloud-instance-create",
+  "desc": "Create a compute engine instance on google cloud."
+}
+---
 # GCloud Instance Create
 
 Creates a new google cloud compute instance a golang wrapper to provide authentication via service account key file.
