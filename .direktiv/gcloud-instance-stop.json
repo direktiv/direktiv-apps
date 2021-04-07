@@ -1,0 +1,11 @@
+{
+    "id": "gcloud-instance-stop",
+    "desc": "Stop a compute engine instance on google cloud",
+    "image": "vorteil/gcloud-instance-stop",
+    "input": {
+            "project": "GCP_PROJECT",
+            "serviceAccountKey": "SERVICE_ACCOUNT_KEY",
+            "instanceID": "example-instance-name",
+            "zone": "us-central1-a"
+    }
+}
