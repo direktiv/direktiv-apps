@@ -41,7 +41,7 @@ The input needed to run the above workflow properly is the following:
 
 ## Output
 
-If the action is successful, the awsgo container shall respond with the comman execution.
+If the action is successful, the awsgo container shall respond with the command execution.
 
 ## Error
 
