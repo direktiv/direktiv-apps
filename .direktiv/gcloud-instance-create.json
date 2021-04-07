@@ -1,0 +1,13 @@
+{
+    "id": "gcloud-instance-create",
+    "desc": "Create a compute engine instance on google cloud",
+    "image": "vorteil/gcloud-instance-create",
+    "input": {
+            "project": "GCP_PROJECT",
+            "serviceAccountKey": "SERVICE_ACCOUNT_KEY",
+            "name": "example-instance-name",
+            "zone": "us-central1-a",
+            "machineType": "e2-medium",
+            "image": "example_image"
+    }
+}
