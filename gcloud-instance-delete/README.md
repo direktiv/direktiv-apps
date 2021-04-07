@@ -13,7 +13,7 @@ Delete a new google cloud compute instance using googe apis and a simple golang 
 An example workflow that deletes an example instance named `example-instance-name` in the `us-central1-a` zone.
 
 ```yaml
-id: gcloud-new-compute-instance
+id: gcloud-delete-compute-instance
 description: "Deletes a gcp project instance"
 functions:
 - id: gcpDeleteInstance
