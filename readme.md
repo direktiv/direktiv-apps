@@ -2,7 +2,7 @@
 
 Simple Containers that run on Direktiv
 
-<em>created by [2f2562be](https://github.com/vorteil/direktiv-apps/tree/2f2562be29f63bae7fe84936ed36f3adf7f5b4d1)</em>
+<em>created by [d6591d71](https://github.com/vorteil/direktiv-apps/tree/d6591d719365841ff39200762c208dcb0d63316b)</em>
 
 
 ## Containers
@@ -21,6 +21,7 @@ Simple Containers that run on Direktiv
 | [vorteil/debug](https://hub.docker.com/r/vorteil/debug) | Prints all the information that direktiv sends to the container | [README](https://github.com/vorteil/direktiv-apps/tree/master/debug) |
 | [vorteil/discordmsg](https://hub.docker.com/r/vorteil/discordmsg) | Writes a discord message to a webhook URL. | [README](https://github.com/vorteil/direktiv-apps/tree/master/discordmsg) |
 | [vorteil/gcloud](https://hub.docker.com/r/vorteil/gcloud) | Executes a gcloud cli command using a golang wrapper to provide authentication via service account key file. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud) |
+| [vorteil/gcloud-instance-create](https://hub.docker.com/r/vorteil/gcloud-instance-create) | Create a compute engine instance on google cloud. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud-instance-create) |
 | [vorteil/gcplog](https://hub.docker.com/r/vorteil/gcplog) | Writes a log line to a stackdriver logging implementation | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcplog) |
 | [vorteil/google-pubsub](https://hub.docker.com/r/vorteil/google-pubsub) | Writes a message to Google's Pubsub service. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-pubsub) |
 | [vorteil/google-sentiment-check](https://hub.docker.com/r/vorteil/google-sentiment-check) | Reads a string and tells you the sentiment of the written text. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-sentiment-check) |
