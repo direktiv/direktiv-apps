@@ -10,8 +10,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/go-playground/validator"
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/vorteil/direktiv-apps/pkg/validator"
 	"golang.org/x/oauth2/google"
 )
 
@@ -39,20 +39,14 @@ func main() {
 	direktivapps.ReadIn(obj, g)
 
 	// Validate Input
-	v := validator.New()
-	errArr := v.Struct(obj)
-	if errArr != nil {
-		invalidFields := make([]string, 0)
-		for _, e := range errArr.(validator.ValidationErrors) {
-			if fe, ok := e.(validator.FieldError); ok {
-				invalidFields = append(invalidFields, fe.Field())
-				log.Printf("Input Error: %s is %s\n", fe.Field(), fe.Tag())
-			} else {
-				log.Println(e)
-			}
+	v := validator.CreateValidator()
+
+	if missingFields := v.ValidateRequired(obj); len(missingFields) > 0 {
+		for _, mf := range missingFields {
+			log.Printf("Input Error: %s is required\n", mf)
 		}
 
-		g.ErrorMessage = fmt.Sprintf("Invalid input: Fields [%s] are required", strings.Join(invalidFields, ","))
+		g.ErrorMessage = fmt.Sprintf("Invalid input: Fields [%s] are required", strings.Join(missingFields, ","))
 		direktivapps.WriteError(g)
 	}
 

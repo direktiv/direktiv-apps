@@ -119,6 +119,9 @@ github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81P
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/vorteil/direktiv-apps v0.0.0-20210406032036-95b516bd3923 h1:QUZ0/k3BxjOWvxGIPJKBLMK5NDHTidYE+dzzcfAIcv4=
 github.com/vorteil/direktiv-apps v0.0.0-20210406032036-95b516bd3923/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
+github.com/vorteil/direktiv-apps v0.0.0-20210407222821-a448c1a72c86 h1:jeelyv25y5ZwXdGWNYObtUKnrID2t9Ulva23Yl3/sek=
+github.com/vorteil/direktiv-apps v0.0.0-20210407230451-86916195aa65 h1:6SqLO78Sy8B/dXPZqA9RphHQC9b0dYCyS22rGPPqJxI=
+github.com/vorteil/direktiv-apps v0.0.0-20210407230451-86916195aa65/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
