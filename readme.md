@@ -2,7 +2,7 @@
 
 Simple Containers that run on Direktiv
 
-<em>created by [15aa8990](https://github.com/vorteil/direktiv-apps/tree/15aa8990cb5f0ccf0373f48bdc684a9f132a5180)</em>
+<em>created by [c00e8bc9](https://github.com/vorteil/direktiv-apps/tree/c00e8bc9ef763c7d452b6d57e31390c3aefccf61)</em>
 
 
 ## Containers
@@ -11,6 +11,7 @@ Simple Containers that run on Direktiv
 | ----- | ----------- | ---------- |
 | [vorteil/amazon-sns](https://hub.docker.com/r/vorteil/amazon-sns) | Writes a message to Amazon's Simple Notification Service | [README](https://github.com/vorteil/direktiv-apps/tree/master/amazon-sns) |
 | [vorteil/amazon-upload](https://hub.docker.com/r/vorteil/amazon-upload) | Uploads a base64 encoded string to a blob on Amazon. | [README](https://github.com/vorteil/direktiv-apps/tree/master/amazon-upload) |
+| [vorteil/awsgo](https://hub.docker.com/r/vorteil/aws-ec2-run) | Run an amazon ec2 instance on aws. | [README](https://github.com/vorteil/direktiv-apps/tree/master/aws-ec2-run) |
 | [vorteil/awsgo](https://hub.docker.com/r/vorteil/awsgo) | Executes any cli command with aws using a golang wrapper to provide the authentication before executing. | [README](https://github.com/vorteil/direktiv-apps/tree/master/awsgo) |
 | [vorteil/awslog](https://hub.docker.com/r/vorteil/awslog) | Writes a log line to aws cloudwatch logs with provided log stream and group. | [README](https://github.com/vorteil/direktiv-apps/tree/master/awslog) |
 | [vorteil/azgo](https://hub.docker.com/r/vorteil/azgo) | Executes any azure cli command using a golang wrapper to provide the authentication before executing. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azgo) |
