@@ -1,0 +1,11 @@
+{
+    "id": "gcloud-instance-delete",
+    "desc": "Delete a compute engine instance on google cloud",
+    "image": "vorteil/gcloud-instance-delete",
+    "input": {
+            "project": "GCP_PROJECT",
+            "serviceAccountKey": "SERVICE_ACCOUNT_KEY",
+            "instanceID": "example-instance-name",
+            "zone": "us-central1-a"
+    }
+}

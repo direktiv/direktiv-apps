@@ -6,7 +6,7 @@
 ---
 # GCloud Instance Create
 
-Creates a new google cloud compute instance a golang wrapper to provide authentication via service account key file.
+Creates a new google cloud compute instance using google apis and a simple golang app to provide authentication via service account key file.
 
 ## Direktiv
 
@@ -63,6 +63,26 @@ There are additional fields that can be also used in the input for more control 
 ## Output
 The output will be in JSON format if successful, otherwise an error will be outputed to the logs.
 
+Below is an example output of a successful instance creations with sensitive information removed:
+```json
+{
+  "return": {
+    "id": "**********************",
+    "insertTime": "2021-04-06T17:36:11.511-07:00",
+    "kind": "compute#operation",
+    "name": "**************************************",
+    "operationType": "insert",
+    "progress": 0,
+    "selfLink": "https://www.googleapis.com/compute/v1/projects/****/zones/us-central1-a/operations/******************************",
+    "startTime": "2021-04-06T17:36:11.513-07:00",
+    "status": "RUNNING",
+    "targetId": "**************************",
+    "targetLink": "https://www.googleapis.com/compute/v1/projects/****/zones/us-central1-a/instances/********************",
+    "user": "********************************************",
+    "zone": "https://www.googleapis.com/compute/v1/projects/****/zones/us-central1-a"
+  }
+}
+```
 
 ## Error 
 
