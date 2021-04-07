@@ -73,7 +73,7 @@ const (
 		"networkInterfaces": [
 		  {
 			"kind": "compute#networkInterface",
-			"subnetwork": "projects/direktiv/regions/{{ .Region}}/subnetworks/default",
+			"subnetwork": "projects/{{ .Project}}/regions/{{ .Region}}/subnetworks/default",
 			{{if .ExternalIP}} "accessConfigs": [
 				{
 				  "kind": "compute#accessConfig",
