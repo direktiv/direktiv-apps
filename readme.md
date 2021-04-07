@@ -2,7 +2,7 @@
 
 Simple Containers that run on Direktiv
 
-<em>created by [102272c7](https://github.com/vorteil/direktiv-apps/tree/102272c7a8425fdc8f14475943fdb66bf5f76b19)</em>
+<em>created by [940ab10a](https://github.com/vorteil/direktiv-apps/tree/940ab10a8953238b10e38e563c7c9b1fdd17e2e0)</em>
 
 
 ## Containers
@@ -20,6 +20,7 @@ Simple Containers that run on Direktiv
 | [vorteil/azure-upload](https://hub.docker.com/r/vorteil/azure-upload) | Uploads a base64 encoded string to a blob on Azure. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azure-upload) |
 | [vorteil/debug](https://hub.docker.com/r/vorteil/debug) | Prints all the information that direktiv sends to the container | [README](https://github.com/vorteil/direktiv-apps/tree/master/debug) |
 | [vorteil/discordmsg](https://hub.docker.com/r/vorteil/discordmsg) | Writes a discord message to a webhook URL. | [README](https://github.com/vorteil/direktiv-apps/tree/master/discordmsg) |
+| [vorteil/elasticsearch](https://hub.docker.com/r/vorteil/elasticsearch) | Writes a new JSON document to an index or queries an index in its entirety. | [README](https://github.com/vorteil/direktiv-apps/tree/master/elasticsearch) |
 | [vorteil/gcloud](https://hub.docker.com/r/vorteil/gcloud) | Executes a gcloud cli command using a golang wrapper to provide authentication via service account key file. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud) |
 | [vorteil/gcloud-instance-create](https://hub.docker.com/r/vorteil/gcloud-instance-create) | Create a compute engine instance on google cloud. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud-instance-create) |
 | [vorteil/gcloud-instance-delete](https://hub.docker.com/r/vorteil/gcloud-instance-delete) | Delete a compute engine instance on google cloud. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud-instance-delete) |
@@ -33,7 +34,9 @@ Simple Containers that run on Direktiv
 | [vorteil/greeting](https://hub.docker.com/r/vorteil/greeting) | Outputs a greeting | [README](https://github.com/vorteil/direktiv-apps/tree/master/greeting) |
 | [vorteil/imagerecognition](https://hub.docker.com/r/vorteil/imagerecognition) | Checks an image to see if it is safe for work and responds with content is likely to be racy, adult or violence themed. | [README](https://github.com/vorteil/direktiv-apps/tree/master/imagerecognition) |
 | [vorteil/influxdb](https://hub.docker.com/r/vorteil/influxdb) | A container that provides the opportunities to write or query data on an InfluxDB instance. | [README](https://github.com/vorteil/direktiv-apps/tree/master/influxdb) |
+| [vorteil/kafka](https://hub.docker.com/r/vorteil/kafka) | Writes a message to a Kafka service | [README](https://github.com/vorteil/direktiv-apps/tree/master/kafka) |
 | [vorteil/lambda](https://hub.docker.com/r/vorteil/lambda) | Executes a cloud function on aws using their golang SDK. | [README](https://github.com/vorteil/direktiv-apps/tree/master/lambda) |
+| [vorteil/rabbitmq](https://hub.docker.com/r/vorteil/rabbitmq) | Writes a message to the RabbitMQ Service | [README](https://github.com/vorteil/direktiv-apps/tree/master/rabbitmq) |
 | [vorteil/request](https://hub.docker.com/r/vorteil/request) | Perform a basic HTTP/S request. | [README](https://github.com/vorteil/direktiv-apps/tree/master/request) |
 | [vorteil/simplepostgresclient](https://hub.docker.com/r/vorteil/simplepostgresclient) | Perform simple interactions on a PostgreSQL database.  | [README](https://github.com/vorteil/direktiv-apps/tree/master/simplepostgresclient) |
 | [vorteil/slackmsg](https://hub.docker.com/r/vorteil/slackmsg) | Writes a message to a slack webhook url | [README](https://github.com/vorteil/direktiv-apps/tree/master/slackmsg) |
