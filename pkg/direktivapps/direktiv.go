@@ -37,6 +37,12 @@ const outPath = "/direktiv-data/data.out"
 const dataInPath = "/direktiv-data/data.in"
 const errorPath = "/direktiv-data/error.json"
 
+// Respond with error
+func RespondWithError(w http.ResponseWriter, code string, err string) {
+	w.Header().Set(DirektivErrorCodeHeader, code)
+	w.Header().Set(DirektivErrorMessageHeader, err)
+}
+
 // Respond writes out to the responsewriter the json marshalled data
 func Respond(w http.ResponseWriter, data []byte) {
 	w.Write(data)

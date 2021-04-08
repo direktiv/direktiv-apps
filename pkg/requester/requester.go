@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 )
@@ -27,7 +26,7 @@ type Request struct {
 }
 
 // Create initializes the http client
-func (m *Manager) Create() error {
+func (m *Manager) Create(aid string) error {
 	var err error
 
 	// Generate the body from the interface provided
@@ -39,7 +38,7 @@ func (m *Manager) Create() error {
 			return err
 		}
 		if m.Request.Debug {
-			log.Printf("Body provided: %s", b)
+			direktivapps.Log(aid, fmt.Sprintf("Body Provided: %s", b))
 		}
 	}
 
@@ -47,7 +46,7 @@ func (m *Manager) Create() error {
 	m.client = &http.Client{}
 
 	if m.Request.Debug {
-		log.Printf("Method: %s, Sending to %s", m.Request.Method, m.Request.URL)
+		direktivapps.Log(aid, fmt.Sprintf("Method: %s, Sending to %s", m.Request.Method, m.Request.URL))
 	}
 
 	m.req, err = http.NewRequest(m.Request.Method, m.Request.URL, bytes.NewReader(b))
@@ -68,7 +67,7 @@ func (m *Manager) Create() error {
 			actualVal = t
 		}
 		if m.Request.Debug {
-			log.Printf("Adding %s=%s", k, actualVal)
+			direktivapps.Log(aid, fmt.Sprintf("Adding %s=%s", k, actualVal))
 		}
 		// Adding a header requires it to be a string so might as well sprintf
 		m.req.Header.Add(k, actualVal)
@@ -78,7 +77,7 @@ func (m *Manager) Create() error {
 }
 
 // Send sends the http request to provided host and responds
-func (m *Manager) Send() ([]byte, error) {
+func (m *Manager) Send(aid string) ([]byte, error) {
 
 	// Perform the request with the client we're using
 	resp, err := m.client.Do(m.req)
@@ -93,7 +92,7 @@ func (m *Manager) Send() ([]byte, error) {
 	}
 
 	if m.Request.Debug {
-		log.Printf("Response body: %s", body)
+		direktivapps.Log(aid, fmt.Sprintf("Response body: %s", body))
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
