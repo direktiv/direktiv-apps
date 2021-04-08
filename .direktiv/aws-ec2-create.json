@@ -1,0 +1,12 @@
+{
+    "id": "aws-ec2-create",
+    "desc": "Creates an amazon ec2 instance on aws.",
+    "image": "vorteil/aws-ec2-create",
+    "input": {
+            "access-key": "AWS_ACCESS_KEY",
+            "access-secret": "AWS_ACCESS_SECRET",
+            "image-id": "ami-0abcdef1234567890",
+            "region": "us-east-1",
+            "instance-type": "t2.micro"
+    }
+}

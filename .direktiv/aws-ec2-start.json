@@ -1,0 +1,11 @@
+{
+    "id": "aws-ec2-start",
+    "desc": "Start a amazon ec2 instance.",
+    "image": "vorteil/aws-ec2-start",
+    "input": {
+            "access-key": "AWS_ACCESS_KEY",
+            "access-secret": "AWS_ACCESS_SECRET",
+            "region": "us-east-1",
+            "instance-id": "i-090dd9255a7aaa582"
+    }
+}

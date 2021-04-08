@@ -24,6 +24,7 @@ states:
 - id: startInstance
   type: action
   action:
+    secrets: ["ACCESS_KEY", "ACCESS_SECRET"]
     function: awsStartInstance
     input: .
 ```
@@ -44,6 +45,27 @@ The input needed to run the above workflow properly is the following:
 ## Output
 
 The output will be in JSON format if successful, otherwise an error will be outputed to the logs.
+
+Below is an example output of a successful start:
+```json
+{
+  "return": {
+    "StartingInstances": [
+      {
+        "CurrentState": {
+          "Code": 0,
+          "Name": "pending"
+        },
+        "InstanceId": "i-090dd9255a7aaa582",
+        "PreviousState": {
+          "Code": 80,
+          "Name": "stopped"
+        }
+      }
+    ]
+  }
+}
+```
 
 ## Error
 

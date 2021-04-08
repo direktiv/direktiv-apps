@@ -24,6 +24,7 @@ states:
 - id: createInstance
   type: action
   action:
+    secrets: ["ACCESS_KEY", "ACCESS_SECRET"]
     function: awsCreateInstance
     input: .
 ```

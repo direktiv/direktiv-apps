@@ -24,6 +24,7 @@ states:
 - id: deleteInstance
   type: action
   action:
+    secrets: ["ACCESS_KEY", "ACCESS_SECRET"]
     function: awsDeleteInstance
     input: .
 ```

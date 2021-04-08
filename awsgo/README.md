@@ -23,6 +23,7 @@ states:
 - id: listAccountSummary
   type: action
   action:
+    secrets: ["ACCESS_KEY", "ACCESS_SECRET"]
     function: post
     input: .
 ```
@@ -36,6 +37,17 @@ The input needed to run the above workflow properly is the following:
     "access-key": .secrets.ACCESS_KEY,
     "access-secret": .secrets.ACCESS_SECRET,
     "command": ["iam", "get-account-summary"]
+}
+```
+
+### Input - Optional Field
+
+Additionally you can input the field `region` if the inputted command requires a region.
+
+```json
+{
+    ...
+    "region": "ap-southeast-2"
 }
 ```
 
