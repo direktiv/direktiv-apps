@@ -2,7 +2,7 @@
 
 Simple Containers that run on Direktiv
 
-<em>created by [e98ceddc](https://github.com/vorteil/direktiv-apps/tree/e98ceddc2445d8f6f64d8d3185f8ec3da4b2c630)</em>
+<em>created by [468c3e0f](https://github.com/vorteil/direktiv-apps/tree/468c3e0f5ab5188a1b7f0c7fd6c6a58788e3fac6)</em>
 
 
 ## Containers
@@ -14,6 +14,7 @@ Simple Containers that run on Direktiv
 | [vorteil/aws-ec2-create](https://hub.docker.com/r/vorteil/aws-ec2-create) | Creates an amazon ec2 instance on aws. | [README](https://github.com/vorteil/direktiv-apps/tree/master/aws-ec2-create) |
 | [vorteil/aws-ec2-delete](https://hub.docker.com/r/vorteil/aws-ec2-delete) | Delete a amazon ec2 instance. | [README](https://github.com/vorteil/direktiv-apps/tree/master/aws-ec2-delete) |
 | [vorteil/aws-ec2-start](https://hub.docker.com/r/vorteil/aws-ec2-start) | Start a amazon ec2 instance. | [README](https://github.com/vorteil/direktiv-apps/tree/master/aws-ec2-start) |
+| [vorteil/aws-ec2-stop](https://hub.docker.com/r/vorteil/aws-ec2-stop) | Stops a amazon ec2 instance. | [README](https://github.com/vorteil/direktiv-apps/tree/master/aws-ec2-stop) |
 | [vorteil/awsgo](https://hub.docker.com/r/vorteil/awsgo) | Executes any cli command with aws using a golang wrapper to provide the authentication before executing. | [README](https://github.com/vorteil/direktiv-apps/tree/master/awsgo) |
 | [vorteil/awslog](https://hub.docker.com/r/vorteil/awslog) | Writes a log line to aws cloudwatch logs with provided log stream and group. | [README](https://github.com/vorteil/direktiv-apps/tree/master/awslog) |
 | [vorteil/azgo](https://hub.docker.com/r/vorteil/azgo) | Executes any azure cli command using a golang wrapper to provide the authentication before executing. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azgo) |
