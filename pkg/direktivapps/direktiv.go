@@ -45,10 +45,12 @@ func Unmarshal(obj interface{}, r *http.Request) error {
 	if err != nil {
 		return err
 	}
+
+	return nil
 }
 
 // StartServer starts a new server
-func StartServer(f func(w http.ResponseWriter, r *http.Request)) *http.Server {
+func StartServer(f func(w http.ResponseWriter, r *http.Request)) {
 
 	fmt.Println("Starting server")
 
