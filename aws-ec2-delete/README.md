@@ -11,7 +11,7 @@ Delete a amazon ec2 instance using the aws cli and a simple golang app to provid
 
 ## Direktiv
 
-An example workflow that deletes a ec2 instance named `example-instance-name`.
+An example workflow that deletes a ec2 instance with the id `i-090dd9255a7aaa582`.
 
 ```yaml
 id: aws-delete-ec2-instance
@@ -42,8 +42,28 @@ The input needed to run the above workflow properly is the following:
 ```
 
 ## Output
+The output will be in JSON format if successful, otherwise an error will be outputed to the logs.
 
-If the action is successful, the container will finish.
+Below is an example output of a successful deletion:
+```json
+{
+  "return": {
+    "TerminatingInstances": [
+      {
+        "CurrentState": {
+          "Code": 32,
+          "Name": "shutting-down"
+        },
+        "InstanceId": "i-090dd9255a7aaa582",
+        "PreviousState": {
+          "Code": 16,
+          "Name": "running"
+        }
+      }
+    ]
+  }
+}
+```
 
 ## Error
 
