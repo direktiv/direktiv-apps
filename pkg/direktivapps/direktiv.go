@@ -45,6 +45,7 @@ func RespondWithError(w http.ResponseWriter, code string, err string) {
 
 // Respond writes out to the responsewriter the json marshalled data
 func Respond(w http.ResponseWriter, data []byte) {
+	w.Header().Set(DirektivResponseHeader)
 	w.Write(data)
 }
 
