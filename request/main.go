@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"http"
 	"net/http"
 
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
