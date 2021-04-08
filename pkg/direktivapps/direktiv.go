@@ -12,6 +12,8 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"github.com/vorteil/direktiv"
 )
 
 // ActionError is a struct Direktiv uses to report application errors.
@@ -30,11 +32,11 @@ func Respond(w http.ResponseWriter, data []byte) {
 }
 
 // Unmarshal reads the req body and unmarshals the data
-func Unmarshal(obj interface{}, r *http.Request) error {
+func Unmarshal(obj interface{}, r *http.Request) (string, error) {
 
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		return err
+		return "", err
 	}
 	rdr := bytes.NewReader(data)
 	dec := json.NewDecoder(rdr)
@@ -43,10 +45,10 @@ func Unmarshal(obj interface{}, r *http.Request) error {
 
 	err = dec.Decode(obj)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return r.Header.Get(direktiv.DirektivActionIDHeader), nil
 }
 
 // StartServer starts a new server

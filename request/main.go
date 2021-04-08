@@ -11,7 +11,7 @@ import (
 func Request(w http.ResponseWriter, r *http.Request) {
 
 	obj := new(requester.Request)
-	err := direktivapps.Unmarshal(obj, r)
+	aid, err := direktivapps.Unmarshal(obj, r)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -38,6 +38,7 @@ func Request(w http.ResponseWriter, r *http.Request) {
 	}
 
 	direktivapps.Respond(w, resp)
+
 }
 
 func main() {
