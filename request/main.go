@@ -8,7 +8,6 @@ import (
 	"github.com/vorteil/direktiv-apps/pkg/requester"
 )
 
-
 func Request(w http.ResponseWriter, r *http.Request) {
 
 	obj := new(requester.Request)
@@ -22,7 +21,7 @@ func Request(w http.ResponseWriter, r *http.Request) {
 		Request: obj,
 	}
 
-	if mgr.Request.Debug{
+	if mgr.Request.Debug {
 		fmt.Println("Requester has been initialized.")
 	}
 
@@ -38,7 +37,7 @@ func Request(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	direktivapps.Respond(w)
+	direktivapps.Respond(w, resp)
 }
 
 func main() {

@@ -1,4 +1,5 @@
-module github.com/vorteil/direktiv-apps/requester
-go 1.15
+module github.com/vorteil/direktiv-apps/request
 
-require github.com/vorteil/direktiv-apps v0.0.0-20210303210932-e6cafee4ca9d
+go 1.16
+
+require github.com/vorteil/direktiv-apps v0.0.0-20210408010916-3bf95b799bc0
