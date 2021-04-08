@@ -1,9 +1,13 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 	"github.com/vorteil/direktiv-apps/pkg/requester"
 )
+
+const code = "com.discordmsg.error"
 
 // DiscordInformation is the struct provided to the webhook request
 type DiscordInformation struct {
@@ -12,16 +16,13 @@ type DiscordInformation struct {
 	TTS     bool   `json:"tts"`
 }
 
-func main() {
-
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.discord.error",
-		ErrorMessage: "",
-	}
-
+func DiscordMsg(w http.ResponseWriter, r *http.Request) {
 	obj := new(DiscordInformation)
-	direktivapps.ReadIn(obj, g)
-
+	aid, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 	mgr := requester.Manager{
 		Request: &requester.Request{
 			Method: "POST",
@@ -35,18 +36,21 @@ func main() {
 			},
 		},
 	}
-
-	err := mgr.Create()
+	err = mgr.Create(aid)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	resp, err := mgr.Send()
+	resp, err := mgr.Send(aid)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	direktivapps.WriteOut(resp, g)
+	direktivapps.Respond(w, resp)
+}
+
+func main() {
+	direktivapps.StartServer(DiscordMsg)
 }
