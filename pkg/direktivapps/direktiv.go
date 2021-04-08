@@ -12,8 +12,19 @@ import (
 	"strings"
 	"syscall"
 	"time"
+)
 
-	"github.com/vorteil/direktiv/pkg/direktiv"
+const (
+	DirektivActionIDHeader    = "Direktiv-ActionID"
+	DirektivInstanceIDHeader  = "Direktiv-InstanceID"
+	DirektivExchangeKeyHeader = "Direktiv-ExchangeKey"
+	DirektivPingAddrHeader    = "Direktiv-PingAddr"
+	DirektivTimeoutHeader     = "Direktiv-Timeout"
+	DirektivStepHeader        = "Direktiv-Step"
+	DirektivResponseHeader    = "Direktiv-Response"
+
+	DirektivErrorCodeHeader    = "Direktiv-ErrorCode"
+	DirektivErrorMessageHeader = "Direktiv-ErrorMessage"
 )
 
 // ActionError is a struct Direktiv uses to report application errors.
@@ -48,7 +59,7 @@ func Unmarshal(obj interface{}, r *http.Request) (string, error) {
 		return "", err
 	}
 
-	return r.Header.Get(direktiv.DirektivActionIDHeader), nil
+	return r.Header.Get(DirektivActionIDHeader), nil
 }
 
 // StartServer starts a new server
