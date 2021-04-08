@@ -26,9 +26,8 @@ type InputInstanceDetails struct {
 
 // Defaults
 const (
-	AWS_CLI_TEMPLATE = ` opsworks delete-instance 
-	--instance-id {{.InstanceID}} 
-	--region {{.Region}}`
+	AWS_CLI_TEMPLATE = ` ec2 terminate-instances 
+	--instance-ids {{.InstanceID}}`
 )
 
 func main() {
