@@ -82,7 +82,7 @@ func main() {
 	}
 
 	// Create cli command from template
-	t, err := template.New("gcp").Parse(AWS_CLI_TEMPLATE)
+	t, err := template.New("aws").Parse(AWS_CLI_TEMPLATE)
 	if err != nil {
 		g.ErrorMessage = fmt.Sprintf("Failed to parse AWS Command: %v", err)
 		direktivapps.WriteError(g)
