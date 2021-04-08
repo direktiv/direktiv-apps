@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"net/http"
 	"os"
 	"os/exec"
 	"text/template"
@@ -26,44 +26,48 @@ type InputInstanceDetails struct {
 
 // Defaults
 const (
+	code             = "com.aws-ec2-delete.error"
 	AWS_CLI_TEMPLATE = ` ec2 terminate-instances 
 	--instance-ids {{.InstanceID}}`
 )
 
 func main() {
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.aws-ec2-delete.error",
-		ErrorMessage: "",
-	}
+	direktivapps.StartServer(AWSInstanceDelete)
+}
 
+func AWSInstanceDelete(w http.ResponseWriter, r *http.Request) {
 	var err error
 	obj := new(InputInstanceDetails)
-	direktivapps.ReadIn(obj, g)
+	aid, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	// Validate Input
 	v := validator.CreateValidator()
 
 	if missingFields := v.ValidateRequired(obj); len(missingFields) > 0 {
 		for _, mf := range missingFields {
-			log.Printf("Input Error: %s is required\n", mf)
+			direktivapps.Log(aid, fmt.Sprintf("Input Error: %s is required\n", mf))
 		}
 
-		g.ErrorMessage = fmt.Sprintf("Invalid input: Fields [%s] are required", strings.Join(missingFields, ","))
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("Invalid input: Fields [%s] are required", strings.Join(missingFields, ",")))
+		return
 	}
 
 	// Create cli command from template
 	t, err := template.New("aws").Parse(AWS_CLI_TEMPLATE)
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("Failed to parse AWS Command: %v", err)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("Failed to parse AWS Command: %v", err))
+		return
 	}
 
 	var cliCommand bytes.Buffer
 	err = t.Execute(&cliCommand, obj)
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("Failed to create AWS Command: %v", err)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("Failed to create AWS Command: %v", err))
+		return
 	}
 
 	// Auth
@@ -74,9 +78,9 @@ func main() {
 	cmd := exec.Command("/usr/bin/aws", strings.Fields(cliCommand.String())...)
 	resp, err := cmd.CombinedOutput()
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("%s", resp)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("%s", resp))
+		return
 	}
 
-	direktivapps.WriteOut(resp, g)
+	direktivapps.Respond(w, resp)
 }

@@ -25,15 +25,19 @@ type AzureBlobOutput struct {
 	BlobURL string `json:"blob-url"`
 }
 
+const code = "com.azure-upload.error"
+
 func main() {
+	direktivapps.StartServer(AzureUpload)
+}
 
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.azure-upload.error",
-		ErrorMessage: "",
-	}
-
+func AzureUpload(w http.ResponseWriter, r *http.Request) {
 	obj := new(AzureBlobUpload)
-	direktivapps.ReadIn(obj, g)
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	ctx := context.Background()
 
@@ -42,16 +46,16 @@ func main() {
 
 	credential, err := azblob.NewSharedKeyCredential(obj.Account, obj.AccountKey)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	p := azblob.NewPipeline(credential, azblob.PipelineOptions{})
 
 	decoded, err := base64.StdEncoding.DecodeString(obj.Data)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	u, _ := url.Parse(fmt.Sprintf("https://%s.blob.core.windows.net/%s", obj.Account, obj.Container))
@@ -60,22 +64,22 @@ func main() {
 
 	err = ioutil.WriteFile(obj.Blobname, decoded, 0700)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	file, err := os.Open(obj.Blobname)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	defer file.Close()
 
 	contentType, err := GetFileContentType(file)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	file.Seek(0, 0)
@@ -87,8 +91,8 @@ func main() {
 		},
 	})
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	httpR := resp.Response()
@@ -96,11 +100,11 @@ func main() {
 
 	data, err := ioutil.ReadAll(httpR.Body)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	direktivapps.WriteOut(data, g)
+	direktivapps.Respond(w, data)
 }
 
 func GetFileContentType(out *os.File) (string, error) {

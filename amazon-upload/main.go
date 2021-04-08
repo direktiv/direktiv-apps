@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/base64"
 	"io/ioutil"
+	"net/http"
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -20,15 +21,19 @@ type AmazonUpload struct {
 	Data   string `json:"data"`
 }
 
+const code = "com.amazon-upload.error"
+
 func main() {
+	direktivapps.StartServer(Upload)
+}
 
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.amazon-upload.error",
-		ErrorMessage: "",
-	}
-
+func Upload(w http.ResponseWriter, r *http.Request) {
 	obj := new(AmazonUpload)
-	direktivapps.ReadIn(obj, g)
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	sess := session.New(&aws.Config{
 		Region: aws.String(obj.Region),
@@ -36,19 +41,19 @@ func main() {
 
 	decoded, err := base64.StdEncoding.DecodeString(obj.Data)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 	err = ioutil.WriteFile(obj.Name, decoded, 0700)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	file, err := os.Open(obj.Name)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	defer file.Close()
@@ -61,9 +66,9 @@ func main() {
 		Body:   file,
 	})
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	direktivapps.WriteOut([]byte{}, g)
+	direktivapps.Respond(w, []byte{})
 }

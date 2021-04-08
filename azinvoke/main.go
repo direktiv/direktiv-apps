@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 	"github.com/vorteil/direktiv-apps/pkg/requester"
 )
 
 const funcURL = `https://%s.azurewebsites.net/api/%s?code=%s`
+const code = "com.azureinvoke.error"
 
 // AzureFuncTriggerDetails ...
 type AzureFuncTriggerDetails struct {
@@ -18,14 +20,18 @@ type AzureFuncTriggerDetails struct {
 }
 
 func main() {
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.azureinvoke.error",
-		ErrorMessage: "",
-	}
+	direktivapps.StartServer(AzureInvoke)
+}
+
+func AzureInvoke(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	obj := new(AzureFuncTriggerDetails)
-	direktivapps.ReadIn(obj, g)
+	aid, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	mgr := requester.Manager{
 		Request: &requester.Request{
@@ -35,17 +41,17 @@ func main() {
 		},
 	}
 
-	err = mgr.Create()
+	err = mgr.Create(aid)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	resp, err := mgr.Send()
+	resp, err := mgr.Send(aid)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	direktivapps.WriteOut(resp, g)
+	direktivapps.Respond(w, resp)
 }

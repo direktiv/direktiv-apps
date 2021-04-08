@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -20,15 +21,19 @@ type AWSLogDetails struct {
 	Message   string `json:"message"`
 }
 
+const code = "com.awslog.error"
+
 func main() {
+	direktivapps.StartServer(AWSLog)
+}
 
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.awslog.error",
-		ErrorMessage: "",
-	}
-
+func AWSLog(w http.ResponseWriter, r *http.Request) {
 	obj := new(AWSLogDetails)
-	direktivapps.ReadIn(obj, g)
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	sess := session.New()
 
@@ -42,8 +47,8 @@ func main() {
 		LogGroupName: aws.String(obj.LogGroup),
 	})
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	// get the upload sequence token as we're only writing one log
@@ -58,8 +63,8 @@ func main() {
 	}
 
 	if !found {
-		g.ErrorMessage = fmt.Sprintf("log stream: '%s' not found", obj.LogStream)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("log stream: '%s' not found", obj.LogStream))
+		return
 	}
 
 	logs := make([]*cloudwatchlogs.InputLogEvent, 0)
@@ -75,15 +80,15 @@ func main() {
 		LogEvents:     logs,
 	})
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	if peo.RejectedLogEventsInfo != nil {
-		g.ErrorMessage = peo.RejectedLogEventsInfo.GoString()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, peo.RejectedLogEventsInfo.GoString())
+		return
 	}
 
 	// write empty to notify when its finished
-	direktivapps.WriteOut([]byte{}, g)
+	direktivapps.Respond(w, []byte{})
 }
