@@ -13,7 +13,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/vorteil/direktiv"
+	"github.com/vorteil/direktiv/pkg/direktiv"
 )
 
 // ActionError is a struct Direktiv uses to report application errors.
