@@ -2,25 +2,30 @@ package main
 
 import (
 	"encoding/json"
+	"net/http"
 
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 )
 
-func main() {
+const code = "com.debug.error"
 
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.debug.error",
-		ErrorMessage: "",
-	}
-
+func Debug(w http.ResponseWriter, r *http.Request) {
 	obj := new(map[string]interface{})
-	direktivapps.ReadIn(obj, g)
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	data, err := json.Marshal(obj)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	direktivapps.WriteOut(data, g)
+	direktivapps.Respond(w, data)
+}
+
+func main() {
+	direktivapps.StartServer(Debug)
 }
