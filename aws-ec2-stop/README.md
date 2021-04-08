@@ -48,6 +48,23 @@ The output will be in JSON format if successful, otherwise an error will be outp
 
 Below is an example output of a successful stop:
 ```json
+{
+  "return": {
+    "StoppingInstances": [
+      {
+        "CurrentState": {
+          "Code": 64,
+          "Name": "stopping"
+        },
+        "InstanceId": "i-090dd9255a7aaa582",
+        "PreviousState": {
+          "Code": 16,
+          "Name": "running"
+        }
+      }
+    ]
+  }
+}
 ```
 
 ## Error
