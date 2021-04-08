@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/michaelbironneau/asbclient"
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"net/http"
 )
 
 type ServiceBusInput struct {
@@ -13,23 +14,28 @@ type ServiceBusInput struct {
 	Queue     string `json:"queue"`
 }
 
+const code = "com-azure-servicebus.error"
+
 func main() {
-	g := direktivapps.ActionError{
-		ErrorCode:    "com-azure-servicebus.error",
-		ErrorMessage: "",
+	direktivapps.StartServer(AzureServiceBus)
+}
+
+func AzureServiceBus(w http.ResponseWriter, r *http.Request) {
+	obj := new(ServiceBusInput)
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	obj := new(ServiceBusInput)
-	direktivapps.ReadIn(obj, g)
-
 	client := asbclient.New(asbclient.Topic, obj.Namespace, obj.Policy, obj.Key)
-	err := client.Send(obj.Queue, &asbclient.Message{
+	err = client.Send(obj.Queue, &asbclient.Message{
 		Body: []byte(obj.Message),
 	})
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	direktivapps.WriteOut([]byte{}, g)
+	direktivapps.Respond(w, []byte{})
 }

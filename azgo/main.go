@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os/exec"
 
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
@@ -15,39 +16,44 @@ type AzureDetails struct {
 	Command  []string `json:"command"`
 }
 
-func main() {
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.azcli.error",
-		ErrorMessage: "",
-	}
+const code = "com.azcli.error"
 
+func main() {
+	direktivapps.StartServer(AzureGo)
+}
+
+func AzureGo(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	obj := new(AzureDetails)
-	direktivapps.ReadIn(obj, g)
+	_, err = direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	// Authenticate with the azcli using a service principal
 	cmd := exec.Command("/usr/bin/az", "login", "--service-principal", "-u", obj.Name, "-p", obj.Password, "--tenant", obj.Tenant)
 	resp, err := cmd.CombinedOutput()
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("output: %s", resp)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("output: %s", resp))
+		return
 	}
 	// Allow azure to update itself without a tty
 	cmd = exec.Command("/usr/bin/az", "config", "set", "extension.use_dynamic_install=no")
 	resp, err = cmd.CombinedOutput()
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("output: %s", resp)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("output: %s", resp))
+		return
 	}
 
 	// Execute command provided via the input of container
 	cmd = exec.Command("/usr/bin/az", obj.Command...)
 	resp, err = cmd.CombinedOutput()
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("output: %s", resp)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("output: %s", resp))
+		return
 	}
 
-	direktivapps.WriteOut(resp, g)
+	direktivapps.Respond(w, resp)
 }

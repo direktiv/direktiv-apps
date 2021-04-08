@@ -18,7 +18,7 @@ id: aws-start-ec2-instance
 description: "Start a ec2 instance"
 functions:
 - id: awsStartInstance
-  image: vorteil/aws-ec2-start:v1
+  image: vorteil/aws-ec2-start:v2
   size: medium
 states:
 - id: startInstance

@@ -16,6 +16,8 @@ github.com/vorteil/direktiv-apps v0.0.0-20210407222821-a448c1a72c86 h1:jeelyv25y
 github.com/vorteil/direktiv-apps v0.0.0-20210407222821-a448c1a72c86/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
 github.com/vorteil/direktiv-apps v0.0.0-20210407225944-09443177654f h1:BO5hbTfdU6rIJuy8N4wEqGrG+h5MovoFhs/DgXxMuqE=
 github.com/vorteil/direktiv-apps v0.0.0-20210407225944-09443177654f/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
+github.com/vorteil/direktiv-apps v0.0.0-20210408034809-a0a8f93fbec9 h1:4FMWbZa1idV7Fsqm6PVTQS+999nHHC4T/Tvf5ykQbw0=
+github.com/vorteil/direktiv-apps v0.0.0-20210408034809-a0a8f93fbec9/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
 golang.org/x/text v0.3.2/go.mod h1:bEr9sfX3Q8Zfm5fL9x+3itogRgK3+ptLWKqgva+5dAk=
 golang.org/x/tools v0.0.0-20180917221912-90fa682c2a6e/go.mod h1:n7NCudcB/nEzxVGmLbDWY5pfWTLqBcC2KZ6jyYvM4mQ=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=

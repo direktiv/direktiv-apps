@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"os/exec"
 
@@ -16,15 +17,20 @@ type AwsInputDetails struct {
 	Command []string `json:"command"`
 }
 
-func main() {
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.awsgo.error",
-		ErrorMessage: "",
-	}
+const code = "com.awsgo.error"
 
+func main() {
+	direktivapps.StartServer(AWSGo)
+}
+
+func AWSGo(w http.ResponseWriter, r *http.Request) {
 	var err error
 	obj := new(AwsInputDetails)
-	direktivapps.ReadIn(obj, g)
+	_, err = direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	os.Setenv("AWS_ACCESS_KEY_ID", obj.Key)
 	os.Setenv("AWS_SECRET_ACCESS_KEY", obj.Secret)
@@ -33,9 +39,9 @@ func main() {
 	cmd := exec.Command("/usr/bin/aws", obj.Command...)
 	resp, err := cmd.CombinedOutput()
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("%s", resp)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("%s", resp))
+		return
 	}
 
-	direktivapps.WriteOut(resp, g)
+	direktivapps.Respond(w, resp)
 }

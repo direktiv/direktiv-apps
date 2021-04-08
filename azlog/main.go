@@ -17,6 +17,8 @@ import (
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 )
 
+const code = "com.azlog.error"
+
 type AzureLogDetails struct {
 	Message     string `json:"message"`
 	WorkspaceID string `json:"workspace-id"` // log analytics workspace ID
@@ -25,14 +27,16 @@ type AzureLogDetails struct {
 }
 
 func main() {
+	direktivapps.StartServer(AzureLog)
+}
 
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.azlog.error",
-		ErrorMessage: "",
-	}
-
+func AzureLog(w http.ResponseWriter, r *http.Request) {
 	obj := new(AzureLogDetails)
-	direktivapps.ReadIn(obj, g)
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	var msgData struct {
 		Message string `json:"msg"`
@@ -42,8 +46,8 @@ func main() {
 	// marshal message object
 	data, err := json.Marshal(msgData)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	dateString := time.Now().UTC().Format(time.RFC1123)
@@ -52,8 +56,8 @@ func main() {
 	hashString := fmt.Sprintf("POST\n%v\napplication/json\nx-ms-date:%s\n/api/logs", strconv.Itoa(len(data)), dateString)
 	hashedString, err := BuildSignature(hashString, obj.Key)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	signature := fmt.Sprintf("SharedKey %s:%s", obj.WorkspaceID, hashedString)
@@ -67,8 +71,8 @@ func main() {
 
 	req, err := http.NewRequest("POST", url, bytes.NewReader(data))
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	req.Header.Add("Log-Type", obj.Type)
@@ -78,21 +82,21 @@ func main() {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 	defer resp.Body.Close()
 
 	bv, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		g.ErrorMessage = fmt.Sprintf("Response Message: %s, Response Code: %v \nResponseBody: %s", resp.Status, resp.StatusCode, bv)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("Response Message: %s, Response Code: %v \nResponseBody: %s", resp.Status, resp.StatusCode, bv))
+		return
 	}
-	direktivapps.WriteOut(bv, g)
+	direktivapps.Respond(w, bv)
 }
 
 func BuildSignature(message, secret string) (string, error) {

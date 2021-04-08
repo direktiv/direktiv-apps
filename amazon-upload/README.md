@@ -17,7 +17,7 @@ An example workflow of uploading a base64 encoded string to Amazon.
 id: upload-object
 functions:
 - id: upload
-  image: vorteil/amazon-upload:v1
+  image: vorteil/amazon-upload:v2
 description: "Uploads a base64 encoded string to Amazon"
 states:
 - id: upload-file
