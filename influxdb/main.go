@@ -4,7 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
-	"fmt"
+	"net/http"
 	"time"
 
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
@@ -25,14 +25,15 @@ type InputFluxDetails struct {
 	Query        string                 `json:"query,omitempty"`
 }
 
-func main() {
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.influxdb.error",
-		ErrorMessage: "",
-	}
+var code = "com.influxdb.error"
 
+func InfluxDBHandler(w http.ResponseWriter, r *http.Request) {
 	obj := new(InputFluxDetails)
-	direktivapps.ReadIn(obj, g)
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	// create new influxdb client
 	client := influxdb2.NewClientWithOptions(obj.URL, obj.Token, influxdb2.DefaultOptions().SetTLSConfig(&tls.Config{
@@ -40,32 +41,34 @@ func main() {
 	}))
 	defer client.Close()
 
-	var err error
 	var bv []byte
 
 	switch obj.Type {
 	case "write":
 		wapi := client.WriteAPIBlocking(obj.Organisation, obj.Bucket)
-		bv, err = WriteData(wapi, obj, g)
+		bv, err = WriteData(wapi, obj)
 		if err != nil {
-			g.ErrorMessage = err.Error()
-			direktivapps.WriteError(g)
+			direktivapps.RespondWithError(w, code, err.Error())
+			return
 		}
 	default:
-		fmt.Printf("QUERY: %s\n", obj.Query)
 		qapi := client.QueryAPI(obj.Organisation)
 		bv, err = QueryData(qapi, obj.Query)
 		if err != nil {
-			g.ErrorMessage = err.Error()
-			direktivapps.WriteError(g)
+			direktivapps.RespondWithError(w, code, err.Error())
+			return
 		}
 	}
 
-	direktivapps.WriteOut(bv, g)
+	direktivapps.Respond(w, bv)
+}
+
+func main() {
+	direktivapps.StartServer(InfluxDBHandler)
 }
 
 // WriteData writes a point with measurement to influxdb
-func WriteData(wapi api.WriteAPIBlocking, obj *InputFluxDetails, g direktivapps.ActionError) ([]byte, error) {
+func WriteData(wapi api.WriteAPIBlocking, obj *InputFluxDetails) ([]byte, error) {
 	p := influxdb2.NewPointWithMeasurement(obj.Measurement)
 
 	// Add tags to point
@@ -81,8 +84,7 @@ func WriteData(wapi api.WriteAPIBlocking, obj *InputFluxDetails, g direktivapps.
 
 	err := wapi.WritePoint(context.Background(), p)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		return nil, err
 	}
 
 	var ws struct {

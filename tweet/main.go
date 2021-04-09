@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 
@@ -19,13 +20,16 @@ type TwitterDetails struct {
 	Message        string `json:"message"`
 }
 
-func main() {
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.tweet.error",
-		ErrorMessage: "",
-	}
+var code = "com.tweet.error"
+
+func Tweet(w http.ResponseWriter, r *http.Request) {
 	obj := new(TwitterDetails)
-	direktivapps.ReadIn(obj, g)
+
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	config := oauth1.NewConfig(obj.ConsumerKey, obj.ConsumerSecret)
 	token := oauth1.NewToken(obj.TokenKey, obj.TokenSecret)
@@ -36,20 +40,24 @@ func main() {
 
 	resp, tweet, err := client.Statuses.Update(obj.Message, nil)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	if tweet.StatusCode < 200 || tweet.StatusCode >= 300 {
-		g.ErrorMessage = fmt.Sprintf("Response Message: %s, Response Code: %v", tweet.Status, tweet.StatusCode)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf(fmt.Sprintf("Response Message: %s, Response Code: %v", tweet.Status, tweet.StatusCode)))
+		return
 	}
 
 	bv, err := json.Marshal(resp)
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("unable to unmarshal: %v", err)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("unable to unmarshal: %v", err))
+		return
 	}
 
-	direktivapps.WriteOut(bv, g)
+	direktivapps.Respond(w, bv)
+}
+
+func main() {
+	direktivapps.StartServer(Tweet)
 }

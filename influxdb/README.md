@@ -70,7 +70,7 @@ The input needed to write data to an InfluxDB instance is the following:
 {
     "url": "http://localhost:8089",
     "token": .secrets.AUTH_TOKEN,
-    "type": "query",
+    "type": "write",
     "organisation": "vorteil.io",
     "bucket": "vorteil",
     "measurement": "stat",

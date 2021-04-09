@@ -1,18 +1,18 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
+	"net/http"
 	"sort"
 	"strings"
 
 	_ "github.com/lib/pq"
+	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 )
 
 var debug bool
@@ -83,6 +83,7 @@ func wheresString(wheres map[string]interface{}) string {
 
 type deleteOp struct {
 	wheres map[string]interface{}
+	aid    string
 }
 
 func deleteOpValidator(input map[string]interface{}) (operationDoerFunc, error) {
@@ -113,11 +114,8 @@ func deleteOpValidator(input map[string]interface{}) (operationDoerFunc, error) 
 
 func (op *deleteOp) do(tx *sql.Tx, table string) (interface{}, error) {
 
-	aerr.ErrorCode = "sql.db.delete"
-
 	wheres := wheresString(op.wheres)
 	query := fmt.Sprintf(`DELETE FROM %s WHERE %s`, table, wheres)
-	log.Println(query)
 	result, err := tx.Exec(query)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, fmt.Errorf("failed to delete: %w", err)
@@ -136,6 +134,7 @@ func (op *deleteOp) do(tx *sql.Tx, table string) (interface{}, error) {
 
 type insertOp struct {
 	records []map[string]interface{}
+	aid     string
 }
 
 func insertOpValidator(input map[string]interface{}) (operationDoerFunc, error) {
@@ -199,8 +198,6 @@ func insertOpValidator(input map[string]interface{}) (operationDoerFunc, error) 
 
 func (op *insertOp) do(tx *sql.Tx, table string) (interface{}, error) {
 
-	aerr.ErrorCode = "sql.db.insert"
-
 	for i, record := range op.records {
 
 		var keys, vals, obscuredVals []string
@@ -219,16 +216,10 @@ func (op *insertOp) do(tx *sql.Tx, table string) (interface{}, error) {
 
 		ks := strings.Join(keys, ", ")
 		vs := strings.Join(vals, ", ")
-		obscuredVs := strings.Join(obscuredVals, ", ")
+		// obscuredVs := strings.Join(obscuredVals, ", ")
 
 		query := fmt.Sprintf(`INSERT INTO %s (%s) VALUES (%s)`, table, ks, vs)
-		obscuredQuery := fmt.Sprintf(`INSERT INTO %s (%s) VALUES (%s)`, table, ks, obscuredVs)
-
-		if debug {
-			log.Println(query)
-		} else {
-			log.Println(obscuredQuery)
-		}
+		// obscuredQuery := fmt.Sprintf(`INSERT INTO %s (%s) VALUES (%s)`, table, ks, obscuredVs)
 
 		_, err := tx.Exec(query)
 		if err != nil {
@@ -245,6 +236,7 @@ type selectOp struct {
 	fields   []string
 	wildcard bool
 	wheres   map[string]interface{}
+	aid      string
 }
 
 func selectOpValidator(input map[string]interface{}) (operationDoerFunc, error) {
@@ -308,8 +300,6 @@ func selectOpValidator(input map[string]interface{}) (operationDoerFunc, error) 
 
 func (op *selectOp) do(tx *sql.Tx, table string) (interface{}, error) {
 
-	aerr.ErrorCode = "sql.db.select"
-
 	var fieldsStr string
 	if op.wildcard {
 		fieldsStr = "*"
@@ -329,7 +319,7 @@ func (op *selectOp) do(tx *sql.Tx, table string) (interface{}, error) {
 		wheres := wheresString(op.wheres)
 		query = fmt.Sprintf(`SELECT %s FROM %s WHERE %s`, fieldsStr, table, wheres)
 	}
-	log.Println(query)
+
 	rows, err := tx.Query(query)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, fmt.Errorf("failed to select: %v", err)
@@ -374,6 +364,7 @@ func (op *selectOp) do(tx *sql.Tx, table string) (interface{}, error) {
 type updateOp struct {
 	set    map[string]interface{}
 	wheres map[string]interface{}
+	aid    string
 }
 
 func updateOpValidator(input map[string]interface{}) (operationDoerFunc, error) {
@@ -431,8 +422,6 @@ func updateOpValidator(input map[string]interface{}) (operationDoerFunc, error) 
 
 func (op *updateOp) do(tx *sql.Tx, table string) (interface{}, error) {
 
-	aerr.ErrorCode = "sql.db.update"
-
 	var changes, obscuredChanges []string
 
 	for k, v := range op.set {
@@ -446,17 +435,11 @@ func (op *updateOp) do(tx *sql.Tx, table string) (interface{}, error) {
 	}
 
 	sets := strings.Join(changes, ", ")
-	obscuredSets := strings.Join(obscuredChanges, ", ")
+	// obscuredSets := strings.Join(obscuredChanges, ", ")
 	wheres := wheresString(op.wheres)
 
-	obscuredQuery := fmt.Sprintf(`UPDATE %s SET %s WHERE %s`, table, obscuredSets, wheres)
+	// obscuredQuery := fmt.Sprintf(`UPDATE %s SET %s WHERE %s`, table, obscuredSets, wheres)
 	query := fmt.Sprintf(`UPDATE %s SET %s WHERE %s`, table, sets, wheres)
-
-	if debug {
-		log.Println(query)
-	} else {
-		log.Println(obscuredQuery)
-	}
 
 	result, err := tx.Exec(query)
 	if err != nil && err != sql.ErrNoRows {
@@ -472,17 +455,6 @@ func (op *updateOp) do(tx *sql.Tx, table string) (interface{}, error) {
 		"rowsAffected": k,
 	}, nil
 
-}
-
-type ActionError struct {
-	ErrorCode    string `json:"errorCode"`
-	ErrorMessage string `json:"errorMessage"`
-}
-
-func writeError(g ActionError) {
-	log.Printf("ERROR:\n  CODE: %v\n  TEXT: %v\n", g.ErrorCode, g.ErrorMessage)
-	b, _ := json.Marshal(g)
-	ioutil.WriteFile("/direktiv-data/error.json", b, 0755)
 }
 
 type Input struct {
@@ -556,50 +528,9 @@ func validateInput(input *Input) ([]operationDoerFunc, error) {
 
 }
 
-func getInput() (*Input, error) {
+func begin(input *Input, aid string) (*sql.Tx, error) {
 
-	log.Println("Reading input data...")
-	aerr.ErrorCode = "error.input"
-	input := new(Input)
-
-	data, err := ioutil.ReadFile("/direktiv-data/data.in")
-	if err != nil {
-		return nil, err
-	}
-
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.DisallowUnknownFields()
-	err = dec.Decode(input)
-	if err != nil {
-		return nil, err
-	}
-
-	debug = input.Debug
-
-	return input, nil
-
-}
-
-func saveOutput(output []interface{}) error {
-
-	data, err := json.Marshal(output)
-	if err != nil {
-		return err
-	}
-
-	err = ioutil.WriteFile("/direktiv-data/data.out", data, 0755)
-	if err != nil {
-		return err
-	}
-
-	return nil
-
-}
-
-func begin(input *Input) (*sql.Tx, error) {
-
-	log.Println("Connecting to postgres database...")
-	aerr.ErrorCode = "error.conn"
+	direktivapps.Log(aid, "Connecting to postgres database...")
 
 	db, err := sql.Open("postgres", input.Conn)
 	if err != nil {
@@ -611,9 +542,7 @@ func begin(input *Input) (*sql.Tx, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	log.Println("Beginning database transaction...")
-	aerr.ErrorCode = "error.tx"
+	direktivapps.Log(aid, "Beginning database transaction...")
 
 	tx, err := db.BeginTx(context.Background(), nil)
 	if err != nil {
@@ -624,74 +553,57 @@ func begin(input *Input) (*sql.Tx, error) {
 
 }
 
-var aerr ActionError
+var code = "com.simplepostgres.error"
 
-func main() {
-
+func SimplePostgresClient(w http.ResponseWriter, r *http.Request) {
 	input := new(Input)
 	output := make([]interface{}, 0)
 
-	defer func() {
-
-		r := recover()
-		if r != nil {
-			aerr.ErrorCode = "error.panic"
-			aerr.ErrorMessage = fmt.Sprintf("%v", r)
-		}
-
-		if aerr.ErrorMessage != "" {
-			writeError(aerr)
-		}
-
-	}()
-
-	input, err := getInput()
+	aid, err := direktivapps.Unmarshal(input, r)
 	if err != nil {
-		aerr.ErrorMessage = err.Error()
+		direktivapps.RespondWithError(w, code, err.Error())
 		return
 	}
 
 	steps, err := validateInput(input)
 	if err != nil {
-		aerr.ErrorMessage = err.Error()
+		direktivapps.RespondWithError(w, code, err.Error())
 		return
 	}
 
-	tx, err := begin(input)
+	tx, err := begin(input, aid)
 	if err != nil {
-		aerr.ErrorMessage = err.Error()
+		direktivapps.RespondWithError(w, code, err.Error())
 		return
 	}
 	defer tx.Rollback()
 
-	aerr.ErrorCode = "error.db"
-
 	for i, step := range steps {
 		out, err := step(tx, input.Table)
 		if err != nil {
-			aerr.ErrorMessage = fmt.Sprintf("transaction step %d failed: %v", i, err)
+			direktivapps.RespondWithError(w, code, fmt.Sprintf("transaction step %d failed: %v", i, err))
 			return
 		}
 		output = append(output, out)
 	}
 
-	err = saveOutput(output)
+	data, err := json.Marshal(output)
 	if err != nil {
-		aerr.ErrorCode = "error.output"
-		aerr.ErrorMessage = err.Error()
+		direktivapps.RespondWithError(w, code, err.Error())
 		return
 	}
 
-	log.Println("Committing transaction to database...")
+	direktivapps.Log(aid, "Committing transaction to database...")
 	err = tx.Commit()
 	if err != nil {
-		aerr.ErrorCode = "error.db.commit"
-		aerr.ErrorMessage = err.Error()
+		direktivapps.RespondWithError(w, code, err.Error())
 		return
 	}
 
-	log.Println("Transaction complete!")
-	aerr.ErrorCode = ""
-	aerr.ErrorMessage = ""
+	direktivapps.Log(aid, "Transaction complete!")
+	direktivapps.Respond(w, data)
+}
 
+func main() {
+	direktivapps.StartServer(SimplePostgresClient)
 }

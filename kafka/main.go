@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"net/http"
 	"time"
 
 	"github.com/segmentio/kafka-go"
@@ -15,19 +16,20 @@ type KafkaMsgInput struct {
 	Address   string `json:"address"`
 }
 
-func main() {
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.kafka.error",
-		ErrorMessage: "",
-	}
+var code = "com.kafka.error"
 
+func KafkaHandler(w http.ResponseWriter, r *http.Request) {
 	obj := new(KafkaMsgInput)
-	direktivapps.ReadIn(obj, g)
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	conn, err := kafka.DialLeader(context.Background(), "tcp", obj.Address, obj.Topic, obj.Partition)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
@@ -35,14 +37,18 @@ func main() {
 		kafka.Message{Value: []byte(obj.Message)},
 	)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	if err := conn.Close(); err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	direktivapps.WriteOut([]byte{}, g)
+	direktivapps.Respond(w, []byte{})
+}
+
+func main() {
+	direktivapps.StartServer(KafkaHandler)
 }

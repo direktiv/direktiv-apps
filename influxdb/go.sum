@@ -36,6 +36,8 @@ github.com/valyala/fasttemplate v1.0.1/go.mod h1:UQGH1tvbgY+Nz5t2n7tXsz52dQxojPU
 github.com/valyala/fasttemplate v1.1.0/go.mod h1:UQGH1tvbgY+Nz5t2n7tXsz52dQxojPUpymEIMZ47gx8=
 github.com/vorteil/direktiv-apps v0.0.0-20210315024140-bf65c6a34e93 h1:2beDdIitrYMfFRSGUjMilYztVo36bIWYgm3I6tQ6yHk=
 github.com/vorteil/direktiv-apps v0.0.0-20210315024140-bf65c6a34e93/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
+github.com/vorteil/direktiv-apps v0.0.0-20210408031041-3442505a3984 h1:gAPwhLVb8adqIUKPU8WY2LK8PJFkQP7u91iqB+R24Fw=
+github.com/vorteil/direktiv-apps v0.0.0-20210408031041-3442505a3984/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=
 golang.org/x/crypto v0.0.0-20191112222119-e1110fd1c708/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=
