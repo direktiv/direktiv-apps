@@ -14,7 +14,7 @@ import (
 	"cloud.google.com/go/translate"
 )
 
-const credFile = "/tmp/creds"
+const credFile = "/creds"
 
 type InputTranslatorGoogle struct {
 	TargetLanguage    string `json:"target-language"`

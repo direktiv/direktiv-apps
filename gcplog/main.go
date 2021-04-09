@@ -32,7 +32,7 @@ func GCPLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = ioutil.WriteFile("/tmp/key.json", []byte(obj.ServiceAccountKey), 0644)
+	err = ioutil.WriteFile("/key.json", []byte(obj.ServiceAccountKey), 0644)
 	if err != nil {
 		direktivapps.RespondWithError(w, code, err.Error())
 		return
@@ -40,7 +40,7 @@ func GCPLog(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 
 	// create a gcp logging client
-	client, err := logging.NewClient(ctx, obj.ProjectID, option.WithCredentialsFile("/tmp/key.json"))
+	client, err := logging.NewClient(ctx, obj.ProjectID, option.WithCredentialsFile("/key.json"))
 	if err != nil {
 		direktivapps.RespondWithError(w, code, err.Error())
 		return
