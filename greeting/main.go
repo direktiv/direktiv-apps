@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 )
@@ -15,24 +16,27 @@ type ReturnGreeting struct {
 	Greeting string `json:"greeting"`
 }
 
-func main() {
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.greeting.error",
-		ErrorMessage: "",
-	}
+const code = "com.greeting.error"
 
-	var err error
+func GreetingHandler(w http.ResponseWriter, r *http.Request) {
 	obj := new(Greeter)
-	direktivapps.ReadIn(obj, g)
-
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 	var rg ReturnGreeting
 	rg.Greeting = fmt.Sprintf("Welcome to Direktiv, %s!", obj.Name)
 
 	bv, err := json.Marshal(rg)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	direktivapps.WriteOut(bv, g)
+	direktivapps.Respond(w, bv)
+}
+
+func main() {
+	direktivapps.StartServer(GreetingHandler)
 }

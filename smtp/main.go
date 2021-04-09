@@ -2,16 +2,14 @@ package main
 
 import (
 	"crypto/tls"
-	"log"
+	"fmt"
+	"net/http"
 
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 	gomail "gopkg.in/mail.v2"
 )
 
-type ActionError struct {
-	ErrorCode    string `json:"errorCode"`
-	ErrorMessage string `json:"errorMessage"`
-}
+var code = "com.smtp.error"
 
 // SMTPEmail is the object to control emailing
 type SMTPEmail struct {
@@ -25,21 +23,20 @@ type SMTPEmail struct {
 	Password string  `json:"password"`
 }
 
-func main() {
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.smtp.error",
-		ErrorMessage: "",
+func SMTPEmailHandler(w http.ResponseWriter, r *http.Request) {
+	tm := new(SMTPEmail)
+	aid, err := direktivapps.Unmarshal(tm, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	tm := new(SMTPEmail)
-	direktivapps.ReadIn(tm, g)
-
 	if tm.Debug {
-		log.Printf("Creating new message")
-		log.Printf("From: %s", tm.From)
-		log.Printf("To: %s", tm.To)
-		log.Printf("Subject: %s", tm.Subject)
-		log.Printf("Body: %s", tm.Message)
+		direktivapps.Log(aid, fmt.Sprintf("Creating new message"))
+		direktivapps.Log(aid, fmt.Sprintf("From: %s", tm.From))
+		direktivapps.Log(aid, fmt.Sprintf("To: %s", tm.To))
+		direktivapps.Log(aid, fmt.Sprintf("Subject: %s", tm.Subject))
+		direktivapps.Log(aid, fmt.Sprintf("Body: %s", tm.Message))
 	}
 
 	m := gomail.NewMessage()
@@ -60,10 +57,14 @@ func main() {
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 	if err := d.DialAndSend(m); err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	// Nothing can be returned
-	direktivapps.WriteOut([]byte{}, g)
+	direktivapps.Respond(w, []byte{})
+
+}
+
+func main() {
+	direktivapps.StartServer(SMTPEmailHandler)
 }

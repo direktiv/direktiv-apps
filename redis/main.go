@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"net/http"
 	"strings"
 
 	"github.com/go-redis/redis/v8"
@@ -21,15 +22,15 @@ type ReturnGetOutput struct {
 	Value string `json:"value"`
 }
 
-func main() {
+var code = "com.redis.error"
 
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.redis.error",
-		ErrorMessage: "",
-	}
-
+func RedisHandler(w http.ResponseWriter, r *http.Request) {
 	obj := new(RedisInput)
-	direktivapps.ReadIn(obj, g)
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	ctx := context.Background()
 	rdb := redis.NewClient(&redis.Options{
@@ -46,16 +47,16 @@ func main() {
 		values := obj.Values.(string)
 		val, err := rdb.Get(ctx, values).Result()
 		if err != nil {
-			g.ErrorMessage = err.Error()
-			direktivapps.WriteError(g)
+			direktivapps.RespondWithError(w, code, err.Error())
+			return
 		}
 		rgo := &ReturnGetOutput{
 			Value: val,
 		}
 		data, err = json.Marshal(rgo)
 		if err != nil {
-			g.ErrorMessage = err.Error()
-			direktivapps.WriteError(g)
+			direktivapps.RespondWithError(w, code, err.Error())
+			return
 		}
 	case "set":
 		values := obj.Values.([]interface{})
@@ -64,11 +65,15 @@ func main() {
 
 			err := rdb.Set(ctx, split[0], split[1], 0).Err()
 			if err != nil {
-				g.ErrorMessage = err.Error()
-				direktivapps.WriteError(g)
+				direktivapps.RespondWithError(w, code, err.Error())
+				return
 			}
 		}
 	}
 
-	direktivapps.WriteOut(data, g)
+	direktivapps.Respond(w, data)
+}
+
+func main() {
+	direktivapps.StartServer(RedisHandler)
 }

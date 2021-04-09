@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/streadway/amqp"
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
@@ -22,21 +23,28 @@ func failOnError(g direktivapps.ActionError, err error, msg string) {
 	}
 }
 
-func main() {
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.rabbitmq.error",
-		ErrorMessage: "",
+var code = "com.rabbitmq.error"
+
+func RabbitMQHandler(w http.ResponseWriter, r *http.Request) {
+	obj := new(RabbitMQInput)
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	obj := new(RabbitMQInput)
-	direktivapps.ReadIn(obj, g)
-
 	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s/", obj.Username, obj.Password, obj.Address))
-	failOnError(g, err, "Failed to connect to RabbitMq")
+	if err != nil {
+		direktivapps.RespondWithError(w, code, "Failed to connect to RabbitMq")
+		return
+	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
-	failOnError(g, err, "Failed to open a channel")
+	if err != nil {
+		direktivapps.RespondWithError(w, code, "Failed to open a channel")
+		return
+	}
 
 	q, err := ch.QueueDeclare(
 		obj.Queue, // name
@@ -46,7 +54,10 @@ func main() {
 		false,     // no-wait
 		nil,       //arguments
 	)
-	failOnError(g, err, "Failed to declare a queue")
+	if err != nil {
+		direktivapps.RespondWithError(w, code, "Failed to declare a queue")
+		return
+	}
 
 	err = ch.Publish(
 		"",     // exchange
@@ -58,7 +69,14 @@ func main() {
 			Body:        []byte(obj.Message),
 		},
 	)
-	failOnError(g, err, "Failed to publish a message")
+	if err != nil {
+		direktivapps.RespondWithError(w, code, "Failed to publish a message")
+		return
+	}
 
-	direktivapps.WriteOut([]byte{}, g)
+	direktivapps.Respond(w, []byte{})
+}
+
+func main() {
+	direktivapps.StartServer(RabbitMQHandler)
 }

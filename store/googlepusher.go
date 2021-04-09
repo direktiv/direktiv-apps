@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"crypto/tls"
-	"log"
+	"fmt"
 	"net/http"
 
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
@@ -20,6 +20,8 @@ type GoogleServiceAccount struct {
 	TokenURI    string `json:"token_uri"`
 }
 
+const code = "com.store.error"
+
 // GoogleInput takes the data required to talk to the sheets API
 type GoogleInput struct {
 	Authentication GoogleServiceAccount `json:"authentication"`
@@ -32,15 +34,14 @@ type GoogleInput struct {
 // AuthURL the api used to grant authentication
 const AuthURL = "https://www.googleapis.com/auth/spreadsheets"
 
-func main() {
-
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.store.error",
-		ErrorMessage: "",
-	}
-
+func WriteToSpreadsheet(w http.ResponseWriter, r *http.Request) {
 	obj := new(GoogleInput)
-	direktivapps.ReadIn(obj, g)
+
+	aid, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	conf := &jwt.Config{
 		Email:      obj.Authentication.ClientEmail,
@@ -60,32 +61,38 @@ func main() {
 
 	client := conf.Client(ctx)
 	if obj.Debug {
-		log.Printf("JWT has been created and verified")
+		direktivapps.Log(aid, "JWT has been created and verified")
 	}
 
 	service, err := sheets.New(client)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	if obj.Debug {
-		log.Printf("Create new sheets service")
+		direktivapps.Log(aid, "Create a new sheets service")
 	}
+
 	var vr sheets.ValueRange
 	writeRange := obj.Range
 	vr.Values = append(vr.Values, obj.Values)
 
 	if obj.Debug {
-		log.Printf("Appending new sheet values")
-		log.Printf("Writing %v", vr.Values)
+		direktivapps.Log(aid, "Appending new sheet values")
+		direktivapps.Log(aid, fmt.Sprintf("Writing %v", vr.Values))
 	}
 
 	_, err = service.Spreadsheets.Values.Append(obj.SpreadsheetID, writeRange, &vr).ValueInputOption("RAW").Do()
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	direktivapps.WriteOut([]byte{}, g)
+	direktivapps.Respond(w, []byte{})
+
+}
+
+func main() {
+	direktivapps.StartServer(WriteToSpreadsheet)
 }

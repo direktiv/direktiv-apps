@@ -4,5 +4,5 @@ go 1.15
 
 require (
 	github.com/influxdata/influxdb-client-go/v2 v2.2.2 // indirect
-	github.com/vorteil/direktiv-apps v0.0.0-20210315024140-bf65c6a34e93 // indirect
+	github.com/vorteil/direktiv-apps v0.0.0-20210408031041-3442505a3984 // indirect
 )

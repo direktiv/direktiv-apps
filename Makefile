@@ -21,10 +21,8 @@ build-singular:
 .PHONY: all
 all:
 	echo "building all containers with version ${VERSION}"
-	@for f in $(shell ls ${MYDIR} -I pkg -I Makefile -I readme.md -I docker-pushrm_linux_amd64); do \
-		docker build $${f} --tag ${REPOSITORY}/$${f}:latest; \
+	@for f in $(shell ls ${MYDIR} -I pkg -I Makefile -I readme.md -I docker-pushrm_linux_amd64 -I cli); do \
 		docker build $${f} --tag ${REPOSITORY}/$${f}:${VERSION}; \
-		docker push ${REPOSITORY}/$${f}:latest; \
 		docker push ${REPOSITORY}/$${f}:${VERSION}; \
 		cd $${f}; \
 		docker pushrm docker.io/${REPOSITORY}/$${f}; \

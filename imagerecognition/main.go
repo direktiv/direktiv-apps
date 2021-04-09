@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
+	"net/http"
 
 	vision "cloud.google.com/go/vision/apiv1"
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
@@ -23,38 +24,37 @@ type Details struct {
 	Violence    visionpb.Likelihood `json:"violenceLikelihood"`
 }
 
-const credFile = "/tmp/creds"
+const credFile = "/creds"
+const code = "com.imagerecognition.error"
 
-func main() {
-
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.imagerecognition.error",
-		ErrorMessage: "",
-	}
-	var err error
+func ImageRecognition(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
-	obj := new(VisionAPIRecognition)
 
-	direktivapps.ReadIn(obj, g)
+	obj := new(VisionAPIRecognition)
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	err = ioutil.WriteFile(credFile, []byte(obj.ServiceAccountKey), 0777)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	visionClient, err := vision.NewImageAnnotatorClient(ctx, option.WithCredentialsFile(credFile))
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	img := vision.NewImageFromURI(obj.URL)
 
 	resp, err := visionClient.DetectSafeSearch(ctx, img, nil)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	var sfw bool
@@ -72,5 +72,9 @@ func main() {
 		Racy:        resp.GetRacy(),
 	})
 
-	direktivapps.WriteOut(detailData, g)
+	direktivapps.Respond(w, detailData)
+}
+
+func main() {
+	direktivapps.StartServer(ImageRecognition)
 }

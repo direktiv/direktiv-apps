@@ -28,46 +28,52 @@ type TwilioMessage struct {
 	To          string `json:"to"`          // who we sending to
 }
 
-func main() {
+var code = "com.twilio.error"
 
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.twilio.error",
-		ErrorMessage: "",
+func TwilioMessageHandler(w http.ResponseWriter, r *http.Request) {
+	tm := new(TwilioMessage)
+	aid, err := direktivapps.Unmarshal(tm, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	tm := new(TwilioMessage)
-	direktivapps.ReadIn(tm, g)
 	var response []byte
-	var err error
+
 	switch tm.TypeOf {
 	case "email":
 		if tm.Debug {
-			log.Printf("Sending email")
+			direktivapps.Log(aid, "Sending Email")
 		}
-		response, err = SendEmail(tm)
+		response, err = SendEmail(tm, aid)
 		if err != nil {
-			g.ErrorMessage = err.Error()
-			direktivapps.WriteError(g)
+			direktivapps.RespondWithError(w, code, err.Error())
+			return
 		}
 	case "sms":
 		if tm.Debug {
-			log.Printf("Sending sms")
+			direktivapps.Log(aid, "Sending SMS")
 		}
-		response, err = SendSMS(tm)
+		response, err = SendSMS(tm, aid)
 		if err != nil {
-			g.ErrorMessage = err.Error()
-			direktivapps.WriteError(g)
+			direktivapps.RespondWithError(w, code, err.Error())
+			return
 		}
 	default:
-		g.ErrorMessage = fmt.Errorf("'%s' is not a valid type to use the twilio application", tm.TypeOf).Error()
-		direktivapps.WriteError(g)
+		errs := fmt.Errorf("'%s' is not a valid type to use the twilio application", tm.TypeOf).Error()
+		direktivapps.RespondWithError(w, code, errs)
+		return
 	}
 
-	direktivapps.WriteOut(response, g)
+	direktivapps.Respond(w, response)
+}
+
+func main() {
+	direktivapps.StartServer(TwilioMessageHandler)
 }
 
 // SendEmail sends a message to the provided email from the input json
-func SendEmail(tm *TwilioMessage) ([]byte, error) {
+func SendEmail(tm *TwilioMessage, aid string) ([]byte, error) {
 
 	from := mail.NewEmail("", tm.From)
 	subject := tm.Subject
@@ -82,7 +88,7 @@ func SendEmail(tm *TwilioMessage) ([]byte, error) {
 	}
 
 	if tm.Debug {
-		log.Printf("Send to %s\n From %s\n  Body %s", tm.To, tm.From, tm.Message)
+		direktivapps.Log(aid, fmt.Sprintf("Send to %s\n From %s\n  Body %s", tm.To, tm.From, tm.Message))
 	}
 
 	req, _ := http.NewRequest("POST", "https://api.sendgrid.com/v3/mail/send", b)
@@ -104,7 +110,7 @@ func SendEmail(tm *TwilioMessage) ([]byte, error) {
 	}
 
 	if tm.Debug {
-		log.Printf("Response Body: %s", br)
+		direktivapps.Log(aid, fmt.Sprintf("Response Body: %s", br))
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
@@ -116,7 +122,7 @@ func SendEmail(tm *TwilioMessage) ([]byte, error) {
 }
 
 // SendSMS sends a sms to the provided mobile number from the input json
-func SendSMS(tm *TwilioMessage) ([]byte, error) {
+func SendSMS(tm *TwilioMessage, aid string) ([]byte, error) {
 	urlStr := fmt.Sprintf("https://api.twilio.com/2010-04-01/Accounts/%s/Messages.json", tm.Sid)
 	msgData := url.Values{}
 	msgData.Set("To", tm.To)
@@ -124,8 +130,9 @@ func SendSMS(tm *TwilioMessage) ([]byte, error) {
 	msgData.Set("Body", tm.Message)
 
 	if tm.Debug {
-		log.Printf("Send to %s\nFrom %s\n Body: %s", tm.To, tm.From, tm.Message)
+		direktivapps.Log(aid, fmt.Sprintf("Send to %s\nFrom %s\n Body: %s", tm.To, tm.From, tm.Message))
 	}
+
 	msgDataReader := *strings.NewReader(msgData.Encode())
 
 	client := &http.Client{
