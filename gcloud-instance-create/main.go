@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
+	"net/http"
 	"text/template"
 	"time"
 
@@ -103,25 +103,30 @@ const (
 	  }`
 )
 
-func main() {
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.gcloud-instance-create.error",
-		ErrorMessage: "",
-	}
+const code = "com.gcloud-instance-create.error"
 
+func main() {
+	direktivapps.StartServer(GCPComputeCreate)
+}
+
+func GCPComputeCreate(w http.ResponseWriter, r *http.Request) {
 	obj := new(InputInstanceDetails)
-	direktivapps.ReadIn(obj, g)
+	aid, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	// Validate Input
 	v := validator.CreateValidator()
 
 	if missingFields := v.ValidateRequired(obj); len(missingFields) > 0 {
 		for _, mf := range missingFields {
-			log.Printf("Input Error: %s is required\n", mf)
+			direktivapps.Log(aid, fmt.Sprintf("Input Error: %s is required\n", mf))
 		}
 
-		g.ErrorMessage = fmt.Sprintf("Invalid input: Fields [%s] are required", strings.Join(missingFields, ","))
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("Invalid input: Fields [%s] are required", strings.Join(missingFields, ",")))
+		return
 	}
 
 	// Load Defaults
@@ -137,8 +142,8 @@ func main() {
 	if i := strings.LastIndex(obj.Zone, "-"); i > 0 {
 		obj.Region = obj.Zone[:i]
 	} else {
-		g.ErrorMessage = fmt.Sprintf("Potentially invalid Zone: could not extract region from inputted zone \"%s\"", obj.Zone)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("Potentially invalid Zone: could not extract region from inputted zone \"%s\"", obj.Zone))
+		return
 	}
 
 	// Format Tags
@@ -153,22 +158,22 @@ func main() {
 	// Create request body from template
 	t, err := template.New("gcp").Parse(GCP_RequestBody)
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("Failed to parse GCP Request: %v", err)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("Failed to parse GCP Request: %v", err))
+		return
 	}
 
 	var reqBody bytes.Buffer
 	err = t.Execute(&reqBody, obj)
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("Failed to create GCP Request: %v", err)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("Failed to create GCP Request: %v", err))
+		return
 	}
 
 	// Create client
 	conf, err := google.JWTConfigFromJSON([]byte(obj.ServiceAccountKey), GCP_AuthURL)
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("Failed to create GCP JWT from service account key: %v", err)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("Failed to create GCP JWT from service account key: %v", err))
+		return
 	}
 
 	ctx := context.Background()
@@ -181,21 +186,21 @@ func main() {
 	requestURL := fmt.Sprintf("https://www.googleapis.com/compute/v1/projects/%s/zones/%s/instances", obj.Project, obj.Zone)
 	resp, err := client.Post(requestURL, "application/json", bytes.NewReader(reqBody.Bytes()))
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("GCP Request failed: %v", err)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("GCP Request failed: %v", err))
+		return
 	}
 	defer resp.Body.Close()
 
 	bytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("GCP Request, could not read response: %v", err)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("GCP Request, could not read response: %v", err))
+		return
 	}
 
 	if resp.StatusCode != 200 {
-		g.ErrorMessage = fmt.Sprintf("GCP Request completed with errors. Response:\n%s\n", string(bytes))
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("GCP Request completed with errors. Response:\n%s\n", string(bytes)))
+		return
 	}
 
-	direktivapps.WriteOut(bytes, g)
+	direktivapps.Respond(w, bytes)
 }

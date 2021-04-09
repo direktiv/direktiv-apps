@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"io"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"time"
 
@@ -22,47 +23,52 @@ type GoogleUploadBlob struct {
 }
 
 const credFile = "/tmp/creds"
+const code = "com.google-upload.error"
 
 func main() {
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.google-upload.error",
-		ErrorMessage: "",
-	}
+	direktivapps.StartServer(GoogleUpload)
+}
+
+func GoogleUpload(w http.ResponseWriter, r *http.Request) {
 
 	obj := new(GoogleUploadBlob)
-	direktivapps.ReadIn(obj, g)
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 	ctx := context.Background()
 
-	err := ioutil.WriteFile(credFile, []byte(obj.ServiceAccountKey), 0777)
+	err = ioutil.WriteFile(credFile, []byte(obj.ServiceAccountKey), 0777)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	client, err := storage.NewClient(ctx, option.WithCredentialsFile(credFile))
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	defer client.Close()
 
 	decoded, err := base64.StdEncoding.DecodeString(obj.Data)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	err = ioutil.WriteFile(obj.Object, decoded, 0700)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	f, err := os.Open(obj.Object)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	defer f.Close()
@@ -71,13 +77,13 @@ func main() {
 
 	wc := client.Bucket(obj.Bucket).Object(obj.Object).NewWriter(ctx)
 	if _, err = io.Copy(wc, f); err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 	if err := wc.Close(); err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	direktivapps.WriteOut([]byte{}, g)
+	direktivapps.Respond(w, []byte{})
 }

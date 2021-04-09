@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"net/http"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -20,17 +21,19 @@ type LambdaInvocation struct {
 	Body     map[string]interface{} `json:"body"`
 }
 
+const code = "com.lambdainvoke.error"
+
 func main() {
+	direktivapps.StartServer(Lambda)
+}
 
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.lambdainvoke.error",
-		ErrorMessage: "",
-	}
-
-	var err error
-
+func Lambda(w http.ResponseWriter, r *http.Request) {
 	obj := new(LambdaInvocation)
-	direktivapps.ReadIn(obj, g)
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	// Start new aws session using default authentication handlers
 	sess := session.New()
@@ -45,16 +48,16 @@ func main() {
 	if obj.Body != nil {
 		payload, err = json.Marshal(obj.Body)
 		if err != nil {
-			g.ErrorMessage = err.Error()
-			direktivapps.WriteError(g)
+			direktivapps.RespondWithError(w, code, err.Error())
+			return
 		}
 	}
 
 	result, err := client.Invoke(&lambda.InvokeInput{FunctionName: aws.String(obj.Function), Payload: payload})
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	direktivapps.WriteOut([]byte(result.Payload), g)
+	direktivapps.Respond(w, []byte(result.Payload))
 }

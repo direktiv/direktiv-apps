@@ -18,7 +18,7 @@ id: aws-stop-ec2-instance
 description: "Stop a ec2 instance"
 functions:
 - id: awsStopInstance
-  image: vorteil/aws-ec2-stop:v2
+  image: vorteil/aws-ec2-stop:v1
   size: medium
 states:
 - id: stopInstance

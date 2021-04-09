@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 	"golang.org/x/text/language"
@@ -25,34 +26,39 @@ type OutputMessage struct {
 	Message string `json:"message"`
 }
 
-func main() {
+const code = "com.google-translator.error"
 
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.google-translator.error",
-		ErrorMessage: "",
-	}
+func main() {
+	direktivapps.StartServer(GoogleTranslate)
+}
+
+func GoogleTranslate(w http.ResponseWriter, r *http.Request) {
 
 	obj := new(InputTranslatorGoogle)
-	direktivapps.ReadIn(obj, g)
+	aid, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	ctx := context.Background()
 
-	err := ioutil.WriteFile(credFile, []byte(obj.ServiceAccountKey), 0777)
+	err = ioutil.WriteFile(credFile, []byte(obj.ServiceAccountKey), 0777)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	lang, err := language.Parse(obj.TargetLanguage)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	client, err := translate.NewClient(ctx, option.WithCredentialsFile(credFile))
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 	defer client.Close()
 
@@ -60,23 +66,23 @@ func main() {
 		Format: "text",
 	})
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 	if len(resp) == 0 {
-		g.ErrorMessage = "Translate returned empty response."
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, "Translate returned empty response.")
+		return
 	}
 
 	var output OutputMessage
-	fmt.Printf("Translated: %v\n", resp[0].Text)
+	direktivapps.Log(aid, fmt.Sprintf("Translated: %v\n", resp[0].Text))
 	output.Message = resp[0].Text
 
 	data, err := json.Marshal(output)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	direktivapps.WriteOut(data, g)
+	direktivapps.Respond(w, data)
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"net/http"
 
 	"io/ioutil"
 
@@ -17,27 +18,32 @@ type GCPLogging struct {
 	LogName           string `json:"log-name"`
 }
 
+const code = "com.gcplog.error"
+
 func main() {
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.gcplog.error",
-		ErrorMessage: "",
+	direktivapps.StartServer(GCPLog)
+}
+
+func GCPLog(w http.ResponseWriter, r *http.Request) {
+	obj := new(GCPLogging)
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	obj := new(GCPLogging)
-	direktivapps.ReadIn(obj, g)
-
-	err := ioutil.WriteFile("/tmp/key.json", []byte(obj.ServiceAccountKey), 0644)
+	err = ioutil.WriteFile("/tmp/key.json", []byte(obj.ServiceAccountKey), 0644)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 	ctx := context.Background()
 
 	// create a gcp logging client
 	client, err := logging.NewClient(ctx, obj.ProjectID, option.WithCredentialsFile("/tmp/key.json"))
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 	logger := client.Logger(obj.LogName).StandardLogger(logging.Info)
 
@@ -45,5 +51,5 @@ func main() {
 	client.Close()
 
 	// Write empty to notified its finished
-	direktivapps.WriteOut([]byte{}, g)
+	direktivapps.Respond(w, []byte{})
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os/exec"
 
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
@@ -15,63 +16,66 @@ type InputContainerDetails struct {
 	Project           string   `json:"project"`
 }
 
+const code = "com.googlecli.error"
+
 func main() {
+	direktivapps.StartServer(GCloud)
+}
 
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.googlecli.error",
-		ErrorMessage: "",
-	}
-
+func GCloud(w http.ResponseWriter, r *http.Request) {
 	obj := new(InputContainerDetails)
-	direktivapps.ReadIn(obj, g)
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	// json format flag
 	obj.Command = append(obj.Command, `--format="json"`)
 
 	if obj.Project == "" {
-		g.ErrorMessage = "input project cannot be empty"
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, "input project cannot be empty")
+		return
 	}
 
-	err := ioutil.WriteFile("/key.json", []byte(obj.ServiceAccountKey), 0644)
+	err = ioutil.WriteFile("/key.json", []byte(obj.ServiceAccountKey), 0644)
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("could not write key: %s", err)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("could not write key: %s", err))
+		return
 	}
 
 	cmd := exec.Command("/root/google-cloud-sdk/bin/gcloud", "auth", "activate-service-account", "--key-file", "/key.json")
 	resp, err := cmd.CombinedOutput()
 	if err != nil {
 		if len(resp) > 0 {
-			g.ErrorMessage = fmt.Sprintf("failed auth: %s", resp)
+			direktivapps.RespondWithError(w, code, fmt.Sprintf("failed auth: %s", resp))
 		} else {
-			g.ErrorMessage = fmt.Sprintf("failed auth: %s", err.Error())
+			direktivapps.RespondWithError(w, code, fmt.Sprintf("failed auth: %s", err.Error()))
 		}
-		direktivapps.WriteError(g)
+		return
 	}
 
 	cmd = exec.Command("/root/google-cloud-sdk/bin/gcloud", "config", "set", "project", obj.Project)
 	resp, err = cmd.CombinedOutput()
 	if err != nil {
 		if len(resp) > 0 {
-			g.ErrorMessage = fmt.Sprintf("invalid project: %s", resp)
+			direktivapps.RespondWithError(w, code, fmt.Sprintf("invalid project: %s", resp))
 		} else {
-			g.ErrorMessage = fmt.Sprintf("invalid project: %s", err.Error())
+			direktivapps.RespondWithError(w, code, fmt.Sprintf("invalid project: %s", err.Error()))
 		}
-		direktivapps.WriteError(g)
+		return
 	}
 
 	cmd = exec.Command("/root/google-cloud-sdk/bin/gcloud", obj.Command...)
 	resp, err = cmd.CombinedOutput()
 	if err != nil {
 		if len(resp) > 0 {
-			g.ErrorMessage = fmt.Sprintf("%s", resp)
+			direktivapps.RespondWithError(w, code, fmt.Sprintf("%s", resp))
 		} else {
-			g.ErrorMessage = fmt.Sprintf("%s", err.Error())
+			direktivapps.RespondWithError(w, code, fmt.Sprintf("%s", err.Error()))
 		}
-		direktivapps.WriteError(g)
+		return
 	}
 
-	direktivapps.WriteOut(resp, g)
-
+	direktivapps.Respond(w, resp)
 }

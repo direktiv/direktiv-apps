@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"io/ioutil"
+	"net/http"
 
 	"cloud.google.com/go/pubsub"
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
@@ -17,27 +18,31 @@ type PubSubInput struct {
 	Attributes        map[string]string `json:"attributes"`
 }
 
-func main() {
+const code = "com.google-pubsub.error"
 
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.google-pubsub.error",
-		ErrorMessage: "",
+func main() {
+	direktivapps.StartServer(GooglePubSub)
+}
+
+func GooglePubSub(w http.ResponseWriter, r *http.Request) {
+	obj := new(PubSubInput)
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	obj := new(PubSubInput)
-	direktivapps.ReadIn(obj, g)
-
-	err := ioutil.WriteFile("/tmp/key.json", []byte(obj.ServiceAccountKey), 0700)
+	err = ioutil.WriteFile("/tmp/key.json", []byte(obj.ServiceAccountKey), 0700)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	ctx := context.Background()
 	client, err := pubsub.NewClient(ctx, obj.ProjectID, option.WithCredentialsFile("/tmp/key.json"))
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	topic := client.Topic(obj.TopicID)
@@ -49,5 +54,5 @@ func main() {
 	topic.Stop()
 	client.Close()
 
-	direktivapps.WriteOut([]byte{}, g)
+	direktivapps.Respond(w, []byte{})
 }

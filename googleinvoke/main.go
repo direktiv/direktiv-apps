@@ -35,24 +35,26 @@ type Authentication struct {
 	TokenURI    string `json:"token_uri"`
 }
 
+const code = "com.googleinvoke.error"
+
 func main() {
+	direktivapps.StartServer(GoogleInvoke)
+}
 
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.googleinvoke.error",
-		ErrorMessage: "",
-	}
-
-	var err error
-
+func GoogleInvoke(w http.ResponseWriter, r *http.Request) {
 	obj := new(InputContainerDetails)
-	direktivapps.ReadIn(obj, g)
+	_, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	authentication := &Authentication{}
 	// unmarshal into another struct
 	err = json.Unmarshal([]byte(obj.ServiceAccountKey), authentication)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	conf := &jwt.Config{
@@ -78,36 +80,36 @@ func main() {
 	if obj.Body != nil {
 		payload, err = json.Marshal(obj.Body)
 		if err != nil {
-			g.ErrorMessage = err.Error()
-			direktivapps.WriteError(g)
+			direktivapps.RespondWithError(w, code, err.Error())
+			return
 		}
 	}
 
 	req, err := http.NewRequest(obj.Method, fmt.Sprintf("https://%s-%s.cloudfunctions.net/%s", obj.Region, authentication.ProjectID, obj.Function), bytes.NewReader(payload))
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	defer resp.Body.Close()
 
 	bv, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		// error more than likely
-		g.ErrorMessage = fmt.Sprintf("Response Message: %s, Response Code: %v \nResponseBody: %s", resp.Status, resp.StatusCode, bv)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("Response Message: %s, Response Code: %v \nResponseBody: %s", resp.Status, resp.StatusCode, bv))
+		return
 	}
 
-	direktivapps.WriteOut(bv, g)
+	direktivapps.Respond(w, bv)
 }

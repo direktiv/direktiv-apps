@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"io/ioutil"
@@ -25,36 +24,40 @@ type InputInstanceDetails struct {
 
 // Defaults
 const (
+	code               = "com.gcloud-instance-stop.error"
 	GCP_AuthURL        = "https://www.googleapis.com/auth/compute"
 	GCP_RequestTimeout = 80 * time.Second
 )
 
 func main() {
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.gcloud-instance-stop.error",
-		ErrorMessage: "",
-	}
+	direktivapps.StartServer(GCPComputeStop)
+}
 
+func GCPComputeStop(w http.ResponseWriter, r *http.Request) {
 	obj := new(InputInstanceDetails)
-	direktivapps.ReadIn(obj, g)
+	aid, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	// Validate Input
 	v := validator.CreateValidator()
 
 	if missingFields := v.ValidateRequired(obj); len(missingFields) > 0 {
 		for _, mf := range missingFields {
-			log.Printf("Input Error: %s is required\n", mf)
+			direktivapps.Log(aid, fmt.Sprintf("Input Error: %s is required\n", mf))
 		}
 
-		g.ErrorMessage = fmt.Sprintf("Invalid input: Fields [%s] are required", strings.Join(missingFields, ","))
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("Invalid input: Fields [%s] are required", strings.Join(missingFields, ",")))
+		return
 	}
 
 	// Create client
 	conf, err := google.JWTConfigFromJSON([]byte(obj.ServiceAccountKey), GCP_AuthURL)
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("Failed to create GCP JWT from service account key: %v", err)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("Failed to create GCP JWT from service account key: %v", err))
+		return
 	}
 
 	ctx := context.Background()
@@ -67,27 +70,27 @@ func main() {
 	requestURL := fmt.Sprintf("https://www.googleapis.com/compute/v1/projects/%s/zones/%s/instances/%s/stop", obj.Project, obj.Zone, obj.InstanceID)
 	req, err := http.NewRequest("POST", requestURL, nil)
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("GCP Request creation failed: %v", err)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("GCP Request creation failed: %v", err))
+		return
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("GCP Request failed: %v", err)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("GCP Request failed: %v", err))
+		return
 	}
 	defer resp.Body.Close()
 
 	bytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		g.ErrorMessage = fmt.Sprintf("GCP Request, could not read response: %v", err)
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("GCP Request, could not read response: %v", err))
+		return
 	}
 
 	if resp.StatusCode != 200 {
-		g.ErrorMessage = fmt.Sprintf("GCP Request completed with errors. Response:\n%s\n", string(bytes))
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("GCP Request completed with errors. Response:\n%s\n", string(bytes)))
+		return
 	}
 
-	direktivapps.WriteOut(bytes, g)
+	direktivapps.Respond(w, bytes)
 }

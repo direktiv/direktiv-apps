@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 	"google.golang.org/api/option"
@@ -25,28 +26,32 @@ type SentimentAnalysis struct {
 	Magnitude float32 `json:"magnitude"`
 }
 
+const code = "com.google-sentiment-check.error"
+
 func main() {
+	direktivapps.StartServer(GoogleSentimentCheck)
+}
 
-	g := direktivapps.ActionError{
-		ErrorCode:    "com.google-sentiment-check.error",
-		ErrorMessage: "",
-	}
-
+func GoogleSentimentCheck(w http.ResponseWriter, r *http.Request) {
 	obj := new(InputSentimentAnalysis)
-	direktivapps.ReadIn(obj, g)
+	aid, err := direktivapps.Unmarshal(obj, r)
+	if err != nil {
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
+	}
 
 	ctx := context.Background()
 
-	err := ioutil.WriteFile(credFile, []byte(obj.ServiceAccountKey), 0777)
+	err = ioutil.WriteFile(credFile, []byte(obj.ServiceAccountKey), 0777)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	client, err := language.NewClient(ctx, option.WithCredentialsFile(credFile))
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
 	// Detects the sentiment of the text.
@@ -60,11 +65,11 @@ func main() {
 		EncodingType: languagepb.EncodingType_UTF8,
 	})
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	fmt.Printf("Text being checked: %v\n", obj.Message)
+	direktivapps.Log(aid, fmt.Sprintf("Text being checked: %v\n", obj.Message))
 
 	var outputSentiment SentimentAnalysis
 	outputSentiment.Magnitude = sentiment.DocumentSentiment.Magnitude
@@ -90,9 +95,9 @@ func main() {
 
 	data, err := json.Marshal(outputSentiment)
 	if err != nil {
-		g.ErrorMessage = err.Error()
-		direktivapps.WriteError(g)
+		direktivapps.RespondWithError(w, code, err.Error())
+		return
 	}
 
-	direktivapps.WriteOut(data, g)
+	direktivapps.Respond(w, data)
 }
