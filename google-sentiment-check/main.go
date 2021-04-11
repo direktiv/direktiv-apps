@@ -14,7 +14,7 @@ import (
 	languagepb "google.golang.org/genproto/googleapis/cloud/language/v1"
 )
 
-const credFile = "/tmp/creds"
+const credFile = "/creds"
 
 type InputSentimentAnalysis struct {
 	ServiceAccountKey string `json:"serviceAccountKey"`

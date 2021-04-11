@@ -32,14 +32,14 @@ func GooglePubSub(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = ioutil.WriteFile("/tmp/key.json", []byte(obj.ServiceAccountKey), 0700)
+	err = ioutil.WriteFile("/key.json", []byte(obj.ServiceAccountKey), 0700)
 	if err != nil {
 		direktivapps.RespondWithError(w, code, err.Error())
 		return
 	}
 
 	ctx := context.Background()
-	client, err := pubsub.NewClient(ctx, obj.ProjectID, option.WithCredentialsFile("/tmp/key.json"))
+	client, err := pubsub.NewClient(ctx, obj.ProjectID, option.WithCredentialsFile("/key.json"))
 	if err != nil {
 		direktivapps.RespondWithError(w, code, err.Error())
 		return

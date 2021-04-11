@@ -22,7 +22,7 @@ type GoogleUploadBlob struct {
 	ServiceAccountKey string `json:"serviceAccountKey"`
 }
 
-const credFile = "/tmp/creds"
+const credFile = "/creds"
 const code = "com.google-upload.error"
 
 func main() {
