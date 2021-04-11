@@ -33,6 +33,6 @@ The following action takes a name and responds with a greeting message.
 
 ## Languages
 
-| Language | README |
-| -------- | ------ |
-| golang | [readme](https://github.com/vorteil/direktiv-apps/tree/master/examples/golang) |
+| Language |
+| -------- |
+| [golang](https://github.com/vorteil/direktiv-apps/tree/master/examples/golang) | 
