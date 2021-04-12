@@ -3,36 +3,24 @@ package main
 import (
 	"bytes"
 	"context"
-	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/jwt"
+	"google.golang.org/api/idtoken"
+	"google.golang.org/api/option"
 )
-
-// AuthURL to fetch a new token from for executing cloud functions
-const AuthURL = "https://www.googleapis.com/auth/cloudfunctions"
 
 // InputContainerDetails ...
 type InputContainerDetails struct {
+	ProjectID         string                 `json:"project-id"`
 	Region            string                 `json:"region"`
 	Function          string                 `json:"function"`
 	ServiceAccountKey string                 `json:"serviceAccountKey"`
 	Method            string                 `json:"method"`
 	Body              map[string]interface{} `json:"body"`
-}
-
-// Authentication is the struct to unmarshal the service account key into
-type Authentication struct {
-	Type        string `json:"type"`
-	ProjectID   string `json:"project_id"`
-	PrivateKey  string `json:"private_key"`
-	ClientEmail string `json:"client_email"`
-	TokenURI    string `json:"token_uri"`
 }
 
 const code = "com.googleinvoke.error"
@@ -42,6 +30,7 @@ func main() {
 }
 
 func GoogleInvoke(w http.ResponseWriter, r *http.Request) {
+	// Read In - Input
 	obj := new(InputContainerDetails)
 	_, err := direktivapps.Unmarshal(obj, r)
 	if err != nil {
@@ -49,59 +38,36 @@ func GoogleInvoke(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authentication := &Authentication{}
-	// unmarshal into another struct
-	err = json.Unmarshal([]byte(obj.ServiceAccountKey), authentication)
+	// Create Authenticated Client
+	ctx := context.Background()
+	cloudFuncURL := fmt.Sprintf("https://%s-%s.cloudfunctions.net/%s", obj.Region, obj.ProjectID, obj.Function)
+	client, err := idtoken.NewClient(ctx, cloudFuncURL, option.WithCredentialsJSON([]byte(obj.ServiceAccountKey)))
 	if err != nil {
-		direktivapps.RespondWithError(w, code, err.Error())
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("Failed to create an Authenticated Client: %s", err.Error()))
 		return
 	}
 
-	conf := &jwt.Config{
-		Email:      authentication.ClientEmail,
-		PrivateKey: []byte(authentication.PrivateKey),
-		TokenURL:   authentication.TokenURI,
-		Scopes: []string{
-			AuthURL,
-		},
-	}
-
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	}
-
-	ctx := context.Background()
-	cli := &http.Client{Transport: tr}
-	ctx = context.WithValue(ctx, oauth2.HTTPClient, cli)
-
-	client := conf.Client(ctx)
-
-	var payload []byte
+	// Read In - Cloud Function Payload
+	var cloudFuncPayload []byte
 	if obj.Body != nil {
-		payload, err = json.Marshal(obj.Body)
+		cloudFuncPayload, err = json.Marshal(obj.Body)
 		if err != nil {
 			direktivapps.RespondWithError(w, code, err.Error())
 			return
 		}
 	}
 
-	req, err := http.NewRequest(obj.Method, fmt.Sprintf("https://%s-%s.cloudfunctions.net/%s", obj.Region, authentication.ProjectID, obj.Function), bytes.NewReader(payload))
+	// Create and Send Request
+	resp, err := client.Post(cloudFuncURL, "application/json", bytes.NewReader(cloudFuncPayload))
 	if err != nil {
-		direktivapps.RespondWithError(w, code, err.Error())
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("GCP Request failed: %v", err))
 		return
 	}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		direktivapps.RespondWithError(w, code, err.Error())
-		return
-	}
-
 	defer resp.Body.Close()
 
 	bv, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		direktivapps.RespondWithError(w, code, err.Error())
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("GCP Request, could not read response: %v", err))
 		return
 	}
 
