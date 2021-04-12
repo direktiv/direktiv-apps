@@ -16,7 +16,7 @@ An example workflow of using the container on Direktiv
 id: post-to-slack
 function:
 - id: post
-  image: vorteil/slack
+  image: vorteil/slackmsg
 description: "Send a message to a slack channel"
 states:
 - id: postToSlack
