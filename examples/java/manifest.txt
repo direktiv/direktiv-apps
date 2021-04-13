@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Created-By: vorteil.io
+Main-Class: greeting.Greeting
