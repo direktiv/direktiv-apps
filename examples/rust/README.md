@@ -2,7 +2,7 @@
 
 ## Code
 
-```rs
+```rust
 // src/main.rs
 use actix_web::{App, HttpResponse, HttpServer, Responder, post};
 use actix_web::web::Json;
