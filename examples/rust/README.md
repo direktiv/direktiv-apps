@@ -48,8 +48,6 @@ WORKDIR /usr/src/myapp
 COPY . .
 
 RUN cargo install --path .
-# RUN cargo build --release 
-RUN ls /usr/local/cargo/bin
 # Copy the statically-linked binary into a scratch container.
 FROM debian:buster-slim
 COPY --from=build /usr/local/cargo/bin/greeting /greeting
