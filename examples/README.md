@@ -39,3 +39,4 @@ The following action takes a name and responds with a greeting message.
 | [nodejs](https://github.com/vorteil/direktiv-apps/tree/master/examples/nodejs) |
 | [.NET](https://github.com/vorteil/direktiv-apps/tree/master/examples/dotnet) |
 | [rust](https://github.com/vorteil/direktiv-apps/tree/master/examples/rust) |
+| [python](https://github.com/vorteil/direktiv-apps/tree/master/examples/python) |
