@@ -35,8 +35,8 @@ The following action takes a name and responds with a greeting message.
 
 | Language |
 | -------- |
-| [golang](https://github.com/vorteil/direktiv-apps/tree/master/examples/golang) | 
-| [nodejs](https://github.com/vorteil/direktiv-apps/tree/master/examples/nodejs) |
+| [Golang](https://github.com/vorteil/direktiv-apps/tree/master/examples/golang) | 
+| [NodeJS](https://github.com/vorteil/direktiv-apps/tree/master/examples/nodejs) |
 | [.NET](https://github.com/vorteil/direktiv-apps/tree/master/examples/dotnet) |
-| [rust](https://github.com/vorteil/direktiv-apps/tree/master/examples/rust) |
-| [python](https://github.com/vorteil/direktiv-apps/tree/master/examples/python) |
+| [Rust](https://github.com/vorteil/direktiv-apps/tree/master/examples/rust) |
+| [Python](https://github.com/vorteil/direktiv-apps/tree/master/examples/python) |
