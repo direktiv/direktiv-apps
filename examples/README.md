@@ -31,4 +31,4 @@ Each example demonstrates how to write a basic app in a specific language, and p
 
 | Languages |
 | -------- |
-| [Golang](https://github.com/vorteil/direktiv-apps/tree/master/examples/golang), [NodeJS](https://github.com/vorteil/direktiv-apps/tree/master/examples/nodejs), [.NET](https://github.com/vorteil/direktiv-apps/tree/master/examples/dotnet), [Rust](https://github.com/vorteil/direktiv-apps/tree/master/examples/rust), [Python](https://github.com/vorteil/direktiv-apps/tree/master/examples/python) |
+| [Golang](https://github.com/vorteil/direktiv-apps/tree/master/examples/golang), [NodeJS](https://github.com/vorteil/direktiv-apps/tree/master/examples/nodejs), [.NET](https://github.com/vorteil/direktiv-apps/tree/master/examples/dotnet), [Rust](https://github.com/vorteil/direktiv-apps/tree/master/examples/rust), [Python](https://github.com/vorteil/direktiv-apps/tree/master/examples/python), [Java](https://github.com/vorteil/direktiv-apps/tree/master/examples/java) |
