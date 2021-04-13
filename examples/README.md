@@ -1,8 +1,6 @@
 # Examples to Write a simple 'Greeting' container 
 
-The example will provide you with how to write it in a specific language and the Dockerfile required to build it into a container.
-
-The following Direktiv action takes a name and responds with a greeting message.
+Each example demonstrates how to write a basic app in a specific language, and provides the Dockerfile required to build it into a container. The following Direktiv action takes a name and responds with a greeting:
 
 ## Input
 
