@@ -27,8 +27,7 @@ Each example demonstrates how to write a basic app in a specific language, and p
 }
 ```
 
-**NOTE** '%s' in the errorCode is based on what is currently happening in the container.
-
+***NOTE:*** The '%s' will be replaced by a more appropriate message depending on the nature of the error encountered.
 
 | Languages |
 | -------- |
