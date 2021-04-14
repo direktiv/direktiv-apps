@@ -2,3 +2,11 @@
 
 !.direktiv/*.json
 !.direktiv/.templates/*.json
+
+!examples/nodejs/*.json
+!examples/dotnet/*.json
+!examples/dotnet/Properties/*.json
+
+
+examples/rust/target
+node_modules

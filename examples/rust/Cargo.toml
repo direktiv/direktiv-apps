@@ -1,0 +1,15 @@
+[package]
+name = "greeting"
+version = "0.1.0"
+authors = ["trentis <trent.hilliam@vorteil.io>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-web = "2.0"
+actix-rt = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+
+# serde_json is just for the example, not required in general
+serde_json = "1.0"
