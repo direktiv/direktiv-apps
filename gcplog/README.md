@@ -36,9 +36,17 @@ The input needed to run the above workflow properly is the following:
     "serviceAccountKey": .secrets.SERVICEACCOUNTKEY,
     "message": "hello",
     "project-id": "direktiv",
-    "log-name": "NameOfLog"
+    "log-name": "NameOfLog",
+    "log-level": "Info",
 }
 ```
+
+## Input Optional - Log Level
+The field `log-level` is an optional field to set the serverity level of the log being sent.
+
+If the field `log-level` is omitted it will be set to the GCP Log Level Default.
+
+The supported GCP log levels are: "Default", "Debug", "Info", "Notice", "Warning", "Error", "Critical", "Alert", "Emergency"
 
 ## Output
 
