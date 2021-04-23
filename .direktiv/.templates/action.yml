@@ -1,7 +1,7 @@
 id: httpget
 functions:
 - id: httprequest
-  image: vorteil/request:v1
+  image: vorteil/request:v2
 states:
 - id: getter 
   type: action
