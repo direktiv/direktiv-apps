@@ -18,7 +18,7 @@ id: test2
 description: "" 
 functions:
 - id: es
-  image: trentis/elasticsearch
+  image: vorteil/elasticsearch:v2
 states:
 - id: hello
   type: action

@@ -17,7 +17,7 @@ An example workflow of listing the account data tied to my service account princ
 id: get-account-data
 functions:
 - id: post
-  image: vorteil/azgo
+  image: vorteil/azgo:v2
 description: "Displays account information about your azure account"
 states:
 - id: listAccountInfo

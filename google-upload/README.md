@@ -17,7 +17,7 @@ An example workflow of uploading a base64 encoded string to Google.
 id: upload-object
 functions:
 - id: upload
-  image: vorteil/google-upload:v1
+  image: vorteil/google-upload:v2
 description: "Uploads a base64 encoded string to bucket storage"
 states:
 - id: upload-file

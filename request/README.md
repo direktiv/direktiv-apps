@@ -17,7 +17,7 @@ An example workflow of using the container in a workflow on Direktiv.
 id: request
 functions:
 - id: myrequest
-  image: vorteil/request
+  image: vorteil/request:v2
 description: "send a get request" 
 states:
 - id: hello

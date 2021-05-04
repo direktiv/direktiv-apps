@@ -16,7 +16,7 @@ An example workflow of using the container on Direktiv.
 id: check-image
 functions:
 - id: check
-  image: vorteil/imagerecognition
+  image: vorteil/imagerecognition:v2
 description: "Evaluates an image using Google Vision API"
 states:
 - id: checkImage

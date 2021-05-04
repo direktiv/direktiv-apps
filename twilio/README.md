@@ -16,7 +16,7 @@ An example workflow of using the container in a workflow on Direktiv.
 id: send-approval
 functions:
 - id: send
-  image: vorteil/twilio
+  image: vorteil/twilio:v2
 description: "Sends a sms to provided number" 
 states:
 - id: fire
@@ -42,7 +42,7 @@ states:
 ```json
     {
         "typeof"        : "email",
-        "token"         : "TOKEN_STIRNG",
+        "token"         : "TOKEN_STRING",
         "subject"       : "Subject Header of Email",
         "message"       : "Normal string message",
         "htmlMessage"   : "<html><body><h5>HI</h5></body></html",

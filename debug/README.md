@@ -17,7 +17,7 @@ An example workflow of using the container on direktiv
 id: debugging
 functions:
 - id: debug
-  image: vorteil/debug
+  image: vorteil/debug:v2
 description: "Prints all input the container receives"
 states:
 - id: print

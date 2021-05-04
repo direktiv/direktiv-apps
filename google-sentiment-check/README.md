@@ -17,7 +17,7 @@ An example workflow of reading the sentiment of a text message.
 id: read-message
 functions:
 - id: read
-  image: vorteil/google-sentiment-check
+  image: vorteil/google-sentiment-check:v2
 states:
 - id: readmsg
   type: action

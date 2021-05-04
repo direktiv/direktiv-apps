@@ -15,7 +15,7 @@ Executes a cloud function on google using a client authenticated via a service a
 id: invoke-function
 functions:
 - id: invoke
-  image: vorteil/googleinvoke
+  image: vorteil/googleinvoke:v2
 description: "Invokes a cloud function based on the given details"
 states:
 - id: invoke-cloud

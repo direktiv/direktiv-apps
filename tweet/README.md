@@ -17,7 +17,7 @@ An example workflow of using the container on Direktiv
 id: tweet-message
 function: 
 - id: tweet
-  image: vorteil/tweet
+  image: vorteil/tweet:v2
 description: "Tweet a message"
 states:
 - id: postATweet

@@ -15,7 +15,7 @@ Executes a cloud function on azure using the function name, function app and fun
 id: invoke-function
 functions:
 - id: invoke
-  image: vorteil/azinvoke
+  image: vorteil/azinvoke:v2
 description: "Invokes a cloud function based on the given details"
 states:
 - id: invoke-cloud

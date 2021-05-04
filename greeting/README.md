@@ -17,7 +17,7 @@ An example workflow of using the container in a workflow on Direktiv.
 id: greeting
 functions: 
 - id: greetingFunction
-  image: vorteil/greeting
+  image: vorteil/greeting:v2
 states:
 - id: Greet
   type: action
