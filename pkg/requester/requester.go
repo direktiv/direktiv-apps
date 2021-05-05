@@ -2,6 +2,7 @@ package requester
 
 import (
 	"bytes"
+	b64 "encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -20,11 +21,13 @@ type Manager struct {
 
 // Request is the struct we unmarshal the JSON input
 type Request struct {
-	Method  string                 `json:"method"`
-	URL     string                 `json:"url"`
-	Debug   bool                   `json:"debug"`
-	Body    map[string]interface{} `json:"body"`
-	Headers map[string]interface{} `json:"headers"`
+	Method   string                 `json:"method"`
+	URL      string                 `json:"url"`
+	Debug    bool                   `json:"debug"`
+	Body     map[string]interface{} `json:"body"`
+	Headers  map[string]interface{} `json:"headers"`
+	Username string                 `json:"username"`
+	Password string                 `json:"password"`
 }
 
 // Create initializes the http client
@@ -73,6 +76,12 @@ func (m *Manager) Create(aid string) error {
 		}
 		// Adding a header requires it to be a string so might as well sprintf
 		m.req.Header.Add(k, actualVal)
+	}
+
+	// Handle basic authentication.
+	if m.Request.Username != "" && m.Request.Password != "" {
+		sEnc := b64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", m.Request.Username, m.Request.Password)))
+		m.req.Header.Add("Authorization", fmt.Sprintf("Basic %s", sEnc))
 	}
 
 	return nil
