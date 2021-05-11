@@ -16,28 +16,19 @@ const (
 	errorOut = "/direktiv-data/error.json"
 )
 
+type SolveExpression struct {
+	Expression string `json:"x"`
+}
+
 func Solve(w http.ResponseWriter, r *http.Request) {
-	obj := make(map[string]interface{})
+	obj := new(SolveExpression)
 	_, err := direktivapps.Unmarshal(obj, r)
 	if err != nil {
 		direktivapps.RespondWithError(w, code, err.Error())
 		return
 	}
 
-	var expressionString string
-
-	if e, ok := obj["x"]; ok {
-		expressionString, ok = e.(string)
-		if !ok {
-			direktivapps.RespondWithError(w, code, err.Error())
-			return
-		}
-	} else {
-		direktivapps.RespondWithError(w, code, err.Error())
-		return
-	}
-
-	expression, err := govaluate.NewEvaluableExpression(expressionString)
+	expression, err := govaluate.NewEvaluableExpression(obj.Expression)
 	if err != nil {
 		direktivapps.RespondWithError(w, code, err.Error())
 		return
