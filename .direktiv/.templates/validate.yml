@@ -1,0 +1,35 @@
+id: validate
+description: A simple 'validate' state workflow that checks an email
+states:
+- id: data
+  type: noop
+  transform: |
+    {
+      email: "trent.hilliam@vorteil.io"
+    }
+  transition: ValidateEmail
+- id: ValidateEmail
+  type: validate
+  subject: .
+  schema:
+    type: object
+    properties:
+      email:
+        type: string
+        format: email
+  catch:
+  - error: direktiv.schema.*
+    transition: EmailNotValid 
+  transition: EmailValid
+- id: EmailNotValid
+  type: noop
+  transform: |
+    {
+      result: "Email is not valid."
+    }
+- id: EmailValid
+  type: noop
+  transform: |
+    {
+      result: "Email is valid."
+    }

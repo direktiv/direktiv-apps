@@ -1,0 +1,6 @@
+id: delay
+description: A simple 'delay' state that waits for 5 seconds
+states:
+- id: delay
+  type: delay
+  duration: PT5S

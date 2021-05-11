@@ -1,13 +1,15 @@
-id: httpget
+id: action
+description: A simple 'action' state that sends a get request"
 functions:
-- id: httprequest
+- id: get
   image: vorteil/request:v2
 states:
 - id: getter 
   type: action
   action:
-    function: httprequest
-    input: '{
-      "method": "GET",
-      "url": "https://www.example.com/",
-    }'
+    function: get
+    input: |
+      {
+        "method": "GET",
+        "url": "https://jsonplaceholder.typicode.com/todos/1",
+      }

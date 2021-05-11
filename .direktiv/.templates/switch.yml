@@ -1,0 +1,28 @@
+id: switch
+description: A simple 'switch' state that checks whether the age provided is older than 18.
+states:
+- id: data
+  type: noop
+  transform: | 
+    { 
+      age: "27" 
+    }
+  transition: check
+- id: check
+  type: switch
+  conditions:
+  - condition: '.age > 18'
+    transition: olderthan18
+  defaultTransition: youngerthan18
+- id: olderthan18
+  type: noop
+  transform: |
+    {
+      result: "You are older than 18."
+    }
+- id: youngerthan18
+  type: noop
+  transform: |
+    {
+      result: "You are younger than 18."
+    }

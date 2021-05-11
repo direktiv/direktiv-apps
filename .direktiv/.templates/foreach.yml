@@ -1,0 +1,26 @@
+id: foreach
+description: A simple 'foreach' state that solves expressions
+functions: 
+- id: solve
+  image: vorteil/solve:v2
+states:
+- id: data
+  type: noop
+  transform: | 
+    { 
+      expressions: ["4+10", "15-14", "100*3","200/2"] 
+    }
+  transition: solve
+- id: solve
+  type: foreach
+  array: '.expressions[] | { expression: . }'
+  action:
+    function: solve
+    input: |
+      {
+        "x": .expression
+      }
+  transform: |
+    {
+      solved: .return
+    }

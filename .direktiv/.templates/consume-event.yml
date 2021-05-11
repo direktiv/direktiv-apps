@@ -1,0 +1,21 @@
+id: consume-event
+functions:
+- id: greeter
+  image: vorteil/greeting:v2
+description: A simple 'consumeEvent' state that listens for the greetingcloudevent generated from the template 'generate-event'.
+states:
+- id: ce
+  type: consumeEvent
+  event:
+    type: greetingcloudevent
+  timeout: PT1H
+  transition: greet
+- id: greet
+  type: action
+  action:
+    function: greeter
+    input: .greetingcloudevent
+  transform: |
+    {
+      greeting: .return.greeting
+    }

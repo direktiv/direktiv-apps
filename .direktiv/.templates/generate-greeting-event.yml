@@ -1,0 +1,12 @@
+id: generate-greeting-event
+description: A simple 'generateEvent' state that sends data to a greeting listener.
+states:
+- id: generate
+  type: generateEvent
+  event:
+    type: greetingcloudevent
+    source: Direktiv
+    data: |
+      {
+        name: "Trent"
+      }

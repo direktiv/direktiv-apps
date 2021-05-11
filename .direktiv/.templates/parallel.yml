@@ -1,0 +1,32 @@
+id: parallel
+description: A simple 'parallel' state workflow that runs solve container to solve expressions.
+functions: 
+- id: solve
+  image: vorteil/solve:v2
+states:
+- id: run
+  type: parallel
+  actions:
+  - function: solve
+    input: |
+      {
+        x: "10*2"
+      }
+  - function: solve
+    input: |
+      {
+        x: "10%2"
+      }
+  - function: solve
+    input: |
+      {
+        x: "10-2"
+      }
+  - function: solve
+    input: |
+      {
+        x: "10+2"
+      }
+  # Mode 'and' waits for all actions to be completed
+  # Mode 'or' waits for the first action to be completed
+  mode: and

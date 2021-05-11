@@ -1,0 +1,36 @@
+id: event-xor
+functions:
+- id: greeter
+  image: vorteil/greeting:v2
+- id: solve2
+  image: vorteil/solve:v2
+description: A simple 'eventXor' that waits for events to be received.
+states:
+- id: event-xor
+  type: eventXor
+  timeout: PT1H
+  events:
+  - event: 
+      type: solveexpressioncloudevent
+    transition: solve
+  - event: 
+      type: greetingcloudevent
+    transition: greet
+- id: greet
+  type: action
+  action:
+    function: greeter
+    input: .greetingcloudevent
+  transform: |
+    {
+      greeting: .return.greeting,
+    }
+- id: solve
+  type: action
+  action:
+    function: solve2
+    input: .solveexpressioncloudevent
+  transform: |
+    {
+      solvedexpression: .return
+    }

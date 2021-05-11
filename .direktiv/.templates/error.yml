@@ -1,0 +1,33 @@
+id: error
+description: A simple 'error' state workflow that checks an email attempts to validate it.
+states:
+- id: data
+  type: noop
+  transform: |
+    {
+      email: "trent.hilliamvorteil.io"
+    }
+  transition: ValidateEmail
+- id: ValidateEmail
+  type: validate
+  subject: .
+  schema:
+    type: object
+    properties:
+      email:
+        type: string
+        format: email
+  catch:
+  - error: direktiv.schema.*
+    transition: EmailNotValid 
+  transition: EmailValid
+- id: EmailNotValid
+  type: error
+  error: direktiv.schema.*
+  message: "email '.email' is not valid"
+- id: EmailValid
+  type: noop
+  transform: |
+    {
+      result: "Email is valid."
+    }

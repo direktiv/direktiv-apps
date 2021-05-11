@@ -1,6 +1,9 @@
 id: noop
-description: "A simple 'no-op' state that returns 'Hello world!'"
+description: A simple 'no-op' state that returns 'Hello world!'
 states:
 - id: helloworld
   type: noop
-  transform: '{ result: "Hello world!" }'
+  transform: |
+    {
+     result: "Hello world!"
+    }

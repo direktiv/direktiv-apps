@@ -1,0 +1,12 @@
+id: generate-solve-event
+description: A simple 'generateEvent' state that sends an expression to a solve listener.
+states:
+- id: generate
+  type: generateEvent
+  event:
+    type: solveexpressioncloudevent
+    source: Direktiv
+    data: |
+      {
+        x: "10+5"
+      }
