@@ -2,7 +2,7 @@
 
 Simple Containers that run on Direktiv
 
-<em>created by [90f84986](https://github.com/vorteil/direktiv-apps/tree/90f849864fcb8f8f499f1cc65384bcfdbd2fd818)</em>
+<em>created by [bb771898](https://github.com/vorteil/direktiv-apps/tree/bb7718988f60376bb5c484f2a77aef90990ef276)</em>
 
 
 ## Containers
@@ -23,6 +23,7 @@ Simple Containers that run on Direktiv
 | [vorteil/azure-servicebus](https://hub.docker.com/r/vorteil/azure-servicebus) | Writes a message to Azure's Servicebus | [README](https://github.com/vorteil/direktiv-apps/tree/master/azure-servicebus) |
 | [vorteil/azure-upload](https://hub.docker.com/r/vorteil/azure-upload) | Uploads a base64 encoded string to a blob on Azure. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azure-upload) |
 | [vorteil/debug](https://hub.docker.com/r/vorteil/debug) | Prints all the information that direktiv sends to the container | [README](https://github.com/vorteil/direktiv-apps/tree/master/debug) |
+| [vorteil/direktiv-cloud-event](https://hub.docker.com/r/vorteil/direktiv-cloud-event) | Send a cloud event to a different namespace mid workflow. | [README](https://github.com/vorteil/direktiv-apps/tree/master/direktiv-cloud-event) |
 | [vorteil/discordmsg](https://hub.docker.com/r/vorteil/discordmsg) | Writes a discord message to a webhook URL. | [README](https://github.com/vorteil/direktiv-apps/tree/master/discordmsg) |
 | [vorteil/elasticsearch](https://hub.docker.com/r/vorteil/elasticsearch) | Writes a new JSON document to an index or queries an index in its entirety. | [README](https://github.com/vorteil/direktiv-apps/tree/master/elasticsearch) |
 | [vorteil/gcloud](https://hub.docker.com/r/vorteil/gcloud) | Executes a gcloud cli command using a golang wrapper to provide authentication via service account key file. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud) |
