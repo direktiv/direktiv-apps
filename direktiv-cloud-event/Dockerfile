@@ -11,4 +11,4 @@ RUN apk --update add ca-certificates
 FROM scratch
 COPY --from=build /cloud-event /
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-CMD ["/request"]
+CMD ["/cloud-event"]
