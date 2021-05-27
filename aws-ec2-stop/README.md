@@ -17,7 +17,7 @@ An example workflow that stops a ec2 instance with the id `i-090dd9255a7aaa582`.
 id: aws-stop-ec2-instance
 description: "Stop a ec2 instance"
 functions:
-- id: awsStopInstance
+- id: aws-stop-instance
   image: vorteil/aws-ec2-stop:v2
   size: medium
 states:
@@ -25,7 +25,7 @@ states:
   type: action
   action:
     secrets: ["ACCESS_KEY", "ACCESS_SECRET"]
-    function: awsStopInstance
+    function: aws-stop-instance
     input: .
 ```
 

@@ -16,14 +16,14 @@ An example workflow that deletes an example instance named `example-instance-nam
 id: gcloud-delete-compute-instance
 description: "Deletes a gcp project instance"
 functions:
-- id: gcpDeleteInstance
+- id: gcp-delete-instance
   image: vorteil/gcloud-instance-delete:v2
   size: medium
 states:
 - id: deleteInstance
   type: action
   action:
-    function: gcpDeleteInstance
+    function: gcp-delete-instance
     input: .
 ```
 

@@ -17,7 +17,7 @@ An example workflow that creates an example instance from the ami `ami-0abcdef12
 id: aws-create-ec2-instance
 description: "Create a new ec2 instance"
 functions:
-- id: awsCreateInstance
+- id: aws-create-instance
   image: vorteil/aws-ec2-create:v2
   size: medium
 states:
@@ -25,7 +25,7 @@ states:
   type: action
   action:
     secrets: ["ACCESS_KEY", "ACCESS_SECRET"]
-    function: awsCreateInstance
+    function: aws-create-instance
     input: .
 ```
 
