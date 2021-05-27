@@ -7,8 +7,8 @@ states:
     {
       email: "trent.hilliamvorteil.io"
     }
-  transition: ValidateEmail
-- id: ValidateEmail
+  transition: validate-email
+- id: validate-email
   type: validate
   subject: .
   schema:
@@ -19,13 +19,13 @@ states:
         format: email
   catch:
   - error: direktiv.schema.*
-    transition: EmailNotValid 
-  transition: EmailValid
-- id: EmailNotValid
+    transition: email-not-valid 
+  transition: email-valid
+- id: email-not-valid
   type: error
   error: direktiv.schema.*
   message: "email '.email' is not valid"
-- id: EmailValid
+- id: email-valid
   type: noop
   transform: |
     {

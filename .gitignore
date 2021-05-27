@@ -7,6 +7,6 @@
 !examples/dotnet/*.json
 !examples/dotnet/Properties/*.json
 
-
+.demos
 examples/rust/target
 node_modules
