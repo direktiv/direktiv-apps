@@ -1,0 +1,16 @@
+id: getter-and-setter
+description: "Simple Counter getter and setter variable example"
+states:
+  - id: counter-get
+    type: getter 
+    transition: counter-set
+    variables:
+    - key: ExampleVariableCounter
+      scope: workflow
+    transform: '. += {"newCounter": (.var.ExampleVariableCounter + 1)}'
+  - id: counter-set
+    type: setter
+    variables:
+      - key: ExampleVariableCounter
+        scope: workflow 
+        value: '.newCounter'

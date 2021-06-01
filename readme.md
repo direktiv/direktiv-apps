@@ -2,7 +2,7 @@
 
 Simple Containers that run on Direktiv
 
-<em>created by [90f84986](https://github.com/vorteil/direktiv-apps/tree/90f849864fcb8f8f499f1cc65384bcfdbd2fd818)</em>
+<em>created by [1a3fa2f2](https://github.com/vorteil/direktiv-apps/tree/1a3fa2f2366b8a9b4df743fd67a38e0f58c3932a)</em>
 
 
 ## Containers
@@ -10,6 +10,7 @@ Simple Containers that run on Direktiv
 | Image | Description | How to Use |
 | ----- | ----------- | ---------- |
 | [vorteil/amazon-sns](https://hub.docker.com/r/vorteil/amazon-sns) | Writes a message to Amazon's Simple Notification Service | [README](https://github.com/vorteil/direktiv-apps/tree/master/amazon-sns) |
+| [vorteil/amazon-terraform](https://hub.docker.com/r/vorteil/amazon-terraform) | Executes a terraform script. | [README](https://github.com/vorteil/direktiv-apps/tree/master/amazon-terraform) |
 | [vorteil/amazon-upload](https://hub.docker.com/r/vorteil/amazon-upload) | Uploads a base64 encoded string to a blob on Amazon. | [README](https://github.com/vorteil/direktiv-apps/tree/master/amazon-upload) |
 | [vorteil/aws-ec2-create](https://hub.docker.com/r/vorteil/aws-ec2-create) | Creates an amazon ec2 instance on aws. | [README](https://github.com/vorteil/direktiv-apps/tree/master/aws-ec2-create) |
 | [vorteil/aws-ec2-delete](https://hub.docker.com/r/vorteil/aws-ec2-delete) | Delete a amazon ec2 instance. | [README](https://github.com/vorteil/direktiv-apps/tree/master/aws-ec2-delete) |
@@ -21,8 +22,10 @@ Simple Containers that run on Direktiv
 | [vorteil/azinvoke](https://hub.docker.com/r/vorteil/azinvoke) | Executes a cloud function on azure using the function name, function app and function key as authentication to do so. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azinvoke) |
 | [vorteil/azlog](https://hub.docker.com/r/vorteil/azlog) | Writes a log line to Azure Log Analytics Workspace. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azlog) |
 | [vorteil/azure-servicebus](https://hub.docker.com/r/vorteil/azure-servicebus) | Writes a message to Azure's Servicebus | [README](https://github.com/vorteil/direktiv-apps/tree/master/azure-servicebus) |
+| [vorteil/azure-terraform](https://hub.docker.com/r/vorteil/azure-terraform) | Executes a terraform script. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azure-terraform) |
 | [vorteil/azure-upload](https://hub.docker.com/r/vorteil/azure-upload) | Uploads a base64 encoded string to a blob on Azure. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azure-upload) |
 | [vorteil/debug](https://hub.docker.com/r/vorteil/debug) | Prints all the information that direktiv sends to the container | [README](https://github.com/vorteil/direktiv-apps/tree/master/debug) |
+| [vorteil/direktiv-cloud-event](https://hub.docker.com/r/vorteil/direktiv-cloud-event) | Send a cloud event to a different namespace mid workflow. | [README](https://github.com/vorteil/direktiv-apps/tree/master/direktiv-cloud-event) |
 | [vorteil/discordmsg](https://hub.docker.com/r/vorteil/discordmsg) | Writes a discord message to a webhook URL. | [README](https://github.com/vorteil/direktiv-apps/tree/master/discordmsg) |
 | [vorteil/elasticsearch](https://hub.docker.com/r/vorteil/elasticsearch) | Writes a new JSON document to an index or queries an index in its entirety. | [README](https://github.com/vorteil/direktiv-apps/tree/master/elasticsearch) |
 | [vorteil/gcloud](https://hub.docker.com/r/vorteil/gcloud) | Executes a gcloud cli command using a golang wrapper to provide authentication via service account key file. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud) |
@@ -33,6 +36,7 @@ Simple Containers that run on Direktiv
 | [vorteil/gcplog](https://hub.docker.com/r/vorteil/gcplog) | Writes a log line to a stackdriver logging implementation | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcplog) |
 | [vorteil/google-pubsub](https://hub.docker.com/r/vorteil/google-pubsub) | Writes a message to Google's Pubsub service. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-pubsub) |
 | [vorteil/google-sentiment-check](https://hub.docker.com/r/vorteil/google-sentiment-check) | Reads a string and tells you the sentiment of the written text. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-sentiment-check) |
+| [vorteil/google-terraform](https://hub.docker.com/r/vorteil/google-terraform) | Executes a terraform script. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-terraform) |
 | [vorteil/google-translator](https://hub.docker.com/r/vorteil/google-translator) | Reads a string and converts it to the targeted language. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-translator) |
 | [vorteil/google-upload](https://hub.docker.com/r/vorteil/google-upload) | Uploads a base64 encoded string to a bucket on Google. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-upload) |
 | [vorteil/googleinvoke](https://hub.docker.com/r/vorteil/googleinvoke) | Executes a cloud function on google using a client authenticated via a service account key. | [README](https://github.com/vorteil/direktiv-apps/tree/master/googleinvoke) |

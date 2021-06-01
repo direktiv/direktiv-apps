@@ -17,7 +17,7 @@ An example workflow that deletes a ec2 instance with the id `i-090dd9255a7aaa582
 id: aws-delete-ec2-instance
 description: "Delete a ec2 instance"
 functions:
-- id: awsDeleteInstance
+- id: aws-delete-instance
   image: vorteil/aws-ec2-delete:v2
   size: medium
 states:
@@ -25,7 +25,7 @@ states:
   type: action
   action:
     secrets: ["ACCESS_KEY", "ACCESS_SECRET"]
-    function: awsDeleteInstance
+    function: aws-delete-instance
     input: .
 ```
 
