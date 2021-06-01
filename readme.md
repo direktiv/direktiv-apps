@@ -2,7 +2,7 @@
 
 Simple Containers that run on Direktiv
 
-<em>created by [1a3fa2f2](https://github.com/vorteil/direktiv-apps/tree/1a3fa2f2366b8a9b4df743fd67a38e0f58c3932a)</em>
+<em>created by [031b5646](https://github.com/vorteil/direktiv-apps/tree/031b56460d100956f5bea8c278cd1c4c1854902c)</em>
 
 
 ## Containers
@@ -42,6 +42,7 @@ Simple Containers that run on Direktiv
 | [vorteil/googleinvoke](https://hub.docker.com/r/vorteil/googleinvoke) | Executes a cloud function on google using a client authenticated via a service account key. | [README](https://github.com/vorteil/direktiv-apps/tree/master/googleinvoke) |
 | [vorteil/googlemsg](https://hub.docker.com/r/vorteil/googlemsg) | Writes a google message to a webhook URL. | [README](https://github.com/vorteil/direktiv-apps/tree/master/googlemsg) |
 | [vorteil/greeting](https://hub.docker.com/r/vorteil/greeting) | Outputs a greeting | [README](https://github.com/vorteil/direktiv-apps/tree/master/greeting) |
+| [vorteil/watermark](https://hub.docker.com/r/vorteil/image-watermark) | Generates a basic watermark. | [README](https://github.com/vorteil/direktiv-apps/tree/master/image-watermark) |
 | [vorteil/imagerecognition](https://hub.docker.com/r/vorteil/imagerecognition) | Checks an image to see if it is safe for work and responds with content is likely to be racy, adult or violence themed. | [README](https://github.com/vorteil/direktiv-apps/tree/master/imagerecognition) |
 | [vorteil/influxdb](https://hub.docker.com/r/vorteil/influxdb) | A container that provides the opportunities to write or query data on an InfluxDB instance. | [README](https://github.com/vorteil/direktiv-apps/tree/master/influxdb) |
 | [vorteil/kafka](https://hub.docker.com/r/vorteil/kafka) | Writes a message to a Kafka service | [README](https://github.com/vorteil/direktiv-apps/tree/master/kafka) |
