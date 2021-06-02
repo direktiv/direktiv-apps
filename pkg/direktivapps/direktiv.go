@@ -92,7 +92,7 @@ func StartServer(f func(w http.ResponseWriter, r *http.Request)) {
 	srv.ListenAndServe()
 }
 
-// Shutdown turns off the server
+// ShutDown turns off the server
 func ShutDown(srv *http.Server) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -101,6 +101,12 @@ func ShutDown(srv *http.Server) {
 
 // Log sends a string to log via kubernetes
 func Log(aid, l string) {
+	http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(l))
+}
+
+// LogDouble logs to direktiv and stdout
+func LogDouble(aid, l string) {
+	fmt.Println(l)
 	http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(l))
 }
 
