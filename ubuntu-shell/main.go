@@ -1,13 +1,14 @@
 package main
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"os/exec"
+	"path"
 
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 )
@@ -19,34 +20,35 @@ type shell struct {
 	Args   []string `json:"args"`
 }
 
-func createScript(s string) (*os.File, error) {
+func copyFile(path string) (*os.File, error) {
 
-	h, err := base64.StdEncoding.DecodeString(s)
+	in, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
 
-	// create temp file and run it
-	file, err := ioutil.TempFile("", "sh")
+	out, err := ioutil.TempFile("", "exe")
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = file.Write([]byte(h))
+	_, err = io.Copy(out, in)
 	if err != nil {
-		os.Remove(file.Name())
-		return nil, err
-	}
-	file.Close()
-
-	err = os.Chmod(file.Name(), 0755)
-	if err != nil {
-		os.Remove(file.Name())
+		os.RemoveAll(out.Name())
 		return nil, err
 	}
 
-	return file, nil
+	out.Sync()
 
+	err = os.Chmod(out.Name(), 0755)
+	if err != nil {
+		os.RemoveAll(out.Name())
+		return nil, err
+	}
+
+	out.Close()
+
+	return out, nil
 }
 
 func execScript(path string, args []string) ([]byte, error) {
@@ -73,21 +75,27 @@ func request(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log(aid, "create script")
+	log(aid, "getting script")
 
-	// get the shell script
-	file, err := createScript(s.Script)
+	dtmp := r.Header.Get("Direktiv-TempDir")
+	if len(dtmp) == 0 {
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("direktiv tmp direktory not provided"))
+		return
+	}
+
+	f := path.Join(dtmp, s.Script)
+	rf, err := copyFile(f)
 	if err != nil {
 		direktivapps.RespondWithError(w, code, err.Error())
 		return
 	}
-	defer os.Remove(file.Name())
+	defer os.Remove(rf.Name())
 
-	log(aid, fmt.Sprintf("created script %v", file.Name()))
+	log(aid, fmt.Sprintf("found script %v -> %v", f, rf.Name()))
 
-	ret, err := execScript(file.Name(), s.Args)
+	ret, err := execScript(rf.Name(), s.Args)
 	if err != nil {
-		direktivapps.RespondWithError(w, code, string(ret))
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("%v: %s", err, string(ret)))
 		return
 	}
 

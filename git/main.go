@@ -17,7 +17,8 @@ import (
 const code = "com.git.error"
 
 type cmdIn struct {
-	Cmds []string `json:"cmds"`
+	Cmds    []string `json:"cmds"`
+	Folders []string `json:"folders"`
 }
 
 type item struct {
@@ -58,9 +59,7 @@ func request(w http.ResponseWriter, r *http.Request) {
 			cmdStr = "..."
 		}
 
-		logMsg := fmt.Sprintf("running command %d '%s'", i, cmdStr)
-		fmt.Println(logMsg)
-		direktivapps.Log(aid, logMsg)
+		log(aid, fmt.Sprintf("running command %d '%s'", i, cmdStr))
 
 		// cut git command in front
 		if strings.HasPrefix(c, "git") {
@@ -88,9 +87,7 @@ func request(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if err != nil {
-			logMsg := fmt.Sprintf("error running command '%v'", err)
-			fmt.Println(logMsg)
-			direktivapps.Log(aid, logMsg)
+			log(aid, fmt.Sprintf("error running command '%v'", err))
 			break
 		}
 
@@ -102,8 +99,73 @@ func request(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// add folders if there are any
+	for _, f := range cmds.Folders {
+		log(aid, fmt.Sprintf("copy folder '%s'", f))
+
+		// tar folder
+		tarFile := fmt.Sprintf("%s.tar.gz", f)
+		cmd := exec.Command("tar", "-czf", tarFile, f)
+		_, err := cmd.Output()
+		if err != nil {
+			direktivapps.RespondWithError(w, code, err.Error())
+			return
+		}
+
+		url := fmt.Sprintf("http://localhost:8889/var?aid=%s&scope=workflow&key=git-%s", aid, f)
+
+		t, size, err := prepFile(tarFile)
+		if err != nil {
+			direktivapps.RespondWithError(w, code, err.Error())
+			return
+		}
+		defer t.Close()
+
+		client := &http.Client{}
+		req, err := http.NewRequest("POST", url, t)
+		if err != nil {
+			direktivapps.RespondWithError(w, code, err.Error())
+			return
+		}
+
+		req.ContentLength = size
+		resp, err := client.Do(req)
+
+		// report error
+		if resp.StatusCode > 200 {
+			err = fmt.Errorf("request statuus code %d", resp.StatusCode)
+		}
+
+		if err != nil {
+			direktivapps.RespondWithError(w, code, err.Error())
+			return
+		}
+
+	}
+
 	direktivapps.Respond(w, b)
 
+}
+
+func prepFile(path string) (*os.File, int64, error) {
+
+	t, err := os.Open(path)
+	if err != nil {
+		return nil, -1, err
+	}
+
+	st, err := os.Stat(path)
+	if err != nil {
+		return nil, -1, err
+	}
+
+	return t, st.Size(), nil
+
+}
+
+func log(aid, l string) {
+	fmt.Println(l)
+	direktivapps.Log(aid, l)
 }
 
 func runGitCmd(cmd string) (interface{}, bool, error) {
