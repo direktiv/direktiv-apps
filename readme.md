@@ -2,7 +2,7 @@
 
 Simple Containers that run on Direktiv
 
-<em>created by [031b5646](https://github.com/vorteil/direktiv-apps/tree/031b56460d100956f5bea8c278cd1c4c1854902c)</em>
+<em>created by [4ac2a918](https://github.com/vorteil/direktiv-apps/tree/4ac2a9180bc344dc845fa5e6eccdb920d200a47d)</em>
 
 
 ## Containers
@@ -34,6 +34,7 @@ Simple Containers that run on Direktiv
 | [vorteil/gcloud-instance-start](https://hub.docker.com/r/vorteil/gcloud-instance-start) | Starts a compute engine instance on google cloud. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud-instance-start) |
 | [vorteil/gcloud-instance-stop](https://hub.docker.com/r/vorteil/gcloud-instance-stop) | Stop a compute engine instance on google cloud. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud-instance-stop) |
 | [vorteil/gcplog](https://hub.docker.com/r/vorteil/gcplog) | Writes a log line to a stackdriver logging implementation | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcplog) |
+| [vorteil/git](https://hub.docker.com/r/vorteil/git) | Perform git commands | [README](https://github.com/vorteil/direktiv-apps/tree/master/git) |
 | [vorteil/google-pubsub](https://hub.docker.com/r/vorteil/google-pubsub) | Writes a message to Google's Pubsub service. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-pubsub) |
 | [vorteil/google-sentiment-check](https://hub.docker.com/r/vorteil/google-sentiment-check) | Reads a string and tells you the sentiment of the written text. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-sentiment-check) |
 | [vorteil/google-terraform](https://hub.docker.com/r/vorteil/google-terraform) | Executes a terraform script. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-terraform) |
@@ -57,4 +58,5 @@ Simple Containers that run on Direktiv
 | [vorteil/store](https://hub.docker.com/r/vorteil/store) | Add a row to a 'Google Sheets' spreadsheet. | [README](https://github.com/vorteil/direktiv-apps/tree/master/store) |
 | [vorteil/tweet](https://hub.docker.com/r/vorteil/tweet) | Tweets a message to a twitter account. | [README](https://github.com/vorteil/direktiv-apps/tree/master/tweet) |
 | [vorteil/twilio](https://hub.docker.com/r/vorteil/twilio) | Sends an email or SMS message using Twilio. | [README](https://github.com/vorteil/direktiv-apps/tree/master/twilio) |
+| [vorteil/ubuntu-shell](https://hub.docker.com/r/vorteil/ubuntu-shell) | Executing shell scripts | [README](https://github.com/vorteil/direktiv-apps/tree/master/ubuntu-shell) |
 
