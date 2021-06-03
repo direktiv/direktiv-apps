@@ -1,4 +1,4 @@
-module github.com/vorteil/direktiv-apps/service-now
+module github.com/vorteil/direktiv-apps/servicenow
 
 go 1.15
 
