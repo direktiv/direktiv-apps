@@ -85,7 +85,9 @@ func coreLogic(w http.ResponseWriter, r *http.Request) {
 		da.RespondWithError(w, "servicenow.request.init", fmt.Sprintf("unable to prepare api request: %s", err.Error()))
 		return
 	}
-	defer req.Body.Close()
+	if body != nil {
+		defer req.Body.Close()
+	}
 
 	req.SetBasicAuth(in.User, in.Password)
 	req.Header.Set("Accept", "application/json")
