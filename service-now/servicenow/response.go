@@ -616,3 +616,16 @@ type GetIncident_Response struct {
 		Comments      string `json:"comments"`
 	} `json:"result"`
 }
+
+type ChangeRequest_Response struct {
+	Result []struct {
+		SysID struct {
+			Value        string `json:"value"`
+			DisplayValue string `json:"display_value"`
+		} `json:"sys_id"`
+		State struct {
+			Value        string `json:"value"`
+			DisplayValue string `json:"display_value"`
+		} `json:"state"`
+	} `json:"result"`
+}
