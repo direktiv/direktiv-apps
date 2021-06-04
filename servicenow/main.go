@@ -28,6 +28,7 @@ type APIPrefix string
 var (
 	API_CMDB_Instance        = APIPrefix("cmdb-instance")
 	API_ChangeRequest_Normal = APIPrefix("change-request-normal")
+	API_ChangeRequest        = APIPrefix("change-request")
 	API_Incident             = APIPrefix("incident")
 	API_User                 = APIPrefix("user")
 )
@@ -35,6 +36,7 @@ var (
 var apiPathMap = map[APIPrefix]string{
 	API_CMDB_Instance:        "api/now/cmdb/instance/cmdb_ci_storage_server",
 	API_ChangeRequest_Normal: "api/sn_chg_rest/change/normal",
+	API_ChangeRequest:        "api/sn_chg_rest/change",
 	API_Incident:             "api/now/table/incident",
 	API_User:                 "api/now/table/sys_user",
 }
