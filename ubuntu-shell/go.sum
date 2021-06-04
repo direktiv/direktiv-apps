@@ -212,6 +212,8 @@ github.com/vorteil/direktiv-apps v0.0.0-20210408031041-3442505a3984 h1:gAPwhLVb8
 github.com/vorteil/direktiv-apps v0.0.0-20210408031041-3442505a3984/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
 github.com/vorteil/direktiv-apps v0.0.0-20210505003421-237943983f47 h1:Q7I8muQmlDu6I1npJUfoshEvFIDPtyjq5URUQOakJKw=
 github.com/vorteil/direktiv-apps v0.0.0-20210505003421-237943983f47/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
+github.com/vorteil/direktiv-apps v0.0.0-20210604024939-0767a080261a h1:o0iqDnQ7R6B7EKtPh9h9z7EOHwdcWsv7h5z93698uAI=
+github.com/vorteil/direktiv-apps v0.0.0-20210604024939-0767a080261a/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=

@@ -3,8 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"os/exec"
@@ -18,37 +16,6 @@ const code = "com.ubuntu.error"
 type shell struct {
 	Script string   `json:"script"`
 	Args   []string `json:"args"`
-}
-
-func copyFile(path string) (*os.File, error) {
-
-	in, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-
-	out, err := ioutil.TempFile("", "exe")
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = io.Copy(out, in)
-	if err != nil {
-		os.RemoveAll(out.Name())
-		return nil, err
-	}
-
-	out.Sync()
-
-	err = os.Chmod(out.Name(), 0755)
-	if err != nil {
-		os.RemoveAll(out.Name())
-		return nil, err
-	}
-
-	out.Close()
-
-	return out, nil
 }
 
 func execScript(path string, args []string) ([]byte, error) {
@@ -75,31 +42,31 @@ func request(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log(aid, "getting script")
+	direktivapps.LogDouble(aid, "getting script")
 
 	dtmp := r.Header.Get("Direktiv-TempDir")
 	if len(dtmp) == 0 {
-		direktivapps.RespondWithError(w, code, fmt.Sprintf("direktiv tmp direktory not provided"))
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("direktiv tmp directory not provided"))
 		return
 	}
 
 	f := path.Join(dtmp, s.Script)
-	rf, err := copyFile(f)
+
+	err = os.Chmod(f, 0755)
 	if err != nil {
 		direktivapps.RespondWithError(w, code, err.Error())
 		return
 	}
-	defer os.Remove(rf.Name())
 
-	log(aid, fmt.Sprintf("found script %v -> %v", f, rf.Name()))
+	direktivapps.LogDouble(aid, fmt.Sprintf("found script %v", f))
 
-	ret, err := execScript(rf.Name(), s.Args)
+	ret, err := execScript(f, s.Args)
 	if err != nil {
 		direktivapps.RespondWithError(w, code, fmt.Sprintf("%v: %s", err, string(ret)))
 		return
 	}
 
-	log(aid, fmt.Sprintf("script return: %v", string(ret)))
+	direktivapps.LogDouble(aid, fmt.Sprintf("script return: %v", string(ret)))
 
 	// check if base64
 	var j map[string]interface{}
@@ -123,9 +90,4 @@ func request(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	direktivapps.StartServer(request)
-}
-
-func log(aid, l string) {
-	fmt.Println(l)
-	direktivapps.Log(aid, l)
 }
