@@ -16,14 +16,14 @@ An example workflow that stops an example instance named `example-instance-name`
 id: gcloud-stop-compute-instance
 description: "Stop a gcp project instance"
 functions:
-- id: gcpStopInstance
+- id: gcp-stop-instance
   image: vorteil/gcloud-instance-stop:v2
   size: medium
 states:
 - id: stopInstance
   type: action
   action:
-    function: gcpStopInstance
+    function: gcp-stop-instance
     secrets: ["GCP_SERVICE_ACCOUNT_KEY"]
     input: .
 ```

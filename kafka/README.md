@@ -17,14 +17,14 @@ An example workflow of using the Kafka container.
 ```yaml
 id: kafka
 functions:
-- id: kafkaWrite
+- id: kafka-write
   image: vorteil/kafka:v2
 description: "Writes a message to a Kafka service"
 states:
 - id: writemsg
   type: action
   action:
-    function: req
+    function: kafka-write
     input: .
 ```
 

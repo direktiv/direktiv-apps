@@ -17,7 +17,7 @@ An example workflow that starts a ec2 instance with the id `i-090dd9255a7aaa582`
 id: aws-start-ec2-instance
 description: "Start a ec2 instance"
 functions:
-- id: awsStartInstance
+- id: aws-start-instance
   image: vorteil/aws-ec2-start:v2
   size: medium
 states:
@@ -25,7 +25,7 @@ states:
   type: action
   action:
     secrets: ["ACCESS_KEY", "ACCESS_SECRET"]
-    function: awsStartInstance
+    function: aws-start-instance
     input: .
 ```
 

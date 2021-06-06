@@ -16,14 +16,14 @@ An example workflow that creates an example instance named `example-instance-nam
 id: gcloud-new-compute-instance
 description: "Creates new gcp project instance"
 functions:
-- id: gcpNewInstance
+- id: gcp-new-intance
   image: vorteil/gcloud-instance-create:v2
   size: medium
 states:
 - id: createInstance
   type: action
   action:
-    function: gcpNewInstance
+    function: gcp-new-intance
     input: .
 ```
 

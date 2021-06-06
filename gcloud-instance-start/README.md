@@ -16,14 +16,14 @@ An example workflow that starts an example instance named `example-instance-name
 id: gcloud-start-compute-instance
 description: "Start a gcp project instance"
 functions:
-- id: gcpStartInstance
+- id: gcp-start-instance
   image: vorteil/gcloud-instance-start:v2
   size: medium
 states:
 - id: startInstance
   type: action
   action:
-    function: gcpStartInstance
+    function: gcp-start-instance
     secrets: ["GCP_SERVICE_ACCOUNT_KEY"]
     input: .
 ```

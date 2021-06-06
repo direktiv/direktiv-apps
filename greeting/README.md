@@ -16,13 +16,13 @@ An example workflow of using the container in a workflow on Direktiv.
 ```yaml
 id: greeting
 functions: 
-- id: greetingFunction
+- id: greeting-function
   image: vorteil/greeting:v2
 states:
 - id: Greet
   type: action
   action:
-    function: greetingFunction
+    function: greeting-function
     input: '{ name: .person.name }'
   transform: '{ greeting: .return.greeting }'
 ```

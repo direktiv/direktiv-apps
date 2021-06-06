@@ -16,14 +16,14 @@ An example workflow of using the RabbitMQ service.
 ```yaml
 id: rabbitmq
 functions:
-- id: rabbitMQWrite
+- id: rabbit-mqwrite
   image: vorteil/rabbitmq:v2
 description: "Writes a message to a RabbitMQ service"
 states:
 - id: writemsg
   type: action
   action:
-    function: rabbitMQWrite
+    function: rabbit-mqwrite
     input: .
 ```
 
