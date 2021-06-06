@@ -10,7 +10,7 @@ import (
 	"github.com/gernest/front"
 )
 
-var ignoreFiles = []string{".direktiv", ".git", ".github", ".gitignore", "Makefile", "cli", "pkg", "readme.md", "examples"}
+var ignoreFiles = []string{".direktiv", ".git", ".github", ".gitignore", "Makefile", "cli", "pkg", "readme.md", "examples", "build-local.sh"}
 
 func main() {
 	m := front.NewMatter()

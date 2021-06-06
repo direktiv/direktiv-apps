@@ -17,22 +17,21 @@ An example workflow of using the container in a workflow on Direktiv.
 id: request
 functions:
 - id: myrequest
-  image: vorteil/request:v2
+  image: vorteil/request:v5
 description: "send a get request" 
 states:
 - id: hello
   type: action
   action: 
     function: myrequest
-    input: '{
-        "method": "GET",
-        "host"  : "https://jsonplaceholder.typicode.com/posts"
-    }'
+    input: | 
+        {
+            "method": "GET",
+            "host"  : "https://jsonplaceholder.typicode.com/posts"
+        }
 ```
 
 ## Input
-
-Providing debug to the json struct will print everything during the process it runs.
 
 ```json
 {
@@ -43,22 +42,46 @@ Providing debug to the json struct will print everything during the process it r
     },
     "headers": {
         "Content-Type": "application/json" 
+    },
+    "params": {
+        "Hello": "world"
+    },
+    "username": "test",
+    "password": "test2",
+    "insecureSkipVerify": false
+}
+```
+
+**NOTE:** The `method` and `url` fields are mandatory.
+
+## Output
+
+Output for a request that returns JSON.
+```json
+{
+    "return": {
+        "body": {
+            "hello": "world"
+        },
+        "headers":{
+            "Age": 0
+        },
+        "status-code": 200,
+        "status": "200 OK"
     }
 }
 ```
 
-**NOTE:** The `body` and `header` fields are optional.
-
-## Output
-
-If the request is successful, the response will be wrapped inside of a JSON object, within the `return` field.
-In the event that the response body is not in JSON format, the data will be base64 encoded and stored as the value of the `return` field.
-
-
+Output for a request that isn't JSON.
 ```json
 {
     "return": {
-        ...
+        "data": "PGh0bWw+PGJvZHk+SGVsbG8gV29ybGQhPC9ib2R5PjwvaHRtbA==",
+        "headers":{
+            "Age": 0
+        },
+        "status-code": 200,
+        "status": "200 OK"
     }
 }
 ```
@@ -69,7 +92,9 @@ In the case that an error is encountered, it will present in the following forma
 
 ```json
 {
-    "errorCode": "com.request.error",
+    "errorCode": "com.%s.error",
     "errorMsg": "Something went wrong"
 }
 ```
+
+**NOTE:** `%s` indicating where in the container logic the request failed.
