@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"strings"
 
@@ -46,6 +47,8 @@ func main() {
 }
 
 func coreLogic(w http.ResponseWriter, r *http.Request) {
+
+	aid := r.Header.Get(da.DirektivActionIDHeader)
 
 	in := new(input)
 	err := json.NewDecoder(r.Body).Decode(in)
@@ -115,6 +118,8 @@ func coreLogic(w http.ResponseWriter, r *http.Request) {
 		}
 
 	default:
+		x, _ := ioutil.ReadAll(resp.Body)
+		da.Log(aid, fmt.Sprintf("%s\n", x))
 		da.RespondWithError(w, "servicenow.response.code", fmt.Sprintf("%d - %s", resp.StatusCode, http.StatusText(resp.StatusCode)))
 		return
 	}
