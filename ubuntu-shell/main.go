@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"strings"
 
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 )
@@ -76,12 +77,10 @@ func request(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	ret = []byte(strings.TrimSpace(string(ret)))
 	direktivapps.LogDouble(aid, fmt.Sprintf("script return: %v", string(ret)))
 
-	// check if base64
-	var j map[string]interface{}
-	err = json.Unmarshal(ret, &j)
-	if err != nil {
+	if !json.Valid(ret) {
 		o := make(map[string]string)
 		o["output"] = string(ret)
 
