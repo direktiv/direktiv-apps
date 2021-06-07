@@ -18,9 +18,11 @@ type shell struct {
 	Args   []string `json:"args"`
 }
 
-func execScript(path string, args []string) ([]byte, error) {
+func execScript(path string, args []string, envs []string) ([]byte, error) {
 
 	cmd := exec.Command(path, args...)
+	cmd.Env = envs
+
 	d, err := cmd.Output()
 	if err != nil {
 		if e, ok := err.(*exec.ExitError); ok {
@@ -42,6 +44,11 @@ func request(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if s.Script == "" {
+		direktivapps.RespondWithError(w, code, "no script provided")
+		return
+	}
+
 	direktivapps.LogDouble(aid, "getting script")
 
 	dtmp := r.Header.Get("Direktiv-TempDir")
@@ -60,7 +67,10 @@ func request(w http.ResponseWriter, r *http.Request) {
 
 	direktivapps.LogDouble(aid, fmt.Sprintf("found script %v", f))
 
-	ret, err := execScript(f, s.Args)
+	envs := []string{fmt.Sprintf("Direktiv_TempDir=%s",
+		r.Header.Get("Direktiv-TempDir"))}
+
+	ret, err := execScript(f, s.Args, envs)
 	if err != nil {
 		direktivapps.RespondWithError(w, code, fmt.Sprintf("%v: %s", err, string(ret)))
 		return

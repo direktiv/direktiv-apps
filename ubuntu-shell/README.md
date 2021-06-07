@@ -31,12 +31,12 @@ states:
         {
           "script": "myscript",
           "args": ["arg1", "arg2"]
-        }'
+        }
 ```
 
 ## Input
 
-The action takes two parameters. The first one is 'script' which is a name of a variable containing the script. Usually it comes from a workflow-scoped variable. The seoncd is an array of arguments for the script.
+The action takes two parameters. The first one is 'script' which is a name of a variable containing the script. Usually it comes from a workflow-scoped variable. The seoncd is an array of arguments for the script. The environment variable 'Direktiv_TempDir' is set for the script.
 
 ## Output
 

@@ -17,8 +17,8 @@ import (
 const code = "com.git.error"
 
 type cmdIn struct {
-	Cmds    []string `json:"cmds"`
-	Folders []string `json:"folders"`
+	Cmds []string `json:"cmds"`
+	// Folders []string `json:"folders"`
 }
 
 type item struct {
@@ -52,6 +52,10 @@ func request(w http.ResponseWriter, r *http.Request) {
 	defer mtx.Unlock()
 
 	for i, c := range cmds.Cmds {
+
+		if strings.Contains(c, "$out") {
+			c = strings.ReplaceAll(c, "$out", path.Join(r.Header.Get("Direktiv-TempDir"), "out"))
+		}
 
 		// we add the output anyway to see the error in the frontend
 		cmdStr := c
@@ -100,48 +104,48 @@ func request(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// add folders if there are any
-	for _, f := range cmds.Folders {
-		log(aid, fmt.Sprintf("copy folder '%s'", f))
-
-		// tar folder
-		tarFile := fmt.Sprintf("%s.tar.gz", f)
-		cmd := exec.Command("tar", "-czf", tarFile, f)
-		_, err := cmd.Output()
-		if err != nil {
-			direktivapps.RespondWithError(w, code, err.Error())
-			return
-		}
-
-		url := fmt.Sprintf("http://localhost:8889/var?aid=%s&scope=workflow&key=git-%s", aid, f)
-
-		t, size, err := prepFile(tarFile)
-		if err != nil {
-			direktivapps.RespondWithError(w, code, err.Error())
-			return
-		}
-		defer t.Close()
-
-		client := &http.Client{}
-		req, err := http.NewRequest("POST", url, t)
-		if err != nil {
-			direktivapps.RespondWithError(w, code, err.Error())
-			return
-		}
-
-		req.ContentLength = size
-		resp, err := client.Do(req)
-
-		// report error
-		if resp.StatusCode > 200 {
-			err = fmt.Errorf("request statuus code %d", resp.StatusCode)
-		}
-
-		if err != nil {
-			direktivapps.RespondWithError(w, code, err.Error())
-			return
-		}
-
-	}
+	// for _, f := range cmds.Folders {
+	// 	log(aid, fmt.Sprintf("copy folder '%s'", f))
+	//
+	// 	// tar folder
+	// 	tarFile := fmt.Sprintf("%s.tar.gz", f)
+	// 	cmd := exec.Command("tar", "-czf", tarFile, f)
+	// 	_, err := cmd.Output()
+	// 	if err != nil {
+	// 		direktivapps.RespondWithError(w, code, err.Error())
+	// 		return
+	// 	}
+	//
+	// 	url := fmt.Sprintf("http://localhost:8889/var?aid=%s&scope=workflow&key=git-%s", aid, f)
+	//
+	// 	t, size, err := prepFile(tarFile)
+	// 	if err != nil {
+	// 		direktivapps.RespondWithError(w, code, err.Error())
+	// 		return
+	// 	}
+	// 	defer t.Close()
+	//
+	// 	client := &http.Client{}
+	// 	req, err := http.NewRequest("POST", url, t)
+	// 	if err != nil {
+	// 		direktivapps.RespondWithError(w, code, err.Error())
+	// 		return
+	// 	}
+	//
+	// 	req.ContentLength = size
+	// 	resp, err := client.Do(req)
+	//
+	// 	// report error
+	// 	if resp.StatusCode > 200 {
+	// 		err = fmt.Errorf("request statuus code %d", resp.StatusCode)
+	// 	}
+	//
+	// 	if err != nil {
+	// 		direktivapps.RespondWithError(w, code, err.Error())
+	// 		return
+	// 	}
+	//
+	// }
 
 	direktivapps.Respond(w, b)
 
