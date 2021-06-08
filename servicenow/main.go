@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"strings"
 
@@ -46,6 +47,8 @@ func main() {
 }
 
 func coreLogic(w http.ResponseWriter, r *http.Request) {
+
+	aid := r.Header.Get(da.DirektivActionIDHeader)
 
 	in := new(input)
 	err := json.NewDecoder(r.Body).Decode(in)
@@ -104,19 +107,18 @@ func coreLogic(w http.ResponseWriter, r *http.Request) {
 	}
 	defer resp.Body.Close()
 
-	switch resp.StatusCode {
-	case http.StatusAccepted:
-		fallthrough
-	case http.StatusOK:
+	if resp.StatusCode < 300 && resp.StatusCode >= 200 {
 		_, err = io.Copy(w, resp.Body)
 		if err != nil {
 			da.RespondWithError(w, "servicenow.response.write", fmt.Sprintf("unable to write response: %s", err.Error()))
 			return
 		}
 
-	default:
-		da.RespondWithError(w, "servicenow.response.code", fmt.Sprintf("%d - %s", resp.StatusCode, http.StatusText(resp.StatusCode)))
 		return
 	}
 
+	x, _ := ioutil.ReadAll(resp.Body)
+	da.Log(aid, fmt.Sprintf("%s\n", x))
+	da.RespondWithError(w, "servicenow.response.code", fmt.Sprintf("%d - %s", resp.StatusCode, http.StatusText(resp.StatusCode)))
+	return
 }
