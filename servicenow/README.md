@@ -1,10 +1,3 @@
----
-{
-  "image": "vorteil/servicenow",
-  "desc": "todo."
-}
----
-
 | image | desc |
 | --- | --- |
 | vorteil/servicenow | perform a Service Now API request |
