@@ -4,6 +4,20 @@ Simple Containers that run on Direktiv
 
 <em>created by [13a9ae12](https://github.com/vorteil/direktiv-apps/tree/13a9ae12016125530d2e097e8fa255c16c88041e)</em>
 
+## Useability
+
+To use these containers add the following to your workflow on Direktiv.
+
+```yaml
+functions:
+- id: getRequest
+  image: vorteil/request
+states:
+  - id: getInfo
+    action:
+      function: getRequest
+    type: action
+```
 
 ## Containers
 
