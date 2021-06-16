@@ -8,9 +8,10 @@ import (
 	"text/template"
 
 	"bytes"
+	"strings"
+
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 	"github.com/vorteil/direktiv-apps/pkg/validator"
-	"strings"
 )
 
 // InputInstanceDetails ...
@@ -25,6 +26,7 @@ type InputInstanceDetails struct {
 	InstanceType string `json:"instance-type" validate:"required"`
 
 	// Optional
+	Name            string            `json:"name"`
 	KeyName         string            `json:"key-name"`
 	SubnetID        string            `json:"subnet-id"`
 	SecurityGroupID string            `json:"security-group-ids"`
@@ -40,6 +42,7 @@ const (
 	AWS_CLI_TEMPLATE = ` ec2 run-instances 
 	--image-id {{.ImageID}} 
 	--instance-type {{.InstanceType}}
+	{{if .Name}} --name {{.Name}}{{else}}{{end}}
 	{{if .KeyName}} --key-name {{.KeyName}}{{else}}{{end}}
 	{{if .SubnetID}} --subnet-id {{.SubnetID}}{{else}}{{end}}
 	{{if .SecurityGroupID}} --security-group-ids {{.SecurityGroupID}}{{else}}{{end}}
@@ -47,10 +50,10 @@ const (
 )
 
 func main() {
-	direktivapps.StartServer(AWSInstaceCreate)
+	direktivapps.StartServer(AWSInstanceCreate)
 }
 
-func AWSInstaceCreate(w http.ResponseWriter, r *http.Request) {
+func AWSInstanceCreate(w http.ResponseWriter, r *http.Request) {
 	var err error
 	obj := new(InputInstanceDetails)
 	aid, err := direktivapps.Unmarshal(obj, r)
