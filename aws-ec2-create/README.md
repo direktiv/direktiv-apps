@@ -18,7 +18,7 @@ id: aws-create-ec2-instance
 description: "Create a new ec2 instance"
 functions:
 - id: aws-create-instance
-  image: vorteil/aws-ec2-create:v2
+  image: vorteil/aws-ec2-create:v3
   size: medium
 states:
 - id: createInstance
@@ -49,6 +49,7 @@ There are additional fields that can be also used in the input for more control 
 
 | Field              | Description                                       | Type              |
 |--------------------|---------------------------------------------------|-------------------|
+| name               | The name of the instance being created            | String            |
 | subnet-id          | The ID of the subnet to launch the instance into. | String            |
 | key-name           | The name of the key pair. Warning: If not set you can't connect to the instance unless you choose an AMI that is configured to allow users another way to log in. | String            |
 | security-group-ids | The IDs of the security groups.                   | String            |
