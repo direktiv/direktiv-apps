@@ -1,6 +1,6 @@
 ---
 {
-	"image": "vorteil/servicenow"
+	"image": "vorteil/servicenow",
 	"desc": "perform a Service Now API request"
 }
 ---
