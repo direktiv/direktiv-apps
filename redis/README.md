@@ -26,7 +26,14 @@ states:
   type: action
   action:
     function: msg
-    input: .
+    input: '
+      {
+        "method": "get",
+        "addr": "localhost:6379",
+        "password": "",
+        "db": 0,
+        "values": "TEST"
+      }'
 ```
 
 ## Input
