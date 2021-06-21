@@ -1,11 +1,11 @@
 ---
 {
-  "image": "vorteil/rabbitmq-consumer",
+  "image": "vorteil/rabbitmq-consume",
   "desc": "Consumes messages from a RabbitMQ Service"
 }
 ---
 
-# RabbitMQ Consumer
+# RabbitMQ Consume
 
 Consumes messages from a RabbitMQ Service
 
@@ -17,7 +17,7 @@ An example workflow of consuming from a RabbitMQ service.
 id: rabbitmq
 functions:
 - id: rabbit-consume
-  image: vorteil/rabbitmq-consumer:v1
+  image: vorteil/rabbitmq-consume:v1
 description: "Read messages from a RabbitMQ service"
 states:
 - id: readmsg
@@ -29,7 +29,7 @@ states:
 
 ## Input
 
-Consume messages to the Rabbit MQ service hosted on the address. The property `waitTime` is optional(default=1000) and is the amount of time in milliseconds to consume messages.
+Consume messages from a Rabbit MQ service hosted on the address. The property `timeout` is optional(default=1000) and is the amount of time in milliseconds to consume messages.
 
 ```json
 {
@@ -37,7 +37,7 @@ Consume messages to the Rabbit MQ service hosted on the address. The property `w
     "username": "test",
     "password": "test",
     "queue": "direktiv",
-    "waitTime": 1000
+    "timeout": 1000
 }
 ```
 
@@ -63,7 +63,7 @@ In the case that an error is encountered, it will present in the following forma
 
 ```json
 {
-    "errorCode": "com.rabbitmq-consumer.error",
+    "errorCode": "com.rabbitmq-consume.error",
     "errorMsg": "Something went wrong"
 }
 ```

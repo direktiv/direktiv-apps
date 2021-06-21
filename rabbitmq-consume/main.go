@@ -11,14 +11,14 @@ import (
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 )
 
-const DefaultWaitTimeMilliseconds = 1000
+const DefaultTimeoutMilliseconds = 1000
 
 type RabbitMQInput struct {
 	Address  string `json:"address"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Queue    string `json:"queue"`
-	WaitTime int    `json:"waitTime`
+	Timeout  int    `json:"timeout"`
 }
 
 type RabbitResponseMsg struct {
@@ -43,9 +43,9 @@ func RabbitMQHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Set default wait time
-	if obj.WaitTime == 0 {
-		obj.WaitTime = DefaultWaitTimeMilliseconds
+	// Set default timeout
+	if obj.Timeout == 0 {
+		obj.Timeout = DefaultTimeoutMilliseconds
 	}
 
 	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s/", obj.Username, obj.Password, obj.Address))
