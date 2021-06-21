@@ -8,116 +8,53 @@
 # Terraform
 
 ## Direktiv
-An example workflow of using the container on Direktiv. Notice we're providing the terraform files from the functions array.
+An example workflow of using the container on Direktiv. Notice we're providing the terraform file from the functions array. Which puts it into a temp directory where we call Terraform from.
 
 ```yaml
 id: spawn-gcp-ubuntu-instance
 functions:
 - id: tfrun
-  image: vorteil/terraform:v1
+  image: trentis/terraform:v44
   files:
   - key: main.tf
     scope: workflow
     type: plain
-  - key: variables.tf
-    scope: workflow
-    type: plain
-  - key: outputs.tf
-    scope: workflow
-    type: plain
-description: spawns a new gcp instance that returns the ip and user to ssh
+description: spawns a new gcp instance that returns the ip
 states:
   - id: spawn-gcp-instance
     type: action
     action:
-      secrets: ["GCP_SSH_PUB_KEY", "GCP_SSH_USER", "GCP_SERVICE_ACCOUNT_KEY", "GCP_PROJECT_ID", "GCP_INSTANCE_PW"]
+      secrets: ["GCP_PROJECT_ID"]
       function: tfrun
       input: |
         {
           "action": "apply",
-          "tfstate": "gcp-instance-deployed",
-          "google-auth": .secrets.GCP_SERVICE_ACCOUNT_KEY,
+          "args-on-init": ["-backend-config=address=http://localhost:8001/terraform-gcp-instance"],
           "variables": {
-            "project_id": .secrets.GCP_PROJECT_ID,
-            "gce_ssh_user": .secrets.GCP_SSH_USER,
-            "gce_ssh_pub_key": .secrets.GCP_SSH_PUB_KEY,
-            "password": .secrets.GCP_INSTANCE_PW
+            "state-name": "terraform-gcp-instance",
+            "project_id": .secrets.GCP_PROJECT_ID
           }
         }
 ```
 
-## Authentication
-Three different ways of authenticating for three different cloud providers. Add these to the input section. You may use all three if you are provisioning to every cloud platform.
+Passing the above 'args-on-init' and variable 'state-name' will allow the container to use a http backend for Terraform to store the state. If not provided the state will be returned in the JSON output.
 
-Azure
-```json
-{
-    "azure-auth": {
-        "client-id": "",
-        "client-secret": "",
-        "subscription-id": "",
-        "tenant-id": ""
-    }
-}
-```
-
-Google
-```json
-{
-    "google-auth": "ENTIRE_SERVICE_ACCCOUNT_KEY"
-}
-```
-
-Amazon
-```json
-{
-    "amazon-auth": {
-        "access-key": "",
-        "secret-key": ""
-    }
-}
-```
-
-## Input
-
-```json
-{
-    "action": "apply",
-    "tfstate": "gcp-instance-deployed",
-    "google-auth": .secrets.GCP_SERVICE_ACCOUNT_KEY,
-    "variables": {
-        "project_id": .secrets.GCP_PROJECT_ID,
-        "gce_ssh_user": .secrets.GCP_SSH_USER,
-        "gce_ssh_pub_key": .secrets.GCP_SSH_PUB_KEY,
-        "password": .secrets.GCP_INSTANCE_PW
-    }
-}
-```
-
-**NOTE: 'action' can be apply, destroy, validate or plan. 'tfstate' is the name of the state variable if it doesn't exist it will create a new workflow variable upon completion.** 
+**Note: the variable 'state-name' needs to match the path on the 'args-on-init' path.**
 
 ## Output
 
-The output of the container will be matching the 'outputs.tf' file provided. For an example with the provided terraform file.
+If the action is successful, the output should contain any outputs written in Terraform and the Terraform state.
 
-```hcl
-output "ip-address" {
-    value = google_compute_instance.default.network_interface[0].access_config[0].nat_ip
-}
-```
-
-Will output as the following json..
 ```json
 {
-    "ip-address": {
-        "value": "192.168.1.30"
-    }
+    "output": {},
+    "tfstate": {}
 }
 ```
 
 ## Error
 
-In the case that an error is encountered, it will present in the following format:
+In the case that an error is encountered it will present in the following format:
 
 ```json
 {
@@ -126,4 +63,4 @@ In the case that an error is encountered, it will present in the following forma
 }
 ```
 
-**Note: '%s' will be replaced with a contextual error.** 
+**Note: '%s' will be replaced with a contextual error.**

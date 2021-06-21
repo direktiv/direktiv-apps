@@ -12,43 +12,31 @@ import (
 	"os/exec"
 	"os/signal"
 	"path"
-	"sync"
 	"syscall"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 )
 
 // TerraformInput takes different arguments for each authentication service.
 type TerraformInput struct {
-	Action                    string                 `json:"action"`    // plan, validate, apply, destroy
-	TFVars                    map[string]interface{} `json:"variables"` // the tf variables from the input.
-	TFStateName               string                 `json:"tfstate"`   // the name of the variable uses for tfstate
-	GoogleCloudAuthentication string                 `json:"google-auth,omitempty"`
-	AzureAuthentication       AzureAuthentication    `json:"azure-auth,omitempty"`
-	AmazonAuthentication      AmazonAuthentication   `json:"amazon-auth,omitempty"`
+	Action                 string                 `json:"action"`         // plan, validate, apply, destroy
+	TFVars                 map[string]interface{} `json:"variables"`      // the tf variables from the input.
+	AdditionalArgs         []string               `json:"args-on-init"`   // additional arguments on init command
+	AdditionalArgsOnAction []string               `json:"args-on-action"` // additional arguments on action command
 }
 
-// AzureAuthentication provides clientID, client secret, subscriptionid and tenantid
-type AzureAuthentication struct {
-	ClientID       string `json:"client-id"`
-	ClientSecret   string `json:"client-secret"`
-	SubscriptionID string `json:"subscription-id"`
-	TenantID       string `json:"tenant-id"`
-}
-
-// AmazonAuthentication provides the accesskey and secret key
-type AmazonAuthentication struct {
-	AccessKey string `json:"access-key"`
-	SecretKey string `json:"secret-key"`
+// OutputResponse only gets used if a tfstate wasn't provided as the 'state-name' variable.
+type OutputResponse struct {
+	Output  map[string]interface{} `json:"output"`
+	TFState map[string]interface{} `json:"tfstate"`
 }
 
 var code = "com.terraform.%s.error"
 var terraformBin = "/terraform"
 
-var aidGlobal string
-var tfnameGlobal string
-var locked = false
+var runningTF map[string]string
 
 // CMDWriter allows us to log to the action id provided.
 type CMDWriter struct {
@@ -62,62 +50,19 @@ func (c *CMDWriter) Write(p []byte) (n int, err error) {
 }
 
 func main() {
+	runningTF = make(map[string]string)
 	direktivapps.StartServer(TerraformHandler)
 }
 
-func setupGCPAuth(auth string) error {
-	err := ioutil.WriteFile("/credentials", []byte(auth), os.ModePerm)
-	if err != nil {
-		return err
-	}
-	err = os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "/credentials")
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func setupAzureAuth(auth *AzureAuthentication) error {
-	err := os.Setenv("ARM_CLIENT_ID", auth.ClientID)
-	if err != nil {
-		return err
-	}
-	err = os.Setenv("ARM_CLIENT_SECRET", auth.ClientSecret)
-	if err != nil {
-		return err
-	}
-	err = os.Setenv("ARM_SUBSCRIPTION_ID", auth.SubscriptionID)
-	if err != nil {
-		return err
-	}
-	err = os.Setenv("ARM_TENANT_ID", auth.TenantID)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func setupAmazonAuth(auth *AmazonAuthentication) error {
-	err := os.Setenv("AWS_ACCESS_KEY_ID", auth.AccessKey)
-	if err != nil {
-		return err
-	}
-
-	err = os.Setenv("AWS_SECRET_ACCESS_KEY", auth.SecretKey)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func httpBackend() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", TFStateHandler)
+	// mux := http.NewServeMux()
+	r := mux.NewRouter()
+	r.HandleFunc("/{id}", TFStateHandler)
+	r.HandleFunc("/", TFStateHandler)
 
 	srv := &http.Server{
 		Addr:    ":8001",
-		Handler: mux,
+		Handler: r,
 	}
 
 	sigs := make(chan os.Signal, 1)
@@ -133,14 +78,13 @@ func httpBackend() {
 	srv.ListenAndServe()
 }
 
-var stateAid sync.Mutex
-
 func TFStateHandler(w http.ResponseWriter, r *http.Request) {
-	url := fmt.Sprintf("http://localhost:8889/var?aid=%s&scope=workflow&key=%s", aidGlobal, tfnameGlobal)
+	vars := mux.Vars(r)
+	url := fmt.Sprintf("http://localhost:8889/var?aid=%s&scope=workflow&key=%s", runningTF[vars["id"]], vars["id"])
 
 	switch r.Method {
 	case http.MethodGet:
-		direktivapps.Log(aidGlobal, "Fetching tfstate variable...")
+		direktivapps.Log(runningTF[vars["id"]], "Fetching tfstate variable...")
 		resp, err := http.Get(url)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -149,9 +93,15 @@ func TFStateHandler(w http.ResponseWriter, r *http.Request) {
 
 		defer resp.Body.Close()
 		data, _ := ioutil.ReadAll(resp.Body)
+		if len(data) == 0 {
+			// no state currently exists
+			data = []byte(`{
+				"version": 4
+			}`)
+		}
 		w.Write(data)
 	case http.MethodPost:
-		direktivapps.Log(aidGlobal, "Saving new tfstate variable...")
+		direktivapps.Log(runningTF[vars["id"]], "Saving new tfstate variable...")
 		req, err := http.NewRequest("POST", url, r.Body)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -159,7 +109,7 @@ func TFStateHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		resp, err := http.DefaultClient.Do(req)
 		if err != nil {
-			direktivapps.RespondWithError(w, fmt.Sprintf(code, "resp-do-tfstate"), err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 		defer resp.Body.Close()
@@ -172,7 +122,7 @@ func TFStateHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		resp, err := http.DefaultClient.Do(req)
 		if err != nil {
-			direktivapps.RespondWithError(w, fmt.Sprintf(code, "resp-do-tfstate"), err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 		defer resp.Body.Close()
@@ -199,21 +149,24 @@ func TerraformHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if locked {
-		direktivapps.RespondWithError(w, fmt.Sprintf(code, "inuse"), "terraform container in use")
-		return
+	stateName, ok := obj.TFVars["state-name"].(string)
+	if !ok {
+		direktivapps.Log(aid, "state-name variable was not provided not using http backend")
+	} else {
+		direktivapps.Log(aid, "adding to the global map to control action ids")
+		if runningTF[stateName] != "" {
+			direktivapps.RespondWithError(w, fmt.Sprintf(code, "state-name currently in use with a different action"), err.Error())
+			return
+		}
+
+		runningTF[stateName] = aid
+		defer delete(runningTF, stateName)
 	}
-	// wait till the server is alive
-	stateAid.Lock()
-	aidGlobal = aid
-	tfnameGlobal = obj.TFStateName
-	locked = true
 
 	direktivapps.Log(aid, "Finding path to call terraform from...")
 	terraformPath := r.Header.Get("Direktiv-TempDir")
 	direktivapps.Log(aid, fmt.Sprintf("Found '%s'", terraformPath))
 
-	// url := fmt.Sprintf("http://localhost:8889/var?aid=%s&scope=workflow&key=terraform.state", aid)
 	direktivapps.Log(aid, "Checking if tfstate service http backend is alive...")
 	alive := checkBackendIsAlive()
 	// if backend not alive spawn backend
@@ -224,38 +177,6 @@ func TerraformHandler(w http.ResponseWriter, r *http.Request) {
 	direktivapps.Log(aid, "Wait till backend service is functional")
 	for !alive {
 		alive = checkBackendIsAlive()
-	}
-
-	direktivapps.Log(aid, "Handling Authentication...")
-	// Handle authentication with different cloud providers
-	// check if google auth exists and if so add it
-	if obj.GoogleCloudAuthentication != "" {
-		direktivapps.Log(aid, "Adding Google Cloud Authentication")
-		err = setupGCPAuth(obj.GoogleCloudAuthentication)
-		if err != nil {
-			direktivapps.RespondWithError(w, fmt.Sprintf(code, "gcp-auth"), err.Error())
-			return
-		}
-	}
-
-	// check if azure auth exists and if so add it
-	if obj.AzureAuthentication != (AzureAuthentication{}) {
-		direktivapps.Log(aid, "Adding Azure Authentication")
-		err = setupAzureAuth(&obj.AzureAuthentication)
-		if err != nil {
-			direktivapps.RespondWithError(w, fmt.Sprintf(code, "azure-auth"), err.Error())
-			return
-		}
-	}
-
-	// check if amazon auth exists and if so add it
-	if obj.AmazonAuthentication != (AmazonAuthentication{}) {
-		direktivapps.Log(aid, "Adding Amazon Authentication")
-		err = setupAmazonAuth(&obj.AmazonAuthentication)
-		if err != nil {
-			direktivapps.RespondWithError(w, fmt.Sprintf(code, "amazon-auth"), err.Error())
-			return
-		}
 	}
 
 	direktivapps.Log(aid, "Initializing terraform....")
@@ -273,13 +194,22 @@ func TerraformHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = ioutil.WriteFile(path.Join(terraformPath, "terraform.tfvars.json"), data, os.ModePerm)
-	if err != nil {
-		direktivapps.RespondWithError(w, fmt.Sprintf(code, "tfvars"), err.Error())
-		return
+	// if data exists write the variables parser
+	if string(data) != "null" {
+		err = ioutil.WriteFile(path.Join(terraformPath, "terraform.tfvars.json"), data, os.ModePerm)
+		if err != nil {
+			direktivapps.RespondWithError(w, fmt.Sprintf(code, "tfvars"), err.Error())
+			return
+		}
 	}
 
-	init := exec.Command(terraformBin, dirArg, "init")
+	var cmdInit []string
+	cmdInit = append(cmdInit, dirArg, "init")
+	for _, arg := range obj.AdditionalArgs {
+		cmdInit = append(cmdInit, arg)
+	}
+
+	init := exec.Command(terraformBin, cmdInit...)
 	init.Stderr = cmdW
 	init.Stdout = cmdW
 	err = init.Run()
@@ -293,7 +223,12 @@ func TerraformHandler(w http.ResponseWriter, r *http.Request) {
 	case "apply":
 		fallthrough
 	case "destroy":
-		cmd := exec.Command(terraformBin, dirArg, obj.Action, "-auto-approve")
+		var cmdApply []string
+		cmdApply = append(cmdApply, dirArg, obj.Action, "-auto-approve")
+		for _, arg := range obj.AdditionalArgsOnAction {
+			cmdApply = append(cmdApply, arg)
+		}
+		cmd := exec.Command(terraformBin, cmdApply...)
 		cmd.Stdout = cmdW
 		cmd.Stderr = cmdW
 		err = cmd.Run()
@@ -304,7 +239,12 @@ func TerraformHandler(w http.ResponseWriter, r *http.Request) {
 	case "validate":
 		fallthrough
 	case "plan":
-		cmd := exec.Command(terraformBin, dirArg, obj.Action)
+		var cmdPlan []string
+		cmdPlan = append(cmdPlan, dirArg, obj.Action)
+		for _, arg := range obj.AdditionalArgsOnAction {
+			cmdPlan = append(cmdPlan, arg)
+		}
+		cmd := exec.Command(terraformBin, cmdPlan...)
 		cmd.Stdout = cmdW
 		cmd.Stderr = cmdW
 		err = cmd.Run()
@@ -322,8 +262,62 @@ func TerraformHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	stateAid.Unlock()
-	locked = false
+	var tfstateData []byte
+	if stateName != "" {
+		resp, err := http.Get(fmt.Sprintf("http://localhost:8001/%s", stateName))
+		if err != nil {
+			direktivapps.RespondWithError(w, fmt.Sprintf(code, "read-state"), err.Error())
+			return
+		}
+		defer resp.Body.Close()
+		tfstateData, err = ioutil.ReadAll(resp.Body)
+		if err != nil {
+			direktivapps.RespondWithError(w, fmt.Sprintf(code, "state-data-read"), err.Error())
+			return
+		}
 
-	direktivapps.Respond(w, data)
+		if len(tfstateData) == 0 {
+			tfstateData, err = ioutil.ReadFile(path.Join(terraformPath, "terraform.tfstate"))
+			if err != nil {
+				direktivapps.RespondWithError(w, fmt.Sprintf(code, "state-data-read"), err.Error())
+				return
+			}
+			direktivapps.Log(aid, fmt.Sprintf("read tfstate data from file: %s", tfstateData))
+		}
+	} else {
+		tfstateData, err = ioutil.ReadFile(path.Join(terraformPath, "terraform.tfstate"))
+		if err != nil {
+			direktivapps.RespondWithError(w, fmt.Sprintf(code, "state-data-read"), err.Error())
+			return
+		}
+		direktivapps.Log(aid, fmt.Sprintf("read tfstate data from file: %s", tfstateData))
+
+	}
+
+	var output map[string]interface{}
+	err = json.Unmarshal(data, &output)
+	if err != nil {
+		direktivapps.RespondWithError(w, fmt.Sprintf(code, "unmarshal-json-output"), err.Error())
+		return
+	}
+
+	var tfstate map[string]interface{}
+	err = json.Unmarshal(tfstateData, &tfstate)
+	if err != nil {
+		direktivapps.RespondWithError(w, fmt.Sprintf(code, "unmarshal-tfstate"), err.Error())
+		return
+	}
+
+	outputobj := OutputResponse{
+		Output:  output,
+		TFState: tfstate,
+	}
+
+	writeBack, err := json.Marshal(outputobj)
+	if err != nil {
+		direktivapps.RespondWithError(w, fmt.Sprintf(code, "json-marshal-output"), err.Error())
+		return
+	}
+
+	direktivapps.Respond(w, writeBack)
 }
