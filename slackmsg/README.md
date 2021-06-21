@@ -14,7 +14,7 @@ An example workflow of using the container on Direktiv
 
 ```yaml
 id: post-to-slack
-function:
+functions:
 - id: post
   image: vorteil/slackmsg:v2
 description: "Send a message to a slack channel"

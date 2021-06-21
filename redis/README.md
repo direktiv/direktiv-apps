@@ -17,7 +17,7 @@ An example workflow of using the container on Direktiv.
 
 ```yaml
 id: redis
-function:
+functions:
 - id: redis-op
   image: vorteil/redis:v2
 description: "Gets a key value or set an array of KEY=VALUE strings"
@@ -26,7 +26,14 @@ states:
   type: action
   action:
     function: msg
-    input: .
+    input: '
+      {
+        "method": "get",
+        "addr": "localhost:6379",
+        "password": "",
+        "db": 0,
+        "values": "TEST"
+      }'
 ```
 
 ## Input
