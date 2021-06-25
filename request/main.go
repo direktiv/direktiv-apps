@@ -23,7 +23,7 @@ const code = "com.%s.error"
 type request struct {
 	Method             string                 `json:"method"`
 	URL                string                 `json:"url"`
-	Body               map[string]interface{} `json:"body"`
+	Body               interface{}            `json:"body"`
 	Headers            map[string]interface{} `json:"headers"`
 	Params             map[string]interface{} `json:"params"`
 	Username           string                 `json:"username"`
@@ -123,7 +123,6 @@ func Request(w http.ResponseWriter, r *http.Request) {
 		case string:
 			actualVal = t
 		}
-		direktivapps.Log(aid, fmt.Sprintf("Adding header %s=%s", k, actualVal))
 
 		// Adding a header requires it to be a string so might as well sprintf
 		req.Header.Add(k, actualVal)
