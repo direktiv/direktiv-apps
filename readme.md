@@ -2,7 +2,7 @@
 
 Simple Containers that run on Direktiv
 
-<em>created by [184cbb80](https://github.com/vorteil/direktiv-apps/tree/184cbb809c2e73a1f427ed45f6261d9543a135cb)</em>
+<em>created by [03c61f88](https://github.com/vorteil/direktiv-apps/tree/03c61f884155f1e2856a450c70344d70060fc4f3)</em>
 
 
 ## Containers
@@ -47,8 +47,12 @@ Simple Containers that run on Direktiv
 | [vorteil/imagerecognition](https://hub.docker.com/r/vorteil/imagerecognition) | Checks an image to see if it is safe for work and responds with content is likely to be racy, adult or violence themed. | [README](https://github.com/vorteil/direktiv-apps/tree/master/imagerecognition) |
 | [vorteil/influxdb](https://hub.docker.com/r/vorteil/influxdb) | A container that provides the opportunities to write or query data on an InfluxDB instance. | [README](https://github.com/vorteil/direktiv-apps/tree/master/influxdb) |
 | [vorteil/kafka](https://hub.docker.com/r/vorteil/kafka) | Writes a message to a Kafka service | [README](https://github.com/vorteil/direktiv-apps/tree/master/kafka) |
+| [vorteil/kafka-consume](https://hub.docker.com/r/vorteil/kafka-consume) | Consume messages from a Kafka service | [README](https://github.com/vorteil/direktiv-apps/tree/master/kafka-consume) |
 | [vorteil/lambda](https://hub.docker.com/r/vorteil/lambda) | Executes a cloud function on aws using their golang SDK. | [README](https://github.com/vorteil/direktiv-apps/tree/master/lambda) |
+| [vorteil/nats](https://hub.docker.com/r/vorteil/nats) | Writes a message to a NATS Service | [README](https://github.com/vorteil/direktiv-apps/tree/master/nats) |
+| [vorteil/nats-consume](https://hub.docker.com/r/vorteil/nats-consume) | Consumes messages from a NATS Service | [README](https://github.com/vorteil/direktiv-apps/tree/master/nats-consume) |
 | [vorteil/rabbitmq](https://hub.docker.com/r/vorteil/rabbitmq) | Writes a message to the RabbitMQ Service | [README](https://github.com/vorteil/direktiv-apps/tree/master/rabbitmq) |
+| [vorteil/rabbitmq-consume](https://hub.docker.com/r/vorteil/rabbitmq-consume) | Consumes messages from a RabbitMQ Service | [README](https://github.com/vorteil/direktiv-apps/tree/master/rabbitmq-consume) |
 | [vorteil/redis](https://hub.docker.com/r/vorteil/redis) | Sets and gets on a redis memory store. | [README](https://github.com/vorteil/direktiv-apps/tree/master/redis) |
 | [vorteil/request](https://hub.docker.com/r/vorteil/request) | Perform a basic HTTP/S request. | [README](https://github.com/vorteil/direktiv-apps/tree/master/request) |
 | [vorteil/servicenow](https://hub.docker.com/r/vorteil/servicenow) | perform a Service Now API request | [README](https://github.com/vorteil/direktiv-apps/tree/master/servicenow) |
