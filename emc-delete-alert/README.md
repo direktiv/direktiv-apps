@@ -25,22 +25,19 @@ states:
     action: 
       secrets: ["PASSWORD"]
       function: delete
-      input: |
-        {
-          "username": "admin",
-          "password": .secrets.PASSWORD,
-          "id": "alert_48"
-        }
+      input: 
+        username": "admin"
+        password": jq(.secrets.PASSWORD)
+        id": "alert_48"
 ```
 
 ## Input
 
-```json
-{
-    "username": "admin",
-    "password": .secrets.PASSWORD,
-    "id": "alert_48"
-}
+```yaml
+input:
+  username: "admin"
+  password: jq(.secrets.PASSWORD)
+  id: "alert_48"
 ```
 
 ## Output

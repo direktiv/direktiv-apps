@@ -26,20 +26,19 @@ states:
   action:
     secrets: ["ACCESS_KEY", "ACCESS_SECRET"]
     function: aws-stop-instance
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input needed to run the above workflow properly is the following:
 
-```json
-{
-    "access-key": .secrets.ACCESS_KEY,
-    "access-secret": .secrets.ACCESS_SECRET,
-    "region": "us-east-1",
-    "instance-id": "i-090dd9255a7aaa582",
-}
+```yaml
+input:
+  "access-key": jq(.secrets.ACCESS_KEY)
+  "access-secret": jq(.secrets.ACCESS_SECRET)
+  region: "us-east-1"
+  "instance-id": "i-090dd9255a7aaa582"
 ```
 
 ## Output

@@ -24,20 +24,19 @@ states:
   type: action
   action:
     function: gcp-delete-instance
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input needed to run the above workflow properly is the following:
 
-```json
-{
-       "project": "GCP_PROJECT",
-       "serviceAccountKey": "SERVICE_ACCOUNT_KEY",
-       "instanceID": "example-instance-name",
-       "zone": "us-central1-a"
-}
+```yaml
+input:
+  project: "GCP_PROJECT"
+  serviceAccountKey: "SERVICE_ACCOUNT_KEY"
+  instanceID: "example-instance-name"
+  zone: "us-central1-a"
 ```
 
 When authenticating with the gcloud nothing will be logged to the stdout of the container.

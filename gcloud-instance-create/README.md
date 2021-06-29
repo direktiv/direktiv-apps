@@ -24,22 +24,21 @@ states:
   type: action
   action:
     function: gcp-new-intance
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input needed to run the above workflow properly is the following:
 
-```json
-{
-       "project": "GCP_PROJECT",
-       "serviceAccountKey": "SERVICE_ACCOUNT_KEY",
-       "name": "example-instance-name",
-       "zone": "us-central1-a",
-       "machineType": "e2-medium",
-       "image": "example_image",
-}
+```yaml
+input:
+  project: "GCP_PROJECT"
+  serviceAccountKey: "SERVICE_ACCOUNT_KEY"
+  name: "example-instance-name"
+  zone: "us-central1-a"
+  machineType: "e2-medium"
+  image: "example_image"
 ```
 
 When authenticating with the gcloud nothing will be logged to the stdout of the container.

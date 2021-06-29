@@ -26,15 +26,13 @@ states:
     action:
       secrets: ["GCP_PROJECT_ID"]
       function: tfrun
-      input: |
-        {
-          "action": "apply",
-          "args-on-init": ["-backend-config=address=http://localhost:8001/terraform-gcp-instance"],
-          "variables": {
-            "state-name": "terraform-gcp-instance",
-            "project_id": .secrets.GCP_PROJECT_ID
-          }
-        }
+      input: 
+        action: "apply"
+        "args-on-init":
+          - "-backend-config=address=http://localhost:8001/terraform-gcp-instance"
+        variables:
+          "state-name": "terraform-gcp-instance"
+          "project_id": jq(.secrets.GCP_PROJECT_ID)
 ```
 
 Passing the above 'args-on-init' and variable 'state-name' will allow the container to use a http backend for Terraform to store the state. If not provided the state will be returned in the JSON output.

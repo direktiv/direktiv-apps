@@ -24,21 +24,20 @@ states:
   type: action
   action:
     function: nats-write
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 Writes a message to the NATS service hosted on the address. The fields `username` and `password` are optional fields used for user authentication.
 
-```json
-{
-    "address": "localhost:4222",
-    "username": "test",
-    "password": "test",
-    "subject": "direktiv",
-    "message": "Hello World :)!"
-}
+```yaml
+input:
+  address: "localhost:4222"
+  username: "test"
+  password: "test"
+  subject: "direktiv"
+  message: "Hello World :)!"
 ```
 
 

@@ -22,23 +22,21 @@ states:
   type: action
   action:
     function: invoke
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The following input is needed for the cloud function to be invoked successfully.
 
-```json
-{
-    "region": "us-east1",
-    "function": "helloworld",
-    "serviceAccountKey": .secrets.SERVICE_ACCOUNT_KEY,
-    "method": "POST",
-    "body": {
-        "message": "hello"
-    }
-}
+```yaml
+input:
+  region: "us-east1"
+  function: "helloworld"
+  serviceAccountKey: jq(.secrets.SERVICE_ACCOUNT_KEY)
+  method: "POST"
+  body: 
+    message: "hello"
 ```
 
 **NOTE:** The `body` field is optional.

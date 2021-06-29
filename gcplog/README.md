@@ -24,21 +24,20 @@ states:
   type: action
   action:
     function: log
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input needed to run the above workflow properly is the following:
 
-```json
-{
-    "serviceAccountKey": .secrets.SERVICEACCOUNTKEY,
-    "message": "hello",
-    "project-id": "direktiv",
-    "log-name": "NameOfLog",
-    "log-level": "Info",
-}
+```yaml
+input:
+  serviceAccountKey: jq(.secrets.SERVICEACCOUNTKEY)
+  message: "hello"
+  "project-id": "direktiv"
+  "log-name": "NameOfLog"
+  "log-level": "Info"
 ```
 
 ## Input Optional - Log Level

@@ -21,23 +21,21 @@ states:
   type: action
   action:
     function: post
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The following input is needed for the cloud function to be invoked successfully.
 
-```json
-{
-    "key": .secrets.AWS-KEY,
-    "secret": .secrets.AWS-SECRET,
-    "region": "us-east-2",
-    "function": "helloworld",
-    "body": {
-        "any": "data"
-    }
-}
+```yaml
+input:
+  key: jq(.secrets.AWS-KEY)
+  secret: jq(.secrets.AWS-SECRET)
+  region: "us-east-2"
+  function: "helloworld"
+  body: 
+    any: "data"
 ```
 
 **NOTE:** The `body`  field is optional.

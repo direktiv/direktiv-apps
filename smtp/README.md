@@ -21,31 +21,29 @@ states:
   type: action
   action:
     function: send
-    input: '{
-    "to"      : "recipient@example.com",
-    "subject" : "SMTP Email",
-    "message" : "Hello, world!",
-    "from"    : "sender@example.com",
-    "password": "NOT4REALPW",
-    "server"  : "smtp.example.com",
-    "port"    : 587
-}'
+    input:
+      to: "recipient@example.com"
+      subject: "SMTP Email"
+      message: "Hello, world!"
+      from: "sender@example.com"
+      password: "NOT4REALPW"
+      server: "smtp.example.com"
+      port: 587
 ```
 
 ## Input
 
 Sends an email via SMTP according to the input object:
 
-```json
-{
-    "to"      : "recipient@example.com",
-    "subject" : "SMTP Email",
-    "message" : "Hello, world!",
-    "from"    : "sender@example.com",
-    "password": "NOT4REALPW",
-    "server"  : "smtp.example.com",
-    "port"    : 587
-}
+```yaml
+input:
+  to: "recipient@example.com"
+  subject: "SMTP Email"
+  message: "Hello, world!"
+  from: "sender@example.com"
+  password: "NOT4REALPW"
+  server: "smtp.example.com"
+  port: 587
 ```
 
 ## Output

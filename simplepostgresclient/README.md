@@ -29,32 +29,29 @@ states:
   action:
     function: postgres
     secrets: ["DB_PASSWORD"]
-    input: '{
-      conn: ("postgres://vorteil:" + .secrets.DB_PASSWORD + "@203.0.113.5:5432/github_events_db"),
-      table: "github_events",
-      transaction: [{
-        type: "insert",
-	data: ."com.github.pull.create"
-      }]
-    }'
+    input:
+      conn: jq("postgres://vorteil:" + .secrets.DB_PASSWORD + "@203.0.113.5:5432/github_events_db")
+      table: "github_events"
+      transaction: 
+        - type: "insert"
+          data: jq(."com.github.pull.create")
 ```
 
 ## Input 
 
 The Simple Postgres Client can support a handful of different operations, and can chain them together into simple transactions. Here's an example input, which will be explained in further detail below.
 
-```json
-{
-    "conn": "postgres://vorteil:password@localhost:5432/postgres?sslmode=disable",
-    "table": "test",
-    "transaction": [
-        {
-            "type": "update",
-            "where": {"name": null},
-            "set": {"name": "jon", "age": 24}
-        }
-    ]
-}
+```yaml
+input:
+  conn: "postgres://vorteil:password@localhost:5432/postgres?sslmode=disable"
+  table: "test"
+  transaction: 
+    - type: "update"
+      where:
+        name: null
+      set:
+        name: "jon"
+        age: 24
 ```
 
 ### Top-Level Parameters
@@ -73,28 +70,24 @@ The real input goes into the `transaction` array. Each element in the transactio
 
 An `delete` step is identified by the required `"type": "delete"` parameter. It also requires a `where` parameter, which must be an object that contains only key-value pairs of primitive types. 
 
-```json 
-{
-  "type": "delete",
-  "where": {
-    "a": 1
-  }
-}
+```yaml 
+input:
+  type: "delete"
+  where: 
+    a: 1
 ```
 
 ### Insert Input 
 
 An `insert` step is identified by the required `"type": "insert"` parameter. It also requires `data`, which can be either a single object or an array of objects. All data objects must contain only key-value pairs of primitive types. 
 
-```json 
-{
-  "type": "insert",
-  "data": [{
-    "b": "B",
-    "c": 2,
-    "d": null
-  }]
-}
+```yaml 
+input:
+  type: "insert"
+  data: 
+    - b: "B"
+      c: 2
+      d: null
 ```
 
 Each data object will be inserted into the database with the keys used to identify columns.
@@ -103,32 +96,27 @@ Each data object will be inserted into the database with the keys used to identi
 
 A `select` step is identified by the required `"type": "select"` parameter. It also requires `where` and `fields` parameters. The `where` parameter must be an object that contains only key-value pairs of primitive types. The `fields` parameter can be either `"fields": "*"` or an array of strings that select specific columns to appear in the output of the step.
 
-```json 
-{
-  "type": "select",
-  "where": {
-    "a": 1
-  },
-  "fields": "*"
-}
+```yaml 
+input:
+  type: "select"
+  where: 
+    a: 1
+  fields: "*"
 ```
 
 ### Update Input
 
 An `update` step is identified by the required `"type": "update"` parameter. It also requires `where` and `set` parameters, which are both objects that must contain only key-value pairs of primitive types. 
 
-```json 
-{
-  "type": "update",
-  "where": {
-    "a": 1
-  },
-  "set": {
-    "b": "B",
-    "c": 2,
-    "d": null
-  }
-}
+```yaml 
+input:
+  type: "update"
+  where: 
+    a: 1
+  set:
+    b: "B"
+    c: 2
+    d: null
 ```
 
 ## Output

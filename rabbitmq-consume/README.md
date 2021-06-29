@@ -24,21 +24,20 @@ states:
   type: action
   action:
     function: rabbit-consume
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 Consume messages from a Rabbit MQ service hosted on the address. The property `timeout` is optional(default=1000) and is the amount of time in milliseconds to consume messages.
 
-```json
-{
-    "address": "192.168.1.30:5672",
-    "username": "test",
-    "password": "test",
-    "queue": "direktiv",
-    "timeout": 1000
-}
+```yaml
+input:
+  address: "192.168.1.30:5672"
+  username: "test"
+  password: "test"
+  queue: "direktiv"
+  timeout: 1000
 ```
 
 ## Output

@@ -24,25 +24,21 @@ states:
   type: action
   action:
     function: mygit
-    input: '{
-	     "cmds": [
-		       "clone https://github.com/vorteil/direktiv.git",
-		       "-C direktiv tag"
-	        ]
-       }'
+    input: 
+      cmds:
+        - "clone https://github.com/vorteil/direktiv.git"
+        - "-C direktiv tag"
 ```
 
 ## Input
 
 The action takes a list of git commands to run. The working directory is not being changed during the process. If subsequent git commands are being executed after a clone the need the "-C" argument to point to the cloned directory. The variable '$out' can be used to clone into workflow variables, e.g.:
 
-```
-input: '{
-   "cmds": [
-       "clone https://github.com/vorteil/direktiv.git $out/instance/direktiv",
-       "-C $out/instance/direktiv tag"
-      ]
-   }'
+```yaml
+input:
+  cmds: 
+    - "clone https://github.com/vorteil/direktiv.git $out/instance/direktiv"
+    - "-C $out/instance/direktiv tag"
 ```
 
 
@@ -52,12 +48,9 @@ input: '{
 action:
       secrets: ["gittoken"]
       function: get
-      input: |
-        {
-          "cmds": [
-            ("clone https://" + .secrets.gittoken + "@github.com/vorteil/direktiv.git")
-          ]
-        }
+      input: 
+        cmds:
+          - jq("clone https://" + .secrets.gittoken + "@github.com/vorteil/direktiv.git")
 ```
 
 
