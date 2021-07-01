@@ -21,22 +21,25 @@ namespace dotnet.Controllers
     {
         public void log(String aid,  String l)
         {
-            try{
-                string url = "http://localhost:8889/log?aid="+aid;
-                var data = Encoding.ASCII.GetBytes(l);
-                var request = (HttpWebRequest)WebRequest.Create(url);
-                request.Method = "POST";
-                request.ContentType = "plain/text";
-                using(var stream = request.GetRequestStream())
-                {
-                    stream.Write(data, 0, data.Length);
+            if (aid != "development" && aid != "Development") {
+                try{
+                    string url = "http://localhost:8889/log?aid="+aid;
+                    var data = Encoding.ASCII.GetBytes(l);
+                    var request = (HttpWebRequest)WebRequest.Create(url);
+                    request.Method = "POST";
+                    request.ContentType = "plain/text";
+                    using(var stream = request.GetRequestStream())
+                    {
+                        stream.Write(data, 0, data.Length);
+                    }
+                    request.GetResponse();
+                } catch(Exception e){
+                    // ignore
+                    Console.WriteLine(e);
                 }
-                request.GetResponse();
-            } catch(Exception e){
-                // ignore
-                Console.WriteLine(e);
+            } else {
+                Console.WriteLine(l);
             }
-
         }
 
         [HttpPost]
