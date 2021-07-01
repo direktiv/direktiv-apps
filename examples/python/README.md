@@ -20,14 +20,15 @@ InputNameField = "name"
 
 class DirektivHandler(BaseHTTPRequestHandler):
     def _log(self, actionID, msg):
-        try:
-            r = requests.post("http://localhost:8889/log?aid=%s" % actionID, headers={"Content-type": "plain/text"}, data = msg)
-            if r.status_code != 200:
-                self._send_error("com.greeting-bad-log.error", "log request failed to direktiv")
-                sys.exit(1)
-        except:
-            self._send_error("com.greeting-bad-log.error", "failed to log to direktiv")
-            sys.exit(1)
+        if actionID != "development" and actionID != "Development":
+            try:
+                r = requests.post("http://localhost:8889/log?aid=%s" % actionID, headers={"Content-type": "plain/text"}, data = msg)
+                if r.status_code != 200:
+                    self._send_error("com.greeting-bad-log.error", "log request failed to direktiv")
+            except:
+                self._send_error("com.greeting-bad-log.error", "failed to log to direktiv")
+        else: 
+            print(msg)
 
     def _send_error(self, errorCode, errorMsg):
         self.send_response(400)

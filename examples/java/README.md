@@ -42,18 +42,22 @@ public class Greeting {
 
     static class GreetingHandler implements HttpHandler {
         
-        public void log(String aid, String l)  {
-            try {
-                URL url = new URL("http://localhost:8889/log?aid="+ aid);
-                URLConnection con = url.openConnection();
-                HttpURLConnection http = (HttpURLConnection)con;
-                http.setRequestMethod("POST");
-                http.setRequestProperty("Content-Type", "plain/text");
-                http.getOutputStream().write(l.getBytes("UTF-8"));
-                http.connect();
-            } catch(Exception e) {
-                // left empty as it should always work
-                return;
+          public void log(String aid, String l)  {
+            if (aid != "development" && aid != "Development") {
+                try {
+                    URL url = new URL("http://localhost:8889/log?aid="+ aid);
+                    URLConnection con = url.openConnection();
+                    HttpURLConnection http = (HttpURLConnection)con;
+                    http.setRequestMethod("POST");
+                    http.setRequestProperty("Content-Type", "plain/text");
+                    http.getOutputStream().write(l.getBytes("UTF-8"));
+                    http.connect();
+                } catch(Exception e) {
+                    // left empty as it should always work
+                    return;
+                }
+            } else {
+                System.out.println(l);
             }
         }
 
