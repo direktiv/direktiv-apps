@@ -21,10 +21,11 @@ import (
 
 // TerraformInput takes different arguments for each authentication service.
 type TerraformInput struct {
-	Action                 string                 `json:"action"`         // plan, validate, apply, destroy
-	TFVars                 map[string]interface{} `json:"variables"`      // the tf variables from the input.
-	AdditionalArgs         []string               `json:"args-on-init"`   // additional arguments on init command
-	AdditionalArgsOnAction []string               `json:"args-on-action"` // additional arguments on action command
+	Action                 string                 `json:"action"`           // plan, validate, apply, destroy
+	TFVars                 map[string]interface{} `json:"variables"`        // the tf variables from the input.
+	ExecutionFolder        string                 `json:"execution-folder"` // provide folder name to execute terraform inside. If none provided execute top level
+	AdditionalArgs         []string               `json:"args-on-init"`     // additional arguments on init command
+	AdditionalArgsOnAction []string               `json:"args-on-action"`   // additional arguments on action command
 }
 
 // OutputResponse only gets used if a tfstate wasn't provided as the 'state-name' variable.
@@ -163,9 +164,10 @@ func TerraformHandler(w http.ResponseWriter, r *http.Request) {
 		defer delete(runningTF, stateName)
 	}
 
-	direktivapps.Log(aid, "Finding path to call terraform from...")
-	terraformPath := r.Header.Get("Direktiv-TempDir")
-	direktivapps.Log(aid, fmt.Sprintf("Found '%s'", terraformPath))
+	// direktivapps.Log(aid, "Finding path to call terraform from...")
+
+	terraformPath := path.Join(r.Header.Get("Direktiv-TempDir"), obj.ExecutionFolder)
+	// direktivapps.Log(aid, fmt.Sprintf("Found '%s'", terraformPath))
 
 	direktivapps.Log(aid, "Checking if tfstate service http backend is alive...")
 	alive := checkBackendIsAlive()
