@@ -1,128 +1,105 @@
 package main
 
 import (
-	"bytes"
-	"encoding/base64"
+	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 
 	da "github.com/vorteil/direktiv-apps/pkg/direktivapps"
 )
 
 func main() {
-	da.StartServer(handler)
+	da.StartServer(coreLogic)
 }
 
-type inputData struct {
-	User       string `json:"user"`
-	Host       string `json:"host"`
-	PrivateKey string `json:"privateKey"`
-	Playbook   string `json:"playbook"`
+type input struct {
+	HostKeyChecking bool     `json:"hostKeyChecking"`
+	Playbook        string   `json:"playbook"`
+	PrivateKey      string   `json:"privateKey"`
+	Args            []string `json:"args"`
 }
 
-const errCode = "com.ansible.%s"
+const (
+	errCode    = "com.ansible.%s"
+	ansibleBin = "ansible-playbook"
+)
 
 func reportError(w http.ResponseWriter, code string, err error) {
 	da.RespondWithError(w, fmt.Sprintf(errCode, code), err.Error())
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func coreLogic(w http.ResponseWriter, r *http.Request) {
 
-	obj := new(inputData)
+	obj := new(input)
 	aid, err := da.Unmarshal(obj, r)
 	if err != nil {
 		reportError(w, "inputUnmarshal", err)
 		return
 	}
 
-	// write base64-decoded privatekey to filesystem
-	pkFile, err := os.OpenFile("pkFile", os.O_CREATE|os.O_RDWR, 0600)
-	if err != nil {
-		reportError(w, "openFile", err)
-		return
-	}
-	defer pkFile.Close()
-
-	pkBytes, err := base64.StdEncoding.DecodeString(obj.PrivateKey)
-	if err != nil {
-		reportError(w, "b64decode", err)
+	mntPath := r.Header.Get("Direktiv-TempDir")
+	if len(mntPath) == 0 {
+		reportError(w, "tmpDir", fmt.Errorf("direktiv tmp directory not provided in Direktiv-TempDir header"))
 		return
 	}
 
-	_, err = io.Copy(pkFile, bytes.NewReader(pkBytes))
-	if err != nil {
-		reportError(w, "writePrivateKeyData", err)
+	if obj.Playbook == "" {
+		reportError(w, "badRequest", fmt.Errorf("name of playbook file must be provided in input data"))
 		return
 	}
 
-	err = pkFile.Close()
-	if err != nil {
-		reportError(w, "closeFile", err)
+	if obj.PrivateKey == "" {
+		reportError(w, "privateKey", fmt.Errorf("name of private key file must be provided in input data"))
 		return
 	}
 
-	// write base64-decoded playbook to filesystem
-	pbFile, err := os.OpenFile("pbFile", os.O_CREATE|os.O_RDWR, 0755)
+	pkPath := filepath.Join(mntPath, obj.PrivateKey)
+	err = os.Chmod(pkPath, 0600)
 	if err != nil {
-		reportError(w, "openFile", err)
-		return
-	}
-	defer pbFile.Close()
-
-	pbBytes, err := base64.StdEncoding.DecodeString(obj.Playbook)
-	if err != nil {
-		reportError(w, "b64decode", err)
+		reportError(w, "chmod", err)
 		return
 	}
 
-	_, err = io.Copy(pbFile, bytes.NewReader(pbBytes))
-	if err != nil {
-		reportError(w, "writePlaybookData", err)
-		return
+	if obj.Args == nil {
+		obj.Args = make([]string, 0)
 	}
 
-	err = pbFile.Close()
-	if err != nil {
-		reportError(w, "closeFile", err)
-		return
+	obj.Args = append(obj.Args, "--private-key", pkPath, filepath.Join(mntPath, obj.Playbook))
+
+	cmd := exec.Command(ansibleBin, obj.Args...)
+	if !obj.HostKeyChecking {
+		cmd.Env = append(cmd.Env, "ANSIBLE_HOST_KEY_CHECKING=False")
 	}
 
-	// write to ssh_config
-	f, err := os.OpenFile("/etc/ssh/ssh_config", os.O_APPEND|os.O_WRONLY, 0644)
+	out, err := cmd.CombinedOutput()
 	if err != nil {
-		reportError(w, "openSSHConfig", err)
-		return
-	}
-	defer f.Close()
-
-	_, err = io.Copy(f, strings.NewReader(fmt.Sprintf("\n\nHost %s\n", strings.TrimSuffix(obj.Host, ","))))
-	if err != nil {
-		reportError(w, "modifySSHConfig", err)
-		return
-	}
-
-	err = f.Close()
-	if err != nil {
-		reportError(w, "closeSSHConfig", err)
-		return
-	}
-
-	// exec command to run ansible
-	cmd := exec.Command("ansible-playbook", "-i", obj.Host, "-u", obj.User, "--private-key", pkFile.Name(), pbFile.Name(), "-vvvv")
-	cmd.Env = append(os.Environ(), "ANSIBLE_HOST_KEY_CHECKING=False")
-	b, err := cmd.CombinedOutput()
-	if err != nil {
-		if b != nil {
-			da.Log(aid, string(b))
+		if out != nil {
+			err = fmt.Errorf("%w: %s", err, out)
 		}
-		reportError(w, "exec", err)
+		reportError(w, "cmd", err)
 		return
 	}
 
-	da.Log(aid, string(b))
+	out = []byte(strings.TrimSpace(string(out)))
+	da.LogDouble(aid, fmt.Sprintf("cmd output: %v", string(out)))
+
+	if !json.Valid(out) {
+		o := make(map[string]string)
+		o["output"] = string(out)
+
+		b, err := json.Marshal(o)
+		if err != nil {
+			reportError(w, "marshalMap", err)
+			return
+		}
+
+		da.Respond(w, b)
+	} else {
+		da.Respond(w, out)
+	}
 
 }

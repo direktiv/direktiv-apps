@@ -5,8 +5,8 @@ ADD . /go/src/app
 RUN go get -d -v
 RUN CGO_ENABLED=0 go build -o /isolate -ldflags="-s -w" main.go
 
-FROM ansible/ubuntu14.04-ansible
+FROM ubuntu
 RUN apt update -y
-RUN apt install -y python
+RUN apt install -y ansible
 COPY --from=build /isolate /
 CMD ["/isolate"]
