@@ -20,19 +20,15 @@ states:
   action:
     function: greeter
     input: .greetingcloudevent
-  transform: |
-    {
-      greeting: .return.greeting,
-      ceevent: .solveexpressioncloudevent
-    }
+  transform: 
+    greeting: jq(.return.greeting)
+    ceevent: jq(.solveexpressioncloudevent)
   transition: solve
 - id: solve
   type: action
   action:
     function: solve
-    input: .ceevent
-  transform: |
-    {
-      msggreeting: .greeting,
-      solvedexpression: .return
-    }
+    input: jq(.ceevent)
+  transform: 
+    msggreeting: jq(.greeting)
+    solvedexpression: jq(.return)

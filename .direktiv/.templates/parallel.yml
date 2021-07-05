@@ -8,25 +8,17 @@ states:
   type: parallel
   actions:
   - function: solve
-    input: |
-      {
-        x: "10*2"
-      }
+    input: 
+      x: "10*2"
   - function: solve
-    input: |
-      {
-        x: "10%2"
-      }
+    input:
+      x: "10%2"
   - function: solve
-    input: |
-      {
-        x: "10-2"
-      }
+    input:
+      x: "10-2"
   - function: solve
-    input: |
-      {
-        x: "10+2"
-      }
+    input:
+      x: "10+2"
   # Mode 'and' waits for all actions to be completed
   # Mode 'or' waits for the first action to be completed
   mode: and

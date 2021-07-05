@@ -7,20 +7,16 @@ states:
 - id: data
   type: noop
   transform: | 
-    { 
+    jq({ 
       expressions: ["4+10", "15-14", "100*3","200/2"] 
-    }
+    })
   transition: solve
 - id: solve
   type: foreach
-  array: '.expressions[] | { expression: . }'
+  array: 'jq(.expressions[] | { expression: . })'
   action:
     function: solve
-    input: |
-      {
-        "x": .expression
-      }
-  transform: |
-    {
-      solved: .return
-    }
+    input:
+      x: jq(.expression)
+  transform:
+    solved: jq(.return)

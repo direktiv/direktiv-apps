@@ -6,7 +6,5 @@ states:
   event:
     type: greetingcloudevent
     source: Direktiv
-    data: |
-      {
-        name: "Trent"
-      }
+    data: 
+      name: "Trent"
