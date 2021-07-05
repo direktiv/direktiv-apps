@@ -30,7 +30,7 @@ states:
     function: postgres
     secrets: ["DB_PASSWORD"]
     input:
-      conn: jq("postgres://vorteil:" + .secrets.DB_PASSWORD + "@203.0.113.5:5432/github_events_db")
+      conn: "postgres://vorteil:jq(.secrets.DB_PASSWORD)@203.0.113.5:5432/github_events_db"
       table: "github_events"
       transaction: 
         - type: "insert"
