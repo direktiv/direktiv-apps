@@ -4,7 +4,7 @@ states:
 - id: data
   type: noop
   transform:
-    age: "27" 
+    age: 27
   transition: check
 - id: check
   type: switch

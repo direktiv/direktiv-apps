@@ -10,10 +10,8 @@ states:
   type: eventAnd
   timeout: PT1H
   events:
-  - event: 
-      type: greetingcloudevent
-  - event: 
-      type: solveexpressioncloudevent
+  - type: greetingcloudevent
+  - type: solveexpressioncloudevent
   transition: greet
 - id: greet
   type: action
