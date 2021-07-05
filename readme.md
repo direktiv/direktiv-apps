@@ -2,7 +2,7 @@
 
 Simple Containers that run on Direktiv
 
-<em>created by [9ac02950](https://github.com/vorteil/direktiv-apps/tree/9ac0295023035a0e955c6bedea2a826cf1ea1ff2)</em>
+<em>created by [a8399026](https://github.com/vorteil/direktiv-apps/tree/a8399026f6ca4e7f4180b68843e331c294971dd5)</em>
 
 
 ## Containers
@@ -11,6 +11,7 @@ Simple Containers that run on Direktiv
 | ----- | ----------- | ---------- |
 | [vorteil/amazon-sns](https://hub.docker.com/r/vorteil/amazon-sns) | Writes a message to Amazon's Simple Notification Service | [README](https://github.com/vorteil/direktiv-apps/tree/master/amazon-sns) |
 | [vorteil/amazon-upload](https://hub.docker.com/r/vorteil/amazon-upload) | Uploads a base64 encoded string to a blob on Amazon. | [README](https://github.com/vorteil/direktiv-apps/tree/master/amazon-upload) |
+| [vorteil/ansible](https://hub.docker.com/r/vorteil/ansible) | Performs an 'ansible-playbook' action. Requires a playbook variable, and a private key (PEM) variable. | [README](https://github.com/vorteil/direktiv-apps/tree/master/ansible) |
 | [vorteil/aws-ec2-create](https://hub.docker.com/r/vorteil/aws-ec2-create) | Creates an amazon ec2 instance on aws. | [README](https://github.com/vorteil/direktiv-apps/tree/master/aws-ec2-create) |
 | [vorteil/aws-ec2-delete](https://hub.docker.com/r/vorteil/aws-ec2-delete) | Delete a amazon ec2 instance. | [README](https://github.com/vorteil/direktiv-apps/tree/master/aws-ec2-delete) |
 | [vorteil/aws-ec2-start](https://hub.docker.com/r/vorteil/aws-ec2-start) | Start a amazon ec2 instance. | [README](https://github.com/vorteil/direktiv-apps/tree/master/aws-ec2-start) |
