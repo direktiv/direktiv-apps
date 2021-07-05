@@ -7,10 +7,10 @@ states:
     variables:
     - key: ExampleVariableCounter
       scope: workflow
-    transform: '. += {"newCounter": (.var.ExampleVariableCounter + 1)}'
+    transform: 'jq(. += {"newCounter": (.var.ExampleVariableCounter + 1)})'
   - id: counter-set
     type: setter
     variables:
       - key: ExampleVariableCounter
         scope: workflow 
-        value: '.newCounter'
+        value: 'jq(.newCounter)'

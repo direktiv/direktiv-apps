@@ -24,32 +24,26 @@ states:
   type: action
   action: 
     function: myrequest
-    input: | 
-        {
-            "method": "GET",
-            "host"  : "https://jsonplaceholder.typicode.com/posts"
-        }
+    input: 
+      method: "GET"
+      host: "https://jsonplaceholder.typicode.com/posts"
 ```
 
 ## Input
 
-```json
-{
-    "method": "GET",
-    "url"   : "https://vorteil.io",
-    "body"  : {
-        "hello": "world"
-    },
-    "headers": {
-        "Content-Type": "application/json" 
-    },
-    "params": {
-        "Hello": "world"
-    },
-    "username": "test",
-    "password": "test2",
-    "insecureSkipVerify": false
-}
+```yaml
+input:
+  method: "GET"
+  url: "https://vorteil.io"
+  body: 
+    hello: "world"
+  headers: 
+    "Content-Type": "application/json" 
+  params: 
+    Hello: "world"
+  username: "test"
+  password: "test2"
+  insecureSkipVerify": false
 ```
 
 **NOTE:** The `method` and `url` fields are mandatory.

@@ -24,22 +24,21 @@ states:
   type: action
   action:
     function: upload
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input required to run the above workflow properly is the following:
 
-```json
-{
-    "bucket": "test",
-    "region": "ap-southeast-2",
-    "upload-name": "upload-name",
-    "key": .secrets.AMAZON_KEY,
-    "secret": .secrets.AMAZON_SECRET,
-    "data": "base64 encoded string"
-}
+```yaml
+input:
+  bucket": "test"
+  region": "ap-southeast-2"
+  "upload-name": "upload-name"
+  key: jq(.secrets.AMAZON_KEY)
+  secret: jq(.secrets.AMAZON_SECRET)
+  data: "base64 encoded string"
 ```
 
 ## Output

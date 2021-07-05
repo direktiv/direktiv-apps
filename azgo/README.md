@@ -24,20 +24,19 @@ states:
   type: action
   action:
     function: post
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input needed to run the above workflow properly is the following:
 
-```json
-{
-    "name": "SERVICE_PRINCIPAL_APPNAME",
-    "password": "SERVICE_PRINCIPAL_APPPW",
-    "tenant": "SERVICE_PRINCIPAL_APPTENANT",
-    "command": ["account", "show"]
-}
+```yaml
+input:
+  name: "SERVICE_PRINCIPAL_APPNAME"
+  password: "SERVICE_PRINCIPAL_APPPW"
+  tenant: "SERVICE_PRINCIPAL_APPTENANT"
+  command: ["account", "show"]
 ```
 When authenticating with the CLI nothing will be logged to the stdout of the container.
 

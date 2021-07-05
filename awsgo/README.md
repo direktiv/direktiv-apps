@@ -25,18 +25,18 @@ states:
   action:
     secrets: ["ACCESS_KEY", "ACCESS_SECRET"]
     function: post
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input needed to run the above workflow properly is the following:
 
-```json
-{
-    "access-key": .secrets.ACCESS_KEY,
-    "access-secret": .secrets.ACCESS_SECRET,
-    "command": ["iam", "get-account-summary"]
+```yaml
+input:
+  "access-key": jq(.secrets.ACCESS_KEY)
+  "access-secret": jq(.secrets.ACCESS_SECRET)
+  command: ["iam", "get-account-summary"]
 }
 ```
 

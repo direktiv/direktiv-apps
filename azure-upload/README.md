@@ -24,21 +24,20 @@ states:
   type: action
   action:
     function: upload
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input required to run the above workflow properly is the following:
 
-```json
-{
-    "container": "azure-container",
-    "storage-account": "storage-account",
-    "storage-account-key": .secrets.AZURE_STORAGE_KEY,
-    "data": "base64 decoded string",
-    "upload-name": "test"
-}
+```yaml
+input:
+  container: "azure-container"
+  "storage-account": "storage-account"
+  "storage-account-key": jq(.secrets.AZURE_STORAGE_KEY)
+  data: "base64 decoded string"
+  "upload-name": "test"
 ```
 
 ## Output

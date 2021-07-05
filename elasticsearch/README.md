@@ -24,7 +24,7 @@ states:
   type: action
   action:
     function: es
-    input: .
+    input: jq(.)
 ```
 
 ## Input
@@ -33,28 +33,25 @@ states:
 
 Searches the index and returns all the results.
 
-```json
-{
-    "method": "query",
-    "index": "direktiv",
-    "addresses": ["http://192.168.1.30:9200"]
-}
+```yaml
+input:
+  method: "query"
+  index: "direktiv"
+  addresses: ["http://192.168.1.30:9200"]
 ```
 
 ### Store
 
 Stores the record under the index provided.
 
-```json
-{
-    "method": "store",
-    "index": "direktiv",
-    "addresses": ["http://192.168.1.30:9200"],
-    "record": {
-        "test": "test2",
-        "thisiscool": "yeahcool"
-    }
-}
+```yaml
+input:
+  method: "store"
+  index: "direktiv"
+  addresses: ["http://192.168.1.30:9200"]
+  record:
+    test: "test2"
+    thisiscool: "yeahcool"
 ```
 
 ## Output

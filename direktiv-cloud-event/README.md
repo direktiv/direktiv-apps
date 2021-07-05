@@ -23,16 +23,13 @@ states:
   type: action
   action: 
     function: sendcloud
-    input: |
-      {
-          "type": "direktiv-cloud",
-          "source": "another workflow",
-          "namespace": "trent",
-          "data": {
-              "hello": "test"
-          },
-          "access_token": .secrets.at
-      }
+    input: 
+      type: "direktiv-cloud"
+      source: "another workflow"
+      namespace: "trent"
+      "access_token": jq(.secrets.at)
+      data:
+        hello: "test"
 ```
 
 
@@ -50,24 +47,21 @@ start:
 states:
   - id: helloworld
     type: noop
-    transform: '{ result: "Hello world!" }'
-
+    transform: 'jq({result: "Hello world!"})'
 ```
 
 ## Input
 
 Providing debug to the json struct will print everything during the process it runs.
 
-```json
-{
-          "type": "direktiv-cloud",
-          "source": "another workflow",
-          "namespace": "trent",
-          "data": {
-              "hello": "test"
-          },
-          "access_token": .secrets.at
-}
+```yaml
+input:
+  type: "direktiv-cloud"
+  source: "another workflow"
+  namespace: "trent"
+  data: 
+    hello": "test"
+  "access_token": jq(.secrets.at)
 ```
 
 

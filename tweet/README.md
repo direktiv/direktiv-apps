@@ -24,20 +24,19 @@ states:
   type: action
   action:
     function: tweet
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 The input needed to run the above workflow properly is the following:
 
-```json
-{
-    "consumerKey": ".secrets.CONSUMER_KEY",
-    "consumerSecret": ".secrets.CONSUMER_SECRET",
-    "tokenKey": ".secrets.TOKEN_KEY",
-    "tokenSecret": ".secrets.TOKEN_SECRET",
-    "message": "This is getting tweeted :)"
-}
+```yaml
+input:
+  consumerKey: jq(.secrets.CONSUMER_KEY)
+  consumerSecret: jq(.secrets.CONSUMER_SECRET)
+  tokenKey: jq(.secrets.TOKEN_KEY)
+  tokenSecret: jq(.secrets.TOKEN_SECRET)
+  message: "This is getting tweeted :)"
 ```
 
 To obtain a consumer key and secret you need a Twitter developer account which can be found [here](https://developer.twitter.com/en/portal/dashboard). You can also generate your token key and secret when you create your application on the Twitter development account. Make sure you provide the account with read and write.

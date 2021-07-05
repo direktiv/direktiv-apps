@@ -23,18 +23,17 @@ states:
   type: action
   action:
     function: post
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input needed to run the above workflow properly is the following:
 
-```json
-{
-  "message": "This message will be posted to slack chat",
-  "url": "SLACK_CHAT_WEBHOOK_URL"
-}
+```yaml
+input:
+  message: "This message will be posted to slack chat"
+  url: "SLACK_CHAT_WEBHOOK_URL"
 ```
 
 ## Output

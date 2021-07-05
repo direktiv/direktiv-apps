@@ -23,18 +23,17 @@ states:
   type: action
   action:
     function: check
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input needed to run the above workflow properly is the following:
 
-```json
-{
-    "url": "IMAGE_TO_URL",
-    "serviceAccountKey": .secrets.SERVICE_ACCOUNT_KEY
-}
+```yaml
+input:
+  url: "IMAGE_TO_URL"
+  serviceAccountKey: jq(.secrets.SERVICE_ACCOUNT_KEY)
 ```
 
 ## Output

@@ -22,23 +22,21 @@ states:
   type: action
   action:
     function: invoke
-    input: .
+    input: jq(.)
 ```
 
 ## Input 
 
 The following input is needed for the cloud function to be invoked successfully.
 
-```json
-{
-    "function-app": "hello-direktiv",
-    "function-name": "direktivTrigger",
-    "function-key": .secrets.HELLO_DIREKTIV_KEY,
-    "body": {
-        "data": "sent to function",
-        "x": "y"
-    }
-}
+```yaml
+input:
+  "function-app": "hello-direktiv"
+  "function-name": "direktivTrigger"
+  "function-key": jq(.secrets.HELLO_DIREKTIV_KEY)
+  body:
+    data: "sent to function"
+    x: "y"
 ```
 
 **NOTE:** The `body` field is optional.

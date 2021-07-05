@@ -25,24 +25,21 @@ states:
     action: 
       secrets: ["PASSWORD"]
       function: acknowledge
-      input: |
-        {
-          "url": "https://unity.direktiv.io",
-          "username": "admin",
-          "password": .secrets.PASSWORD,
-          "message": "This is a test message to be sent in an SNMP trap."
-        }
+      input: 
+        url: "https://unity.direktiv.io"
+        username: "admin"
+        password: jq(.secrets.PASSWORD)
+        message: "This is a test message to be sent in an SNMP trap."
 ```
 
 ## Input
 
-```json
-{
-  "url": "https://unity.direktiv.io",
-  "username": "admin",
-  "password": .secrets.PASSWORD,
-  "message": "This is a test message to be sent in an SNMP trap."
-}
+```yaml
+input:
+  url: "https://unity.direktiv.io"
+  username: "admin"
+  password: jq(.secrets.PASSWORD)
+  message: "This is a test message to be sent in an SNMP trap."
 ```
 
 ## Output

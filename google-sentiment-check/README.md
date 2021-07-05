@@ -23,18 +23,17 @@ states:
   type: action
   action:
     function: read
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input required to run the above workflow properly is the following:
 
-```json
-{
-    "message": "Hello World!",
-    "serviceAccountKey": .secrets.SERVICE_ACCOUNT_KEY
-}
+```yaml
+input:
+  message: "Hello World!"
+  serviceAccountKey: jq(.secrets.SERVICE_ACCOUNT_KEY)
 ```
 
 ## Output
