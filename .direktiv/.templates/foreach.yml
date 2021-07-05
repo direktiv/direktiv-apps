@@ -6,10 +6,8 @@ functions:
 states:
 - id: data
   type: noop
-  transform: | 
-    jq({ 
-      expressions: ["4+10", "15-14", "100*3","200/2"] 
-    })
+  transform: 
+    expressions: ["4+10", "15-14", "100*3","200/2"] 
   transition: solve
 - id: solve
   type: foreach
