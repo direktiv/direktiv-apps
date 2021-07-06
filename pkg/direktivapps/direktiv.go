@@ -137,13 +137,21 @@ func ShutDown(srv *http.Server) {
 
 // Log sends a string to log via kubernetes
 func Log(aid, l string) {
-	http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(l))
+	if aid == "Development" || aid == "development" {
+		fmt.Println(l)
+	} else {
+		http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(l))
+	}
 }
 
 // LogDouble logs to direktiv and stdout
 func LogDouble(aid, l string) {
-	fmt.Println(l)
-	http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(l))
+	if aid == "Development" || aid == "development" {
+		fmt.Println(l)
+	} else {
+		fmt.Println(l)
+		http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(l))
+	}
 }
 
 // ReadIn reads data from dataInPath and returns struct provided with json fields
