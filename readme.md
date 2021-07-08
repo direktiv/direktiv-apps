@@ -2,7 +2,7 @@
 
 Simple Containers that run on Direktiv
 
-<em>created by [79c4b99d](https://github.com/vorteil/direktiv-apps/tree/79c4b99d83de4e1c6e57587e92c69ce4e0b33f9f)</em>
+<em>created by [7cdbcb03](https://github.com/vorteil/direktiv-apps/tree/7cdbcb03deff4230871b4fd7fddbb96f93c3cc1d)</em>
 
 
 ## Containers
@@ -60,8 +60,10 @@ Simple Containers that run on Direktiv
 | [vorteil/simplepostgresclient](https://hub.docker.com/r/vorteil/simplepostgresclient) | Perform simple interactions on a PostgreSQL database.  | [README](https://github.com/vorteil/direktiv-apps/tree/master/simplepostgresclient) |
 | [vorteil/slackmsg](https://hub.docker.com/r/vorteil/slackmsg) | Writes a message to a slack webhook url | [README](https://github.com/vorteil/direktiv-apps/tree/master/slackmsg) |
 | [vorteil/smtp](https://hub.docker.com/r/vorteil/smtp) | A simple smtp client to send an email | [README](https://github.com/vorteil/direktiv-apps/tree/master/smtp) |
+| [vorteil/snmp](https://hub.docker.com/r/vorteil/snmp) | Sends a snmp trap to an address | [README](https://github.com/vorteil/direktiv-apps/tree/master/snmp) |
 | [vorteil/solve](https://hub.docker.com/r/vorteil/solve) | Solves math expressions | [README](https://github.com/vorteil/direktiv-apps/tree/master/solve) |
 | [vorteil/store](https://hub.docker.com/r/vorteil/store) | Add a row to a 'Google Sheets' spreadsheet. | [README](https://github.com/vorteil/direktiv-apps/tree/master/store) |
+| [vorteil/teams](https://hub.docker.com/r/vorteil/teams) | Sends a JSON body to a webhook provided by Microsoft Teams | [README](https://github.com/vorteil/direktiv-apps/tree/master/teams) |
 | [vorteil/terraform](https://hub.docker.com/r/vorteil/terraform) | A simple container to use terraform on Direktiv. | [README](https://github.com/vorteil/direktiv-apps/tree/master/terraform) |
 | [vorteil/tweet](https://hub.docker.com/r/vorteil/tweet) | Tweets a message to a twitter account. | [README](https://github.com/vorteil/direktiv-apps/tree/master/tweet) |
 | [vorteil/twilio](https://hub.docker.com/r/vorteil/twilio) | Sends an email or SMS message using Twilio. | [README](https://github.com/vorteil/direktiv-apps/tree/master/twilio) |
