@@ -2,7 +2,7 @@
 
 Simple Containers that run on Direktiv
 
-<em>created by [7cdbcb03](https://github.com/vorteil/direktiv-apps/tree/7cdbcb03deff4230871b4fd7fddbb96f93c3cc1d)</em>
+<em>created by [cecd3dc5](https://github.com/vorteil/direktiv-apps/tree/cecd3dc5b6fc890536f860448e800a249db93535)</em>
 
 
 ## Containers
@@ -68,4 +68,5 @@ Simple Containers that run on Direktiv
 | [vorteil/tweet](https://hub.docker.com/r/vorteil/tweet) | Tweets a message to a twitter account. | [README](https://github.com/vorteil/direktiv-apps/tree/master/tweet) |
 | [vorteil/twilio](https://hub.docker.com/r/vorteil/twilio) | Sends an email or SMS message using Twilio. | [README](https://github.com/vorteil/direktiv-apps/tree/master/twilio) |
 | [vorteil/ubuntu-shell](https://hub.docker.com/r/vorteil/ubuntu-shell) | Executing shell scripts | [README](https://github.com/vorteil/direktiv-apps/tree/master/ubuntu-shell) |
+| [vorteil/vmware-powercli](https://hub.docker.com/r/vorteil/vmware-powercli) | Ability to send multiple vmware power-cli commands. | [README](https://github.com/vorteil/direktiv-apps/tree/master/vmware-powercli) |
 
