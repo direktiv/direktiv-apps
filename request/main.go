@@ -73,11 +73,19 @@ func Request(w http.ResponseWriter, r *http.Request) {
 	direktivapps.Log(aid, "Creating new request")
 
 	if obj.Body != nil {
-		b, err = json.Marshal(obj.Body)
-		if err != nil {
-			direktivapps.RespondWithError(w, fmt.Sprintf(code, "marshal-body"), err.Error())
-			return
+		switch v := obj.Body.(type) {
+		case string:
+			direktivapps.Log(aid, "Body is a string ignore marshal.")
+			b = []byte(obj.Body.(string))
+		default:
+			direktivapps.Log(aid, fmt.Sprintf("Body is of type %v", v))
+			b, err = json.Marshal(obj.Body)
+			if err != nil {
+				direktivapps.RespondWithError(w, fmt.Sprintf(code, "marshal-body"), err.Error())
+				return
+			}
 		}
+
 		direktivapps.Log(aid, "Body exists, attaching to the request")
 	}
 
