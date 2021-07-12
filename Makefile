@@ -7,7 +7,7 @@ dependencies:
 	wget https://github.com/christian-korneck/docker-pushrm/releases/download/v1.7.0/docker-pushrm_linux_amd64
 	mv ./docker-pushrm_linux_amd64 /home/runner/.docker/cli-plugins/docker-pushrm
 	chmod +x ~/.docker/cli-plugins/docker-pushrm
-
+	chmod +x ./getversion.sh
 # build a singular container using provided environment variable
 .PHONY: build-singular
 build-singular:
