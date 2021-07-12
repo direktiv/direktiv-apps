@@ -12,13 +12,11 @@ dependencies:
 .PHONY: build-singular
 build-singular:
 	echo "building ${CONTAINER}";
-
 	echo v$(shell REPOSITORY=${REPOSITORY} CONTAINER=${CONTAINER} ./getversion.sh) > ${CONTAINER}/VERSION
 	docker build ${CONTAINER} -t ${REPOSITORY}/${CONTAINER}:latest -t ${REPOSITORY}/${CONTAINER}:v$(shell REPOSITORY=${REPOSITORY} CONTAINER=${CONTAINER} ./getversion.sh)
 	docker push ${REPOSITORY}/${CONTAINER}:latest
 	docker push ${REPOSITORY}/${CONTAINER}:v$(shell REPOSITORY=${REPOSITORY} CONTAINER=${CONTAINER} ./getversion.sh)
 	cd ${CONTAINER} && docker pushrm docker.io/${REPOSITORY}/${CONTAINER}
-	rm
 # build all containers using provided version variable
 .PHONY: all
 all:
