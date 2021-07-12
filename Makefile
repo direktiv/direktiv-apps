@@ -1,5 +1,5 @@
 REPOSITORY := vorteil
-
+CONTAINER := request
 # dependencies
 .PHONY: dependencies
 dependencies:
@@ -12,9 +12,12 @@ dependencies:
 # build a singular container using provided environment variable
 .PHONY: build-singular
 build-singular:
-	echo "building ${CONTAINER}"	
-	docker build ${CONTAINER} --tag ${REPOSITORY}/${CONTAINER}:${VERSION}
-	docker push ${REPOSITORY}/${CONTAINER}:${VERSION}
+	echo "building ${CONTAINER}";
+	
+	echo v$(shell REPOSITORY=${REPOSITORY} CONTAINER=${CONTAINER} ./getversion.sh) > ${CONTAINER}/VERSION
+	docker build ${CONTAINER} -t ${REPOSITORY}/${CONTAINER}:latest -t ${REPOSITORY}/${CONTAINER}:v$(shell REPOSITORY=${REPOSITORY} CONTAINER=${CONTAINER} ./getversion.sh)
+	docker push ${REPOSITORY}/${CONTAINER}:latest
+	docker push ${REPOSITORY}/${CONTAINER}:v$(shell REPOSITORY=${REPOSITORY} CONTAINER=${CONTAINER} ./getversion.sh)
 	cd ${CONTAINER} && docker pushrm docker.io/${REPOSITORY}/${CONTAINER}
 
 # build all containers using provided version variable
