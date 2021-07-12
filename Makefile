@@ -26,5 +26,4 @@ all:
 		cd $${f}; \
 		docker pushrm docker.io/${REPOSITORY}/$${f}; \
 		cd ../; \
-		break ; \
 	done
