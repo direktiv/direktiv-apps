@@ -17,4 +17,4 @@ jobs:
     - name: run all
       run: |
         make dependencies
-        make all VERSION=${{ github.event.inputs.tags }}
+        make all
