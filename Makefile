@@ -20,12 +20,10 @@ build-singular:
 # build all containers using provided version variable
 .PHONY: all
 all:
-	@for f in $(shell ls ${MYDIR} -I pkg -I Makefile -I readme.md -I docker-pushrm_linux_amd64 -I cli); do \
-		echo v$(shell REPOSITORY=${REPOSITORY} CONTAINER=$${f} ./getversion.sh) > $${f}/VERSION; \
-		docker build $${f} -tag ${REPOSITORY}/$${f}:latest -tag ${REPOSITORY}/$${f}:v$(shell REPOSITORY=${REPOSITORY} CONTAINER=$${f} ./getversion.sh); \
-		docker push ${REPOSITORY}/$${f}:v$(shell REPOSITORY=${REPOSITORY} CONTAINER=$${f} ./getversion.sh); \
-		docker push ${REPOSITORY}/$${f}:latest; \
+	@for f in $(shell ls ${MYDIR} -I getversion.sh -I pkg -I Makefile -I readme.md -I docker-pushrm_linux_amd64 -I cli); do \
+		REPOSITORY=${REPOSITORY} CONTAINER=$${f} ./pushall.sh; \
 		cd $${f}; \
 		docker pushrm docker.io/${REPOSITORY}/$${f}; \
 		cd ../; \
+		break ; \
 	done

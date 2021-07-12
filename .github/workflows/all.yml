@@ -1,9 +1,6 @@
 name: all
 on:
   workflow_dispatch:
-    inputs:
-      tags:
-        description: 'Version Tag'
 jobs:
   release:
     runs-on: ubuntu-latest
