@@ -8,6 +8,7 @@ dependencies:
 	mv ./docker-pushrm_linux_amd64 /home/runner/.docker/cli-plugins/docker-pushrm
 	chmod +x ~/.docker/cli-plugins/docker-pushrm
 	chmod +x ./getversion.sh
+	chmod +x ./pushall.sh
 # build a singular container using provided environment variable
 .PHONY: build-singular
 build-singular:
