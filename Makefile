@@ -21,7 +21,7 @@ build-singular:
 # build all containers using provided version variable
 .PHONY: all
 all:
-	@for f in $(shell ls ${MYDIR} -I getversion.sh -I pkg -I Makefile -I readme.md -I docker-pushrm_linux_amd64 -I cli); do \
+	@for f in $(shell ls ${MYDIR} -I pushall.sh -I getversion.sh -I pkg -I Makefile -I readme.md -I docker-pushrm_linux_amd64 -I cli); do \
 		REPOSITORY=${REPOSITORY} CONTAINER=$${f} ./pushall.sh; \
 		cd $${f}; \
 		docker pushrm docker.io/${REPOSITORY}/$${f}; \
