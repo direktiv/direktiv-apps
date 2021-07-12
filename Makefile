@@ -22,7 +22,9 @@ build-singular:
 all:
 	echo "building all containers with version ${VERSION}"
 	@for f in $(shell ls ${MYDIR} -I pkg -I Makefile -I readme.md -I docker-pushrm_linux_amd64 -I cli); do \
-		docker build $${f} --tag ${REPOSITORY}/$${f}:${VERSION}; \
+		echo v$(shell REPOSITORY=${REPOSITORY} CONTAINER=$${f} ./getversion.sh) > $${f}/VERSION; \
+		docker build $${f} -tag ${REPOSITORY}/$${f}:${VERSION} -tag ${REPOSITORY}/$${f}:v$(shell REPOSITORY=${REPOSITORY} CONTAINER=$${f} ./getversion.sh); \
+		docker push ${REPOSITORY}/$${f}:v$(shell REPOSITORY=${REPOSITORY} CONTAINER=$${f} ./getversion.sh); \
 		docker push ${REPOSITORY}/$${f}:${VERSION}; \
 		cd $${f}; \
 		docker pushrm docker.io/${REPOSITORY}/$${f}; \
