@@ -15,3 +15,7 @@ jobs:
       run: |
         make dependencies
         make all
+    - name: Commit & Push Changes
+      uses: actions-js/push@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
