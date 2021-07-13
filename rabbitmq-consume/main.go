@@ -103,7 +103,7 @@ func RabbitMQHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	// Wait for messages
-	time.Sleep(time.Duration(obj.WaitTime) * time.Millisecond)
+	time.Sleep(time.Duration(obj.Timeout) * time.Millisecond)
 	readMessage = false
 
 	b, err := json.Marshal(messageList)
