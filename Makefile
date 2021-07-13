@@ -13,9 +13,9 @@ dependencies:
 .PHONY: build-singular
 build-singular:
 	echo "building ${CONTAINER}";
-	echo v$(shell REPOSITORY=${REPOSITORY} CONTAINER=${CONTAINER} ./getversion.sh) > ${CONTAINER}/VERSION
-	docker build ${CONTAINER} -t ${REPOSITORY}/${CONTAINER}:latest -t ${REPOSITORY}/${CONTAINER}:v$(shell REPOSITORY=${REPOSITORY} CONTAINER=${CONTAINER} ./getversion.sh)
-	docker push ${REPOSITORY}/${CONTAINER}:v$(shell REPOSITORY=${REPOSITORY} CONTAINER=${CONTAINER} ./getversion.sh)
+	echo $(shell REPOSITORY=${REPOSITORY} CONTAINER=${CONTAINER} ./getversion.sh) > ${CONTAINER}/VERSION
+	docker build ${CONTAINER} -t ${REPOSITORY}/${CONTAINER}:latest -t ${REPOSITORY}/${CONTAINER}:$(shell REPOSITORY=${REPOSITORY} CONTAINER=${CONTAINER} ./getversion.sh)
+	docker push ${REPOSITORY}/${CONTAINER}:$(shell REPOSITORY=${REPOSITORY} CONTAINER=${CONTAINER} ./getversion.sh)
 	docker push ${REPOSITORY}/${CONTAINER}:latest
 	cd ${CONTAINER} && docker pushrm docker.io/${REPOSITORY}/${CONTAINER}
 # build all containers using provided version variable
