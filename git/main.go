@@ -17,6 +17,7 @@ import (
 const code = "com.git.error"
 
 type cmdIn struct {
+	Envs []string `json:"envs"`
 	Cmds []string `json:"cmds"`
 	// Folders []string `json:"folders"`
 }
@@ -71,7 +72,7 @@ func request(w http.ResponseWriter, r *http.Request) {
 			c = strings.TrimSpace(c)
 		}
 
-		d, isJSON, err := runGitCmd(c)
+		d, isJSON, err := runGitCmd(c, cmds.Envs)
 
 		key := fmt.Sprintf("cmd%d", i)
 
@@ -172,7 +173,7 @@ func log(aid, l string) {
 	direktivapps.Log(aid, l)
 }
 
-func runGitCmd(cmd string) (interface{}, bool, error) {
+func runGitCmd(cmd string, envs []string) (interface{}, bool, error) {
 
 	var clonedDir string
 
@@ -209,6 +210,9 @@ func runGitCmd(cmd string) (interface{}, bool, error) {
 	}
 
 	git := exec.Command("git", f...)
+	osenv := os.Environ()
+	osenv = append(osenv, envs...)
+	git.Env = osenv
 	d, err := git.Output()
 	if err != nil {
 		if e, ok := err.(*exec.ExitError); ok {
