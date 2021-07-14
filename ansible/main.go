@@ -74,6 +74,7 @@ func coreLogic(w http.ResponseWriter, r *http.Request) {
 	if !obj.HostKeyChecking {
 		cmd.Env = append(cmd.Env, "ANSIBLE_HOST_KEY_CHECKING=False")
 	}
+	cmd.Env = os.Environ()
 
 	out, err := cmd.CombinedOutput()
 	if err != nil {
