@@ -91,7 +91,7 @@ func main() {
 	}
 	sort.Sort(ByLastUpdated(dr.Results))
 
-	if len(dr.Results) > 2 {
+	if len(dr.Results) >= 2 {
 		f, err := strconv.Atoi(strings.Split(dr.Results[1].Name, "v")[1])
 		if err != nil {
 			fmt.Printf("v1")
