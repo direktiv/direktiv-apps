@@ -21,6 +21,7 @@ type input struct {
 	Playbook        string   `json:"playbook"`
 	PrivateKey      string   `json:"privateKey"`
 	Args            []string `json:"args"`
+	Envs            []string `json:"envs"`
 }
 
 const (
@@ -74,7 +75,10 @@ func coreLogic(w http.ResponseWriter, r *http.Request) {
 	if !obj.HostKeyChecking {
 		cmd.Env = append(cmd.Env, "ANSIBLE_HOST_KEY_CHECKING=False")
 	}
-	cmd.Env = os.Environ()
+	osenv := os.Environ()
+	osenv = append(osenv, obj.Envs...)
+	da.LogDouble(aid, fmt.Sprintf("attaching envs: %v", osenv))
+	cmd.Env = osenv
 
 	out, err := cmd.CombinedOutput()
 	if err != nil {
