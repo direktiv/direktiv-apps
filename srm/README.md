@@ -37,10 +37,10 @@ states:
       source: "rcc-latency-collector"
       device: "au2004lpablah3"
       devtype: "host"
-	    function: "nsx"
-	    saas: "CIaaS"
+      function: "nsx"
+      saas: "CIaaS"
       part: "nsx"
-	    unit: "ms"
+      unit: "ms"
       parttype: "RESTAPI"
 ```
 
