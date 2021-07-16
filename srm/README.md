@@ -13,6 +13,8 @@ Sends metrics to a Dell SRM service
 
 An example workflow of sending metrics to the SRM service:
 
+The input is an array of objects.
+
 ```yaml
 id: dump-metrics
 functions:
@@ -25,7 +27,7 @@ states:
   action:
     function: store
     input:
-      srm-lb-address: "192.168.1.30"
+    - srm-lb-address: "192.168.1.30"
       srm-lb-port: "2000"
       group: "group"
       timestamp: 1625900409
