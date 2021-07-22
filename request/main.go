@@ -167,11 +167,7 @@ func Request(w http.ResponseWriter, r *http.Request) {
 	// if body is unable to be marshalled treat as a byte array
 	err = json.Unmarshal(body, &mapBody)
 	if err != nil {
-		err = json.Unmarshal(body, &dataBody)
-		if err != nil {
-			direktivapps.RespondWithError(w, fmt.Sprintf(code, "unmarshalling"), err.Error())
-			return
-		}
+		json.Unmarshal(body, &dataBody)
 		responding.Body = dataBody
 	} else {
 		responding.Body = mapBody
