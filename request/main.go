@@ -33,11 +33,10 @@ type request struct {
 
 // output for the requester container
 type output struct {
-	Data       []byte                 `json:"data,omitempty"` // when the response isn't json
-	Body       map[string]interface{} `json:"body,omitempty"` // when the response is able to be unmarshalled
-	Headers    http.Header            `json:"headers"`
-	StatusCode int                    `json:"status-code"`
-	Status     string                 `json:"status"`
+	Body       interface{} `json:"body,omitempty"` // when the response is able to be unmarshalled
+	Headers    http.Header `json:"headers"`
+	StatusCode int         `json:"status-code"`
+	Status     string      `json:"status"`
 }
 
 func Request(w http.ResponseWriter, r *http.Request) {
@@ -159,6 +158,7 @@ func Request(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var mapBody map[string]interface{}
+	var dataBody interface{}
 	var responding output
 	responding.Status = resp.Status
 	responding.StatusCode = resp.StatusCode
@@ -167,7 +167,12 @@ func Request(w http.ResponseWriter, r *http.Request) {
 	// if body is unable to be marshalled treat as a byte array
 	err = json.Unmarshal(body, &mapBody)
 	if err != nil {
-		responding.Data = body
+		err = json.Unmarshal(body, &dataBody)
+		if err != nil {
+			direktivapps.RespondWithError(w, fmt.Sprintf(code, "unmarshalling"), err.Error())
+			return
+		}
+		responding.Body = dataBody
 	} else {
 		responding.Body = mapBody
 	}
