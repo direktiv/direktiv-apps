@@ -22,14 +22,19 @@ states:
   action:
     function: send
     input:
-      to: "recipient@example.com"
+      to: ["recipient@example.com"]
       subject: "SMTP Email"
-      message: "Hello, world!"
+      template: false
+      message: "Hello, world!" ## This can also be used as a base64 string for templating need to pass the template var aswell
+      # Args is used to parse variables to the template args: 
       from: "sender@example.com"
       password: "NOT4REALPW"
       server: "smtp.example.com"
+      images: ["logo.png"] ## Any images you want to embed into the body (will only work with a template)
       port: 587
 ```
+
+**NOTE:** if you are using images in the template you need to provide a string array for the image names. Wherever in the HTML the image is being declared you need the src to be `cid:logo.png`
 
 ## Input
 

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/smtp"
 	"strings"
+	"path/filepath"
 
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 	gomail "gopkg.in/mail.v2"
@@ -27,6 +28,7 @@ type SMTPEmail struct {
 	Port     float64                `json:"port"`
 	Password string                 `json:"password"`
 	Args     map[string]interface{} `json:"args"` // optional
+	Images []string `json:"images"`
 }
 
 func SMTPEmailHandler(w http.ResponseWriter, r *http.Request) {
@@ -78,6 +80,11 @@ func SMTPEmailHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Set E-mail subject
 	m.SetHeader("Subject", tm.Subject)
+
+	for _, imageBody := range tm.Images {
+		direktivapps.Log(aid, fmt.Sprintf("%s",filepath.Join(r.Header.Get("Direktiv-TempDir"), imageBody)))
+		m.Embed(filepath.Join(r.Header.Get("Direktiv-TempDir"), imageBody))
+	}
 
 	// Set E-mail body
 	m.SetBody("text/html", tpl.String())
