@@ -25,20 +25,19 @@ states:
   type: action
   action:
     function: kafka-consume
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 Consume messages from a Kafka service hosted on the address. The property `timeout` is optional(default=1000) and is the amount of time in milliseconds to consume messages.
 
-```json
-{
-        "topic": "quickstart-events",
-        "partition": 0,
-        "address": "localhost:9092",
-        "timeout": 1000
-}
+```yaml
+input:
+  topic: "quickstart-events"
+  partition: 0
+  address: "localhost:9092"
+  timeout: 1000
 ```
 
 ## Output

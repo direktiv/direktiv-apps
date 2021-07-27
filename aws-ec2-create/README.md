@@ -26,21 +26,20 @@ states:
   action:
     secrets: ["ACCESS_KEY", "ACCESS_SECRET"]
     function: aws-create-instance
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input needed to run the above workflow properly is the following:
 
-```json
-{
-    "access-key": .secrets.ACCESS_KEY,
-    "access-secret": .secrets.ACCESS_SECRET,
-    "image-id": "ami-0abcdef1234567890",
-    "region": "us-east-1",
-    "instance-type": "t2.micro",
-}
+```yaml
+input:  
+  "access-key": jq(.secrets.ACCESS_KEY)
+  "access-secret": jq(.secrets.ACCESS_SECRET)
+  "image-id": "ami-0abcdef1234567890"
+  region: "us-east-1"
+  "instance-type": "t2.micro"
 ```
 
 ### Input - Optional Fields

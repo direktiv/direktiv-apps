@@ -25,30 +25,27 @@ states:
     action: 
       secrets: ["PASSWORD"]
       function: modify
-      input: |
-        {
-          "url": "https://unity.direktiv.io",
-          "username": "admin",
-          "password": .secrets.PASSWORD,
-          "path": "/direktivquota",
-          "description": "This is a new description.",
-          "hardlimit": "10G",
-          "softlimit": "10G"
-        }
+      input: 
+        url: "https://unity.direktiv.io"
+        username: "admin"
+        password: jq(.secrets.PASSWORD)
+        path: "/direktivquota"
+        description: "This is a new description."
+        hardlimit: "10G"
+        softlimit: "10G"
 ```
 
 ## Input
 
-```json
-{
-  "url": "https://unity.direktiv.io",
-  "username": "admin",
-  "password": .secrets.PASSWORD,
-  "path": "/direktivquota",
-  "description": "This is a new description.",
-  "hardlimit": "10G",
-  "softlimit": "10G"
-}
+```yaml
+input:
+  url: "https://unity.direktiv.io"
+  username: "admin"
+  password: jq(.secrets.PASSWORD)
+  path: "/direktivquota"
+  description: "This is a new description."
+  hardlimit: "10G"
+  softlimit: "10G"
 ```
 
 **NOTE:** 'description' is an optional field.

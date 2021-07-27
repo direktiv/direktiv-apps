@@ -8,8 +8,6 @@ states:
   type: action
   action:
     function: get
-    input: |
-      {
-        "method": "GET",
-        "url": "https://jsonplaceholder.typicode.com/todos/1",
-      }
+    input: 
+      method: "GET"
+      url: "https://jsonplaceholder.typicode.com/todos/1"

@@ -4,10 +4,9 @@ Each example demonstrates how to write a basic app in a specific language, and p
 
 ## Input
 
-```json
-{
-    "name": "Trent"
-}
+```yaml
+input:
+  name: "Trent"
 ```
 
 ## Output

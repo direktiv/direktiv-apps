@@ -17,6 +17,7 @@ import (
 const code = "com.git.error"
 
 type cmdIn struct {
+	Envs []string `json:"envs"`
 	Cmds []string `json:"cmds"`
 	// Folders []string `json:"folders"`
 }
@@ -71,7 +72,7 @@ func request(w http.ResponseWriter, r *http.Request) {
 			c = strings.TrimSpace(c)
 		}
 
-		d, isJSON, err := runGitCmd(c)
+		d, isJSON, err := runGitCmd(c, cmds.Envs, aid)
 
 		key := fmt.Sprintf("cmd%d", i)
 
@@ -172,7 +173,7 @@ func log(aid, l string) {
 	direktivapps.Log(aid, l)
 }
 
-func runGitCmd(cmd string) (interface{}, bool, error) {
+func runGitCmd(cmd string, envs []string, aid string) (interface{}, bool, error) {
 
 	var clonedDir string
 
@@ -209,13 +210,20 @@ func runGitCmd(cmd string) (interface{}, bool, error) {
 	}
 
 	git := exec.Command("git", f...)
-	d, err := git.Output()
+	osenv := os.Environ()
+	osenv = append(osenv, envs...)
+	direktivapps.Log(aid, fmt.Sprintf("applying envs: %v", osenv))
+	git.Env = osenv
+	d, err := git.CombinedOutput()
 	if err != nil {
-		if e, ok := err.(*exec.ExitError); ok {
-			d = e.Stderr
+		if d != nil {
+			err = fmt.Errorf("%w: %s", err, d)
 		}
-		return string(d), false, err
+		return "", false, err
 	}
+
+	d = []byte(strings.TrimSpace(string(d)))
+	direktivapps.Log(aid, fmt.Sprintf("cmd output: %v", string(d)))
 
 	// check for log, tag, trying to json the output
 	if strings.Contains(cmd, "log ") || strings.Contains(cmd, " log") {

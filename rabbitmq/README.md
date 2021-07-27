@@ -24,21 +24,20 @@ states:
   type: action
   action:
     function: rabbit-mqwrite
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 Writes a message to the Rabbit MQ service hosted on the address.
 
-```json
-{
-    "address": "192.168.1.30:5672",
-    "username": "test",
-    "password": "test",
-    "queue": "direktiv",
-    "message": "Hello World :)!"
-}
+```yaml
+input:
+  address: "192.168.1.30:5672"
+  username: "test"
+  password: "test"
+  queue: "direktiv"
+  message: "Hello World :)!"
 ```
 
 ## Output

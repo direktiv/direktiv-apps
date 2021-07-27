@@ -24,20 +24,20 @@ states:
   type: action
   action:
     function: write
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input required to run the above workflow properly is the following:
 
-```json
-{
-    "key": .secrets.AMAZON_KEY,
-    "secret": .secrets.AMAZON_SECRET,
-    "region": "ap-southeast-2",
-    "topic-arn": .secrets.TOPIC_ARN,
-    "message": "Hello World!"
+```yaml
+input:
+  key: jq(.secrets.AMAZON_KEY)
+  secret: jq(.secrets.AMAZON_SECRET)
+  region: "ap-southeast-2"
+  "topic-arn": jq(.secrets.TOPIC_ARN)
+  message: "Hello World!"
 }
 ```
 

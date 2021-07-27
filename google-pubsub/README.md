@@ -25,23 +25,21 @@ states:
   type: action
   action:
     function: write
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input required to run the above workflow properly is the following:
 
-```json
-{
-    "serviceAccountKey": .secrets.SERVICE_ACCOUNT_KEY,
-    "message": "Hello World!",
-    "project-id": "direktiv",
-    "topic-id": "listener",
-    "attributes": {
-        "weight": "1"
-    }
-}
+```yaml
+input:
+  serviceAccountKey: jq(.secrets.SERVICE_ACCOUNT_KEY)
+  message: "Hello World!"
+  "project-id": "direktiv"
+  "topic-id: "listener"
+  attributes: 
+      weight: "1"
 ```
 
 **NOTE:** The `attributes` field is optional its used for filtering. It is also a map of string to string.

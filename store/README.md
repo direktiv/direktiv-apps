@@ -22,17 +22,20 @@ states:
   type: action
   action:
     function: store
-    input: '{ 
-    "authentication" : {
-        "type": "service_account",
-        "private_key": "PRIVATE KEY",
-        "client_email": "CLIENT_EMAIL",
-        "token_uri": "https://oauth2.googleapis.com/token",
-    },
-    "spreadSheetID": "SPREADSHEET_ID",
-    "range": "A1",
-    "values": ["These", "are", "individual", "columns", "!"]
-}'
+    input:
+      authentication:
+        type: "service_account"
+        "private_key": "PRIVATE KEY"
+        "client_email": "CLIENT_EMAIL"
+        "token_uri": "https://oauth2.googleapis.com/token"
+      spreadSheetID: "SPREADSHEET_ID"
+      range: "A1"
+      values: 
+        - "These"
+        - "are"
+        - "individual"
+        - "columns"
+        - "!"
 ```
 
 ## Input
@@ -42,18 +45,21 @@ states:
 - Enable the 'Google Sheets API' on the Google Cloud project.
 - Populate the following input object, using the `client_email` and `private_key` fields for their respective matching fields.
 
-```json
-{
-    "authentication" : {
-        "type": "service_account",
-        "private_key": "PRIVATE KEY",
-        "client_email": "CLIENT_EMAIL",
-        "token_uri": "https://oauth2.googleapis.com/token",
-    },
-    "spreadSheetID": "SPREADSHEET_ID",
-    "range": "A1",
-    "values": ["These", "are", "individual", "columns", "!"]
-}
+```yaml
+input:
+  authentication:
+    type: "service_account",
+    "private_key": "PRIVATE KEY"
+    "client_email": "CLIENT_EMAIL"
+    "token_uri": "https://oauth2.googleapis.com/token"
+  spreadSheetID: "SPREADSHEET_ID"
+  range: "A1"
+  values: 
+    - "These"
+    - "are"
+    - "individual"
+    - "columns"
+    - "!"
 ```
 
 *Note: Replace `SPREADSHEET_ID` with the ID of whichever Google Sheets document should be targeted.*

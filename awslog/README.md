@@ -24,22 +24,21 @@ states:
   type: action
   action:
     function: log
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input needed to run the above workflow properly is the following:
 
-```json
-{
-    "key": .secrets.AWS_KEY,
-    "secret": .secrets.AWS_SECRET,
-    "region": "us-east-2",
-    "log-group": "vorteil",
-    "log-stream": "direktiv",
-    "message": "Hello"
-}
+```yaml
+input:
+  key: jq(.secrets.AWS_KEY)
+  secret: jq(.secrets.AWS_SECRET)
+  region: "us-east-2"
+  "log-group": "vorteil"
+  "log-stream": "direktiv"
+  message: "Hello"
 ```
 
 ## Output

@@ -3,14 +3,12 @@ description: A simple 'error' state workflow that checks an email attempts to va
 states:
 - id: data
   type: noop
-  transform: |
-    {
-      email: "trent.hilliamvorteil.io"
-    }
+  transform: 
+    email: "trent.hilliamvorteil.io"
   transition: validate-email
 - id: validate-email
   type: validate
-  subject: .
+  subject: jq(.)
   schema:
     type: object
     properties:
@@ -27,7 +25,5 @@ states:
   message: "email '.email' is not valid"
 - id: email-valid
   type: noop
-  transform: |
-    {
-      result: "Email is valid."
-    }
+  transform: 
+    result: "Email is valid."

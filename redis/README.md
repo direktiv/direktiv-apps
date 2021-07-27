@@ -26,40 +26,38 @@ states:
   type: action
   action:
     function: msg
-    input: '
-      {
-        "method": "get",
-        "addr": "localhost:6379",
-        "password": "",
-        "db": 0,
-        "values": "TEST"
-      }'
+    input: 
+      method: "get"
+      addr: "localhost:6379"
+      password: ""
+      db: 0
+      values: "TEST"
 ```
 
 ## Input
 
 ### Get
 
-```json
-{
-    "method": "get",
-    "addr": "localhost:6379",
-    "password": "",
-    "db": 0,
-    "values": "TEST"
-}
+```yaml
+input:
+  method: "get"
+  addr: "localhost:6379"
+  password: ""
+  db: 0
+  values: "TEST"
 ```
 
 ### Set
 
-```json
-{
-    "method": "set",
-    "addr": "localhost:6379",
-    "password": "",
-    "db": 0,
-    "values": ["TEST=TEST2", "TEST2=TEST3"]
-}
+```yaml
+input:
+  method: "set"
+  addr: "localhost:6379"
+  password: ""
+  db: 0
+  values: 
+    - "TEST=TEST2"
+    - "TEST2=TEST3"
 ```
 
 ## Output

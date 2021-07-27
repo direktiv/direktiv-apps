@@ -24,20 +24,19 @@ states:
   type: action
   action:
     function: upload
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input required to run the above workflow properly is the following:
 
-```json
-{
-    "bucket": "vorteil",
-    "data": "base64 decoded string",
-    "upload-name": "test",
-    "serviceAccountKey": .secrets.GOOGLE_SERVICE_ACCOUNT
-}
+```yaml
+input:
+  bucket: "vorteil"
+  data: "base64 decoded string"
+  "upload-name": "test"
+  serviceAccountKey: jq(.secrets.GOOGLE_SERVICE_ACCOUNT)
 ```
 
 ## Output

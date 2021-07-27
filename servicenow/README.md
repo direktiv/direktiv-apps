@@ -11,32 +11,28 @@ The `vorteil/service-now` image is a work-in-progress, but is fairly straightfor
 
 ## Example Input
 
-```json
-{
-  "method": "PATCH",
-  "api": "change-request-normal",
-  "insecureSkipVerify": true,
-  "user": "exampleUser",
-  "password": "examplePassword",
-  "instance": "https://example.servicenow.com",
-  "sys_id": "example_sys_id",
-  "payload": {
+```yaml
+input:
+  method: "PATCH"
+  api: "change-request-normal"
+  insecureSkipVerify: true
+  user: "exampleUser"
+  password: "examplePassword"
+  instance: "https://example.servicenow.com"
+  "sys_id": "example_sys_id"
+  payload: 
     "short_description": "This sets the 'short_description' field of the targeted normal change request!"
-  }
-}
 ```
 
 The above input instructs the container to send a PATCH request to the ServiceNow server hosted at `example.servicenow.com`, and to skip certificate verification. The `api` field is used to append a particular API prefix to the URL being used for the API request, followed by the value of the `sys_id` field. The API request body will contain a JSON payload defined by the `payload` field.
 
 Knowing that the API request URL is created by combining `instance`, `api`, and `sys_id` allows users to send more advanced requests, such as by omitting a real `sys_id` value but instead including a number of query parameters instead. For example:
 
-```json
-{
-  ...
-  "api": "change-request-normal",
-  "instance": "https://example.servicenow.com",
+```yaml
+...
+  api: "change-request-normal"
+  instance: "https://example.servicenow.com"
   "sys_id": "?short_description=HelloWorld"
-}
 ```
 
 The resulting URL used for sending the API request would look like:
@@ -69,17 +65,14 @@ states:
   action: 
     function: servicenow
     secrets: ["SERVICENOW_USER","SERVICENOW_PASSWORD","SERVICENOW_INSTANCE"]
-    input: | 
-      {
-        "method": "PATCH",
-        "api": "change-request-normal",
-        "insecureSkipVerify": true,
-        "user": .secrets.SERVICENOW_USER,
-        "password": .secrets.SERVICENOW_PASSWORD,
-        "instance": .secrets.SERVICENOW_INSTANCE,
-        "sys_id": "example_sys_id",
-        "payload": {
-          "short_description": "This sets the 'short_description' field of the targeted normal change request!"
-      }
-}
+    input: 
+      method: "PATCH",
+      api: "change-request-normal"
+      insecureSkipVerify: true
+      user: jq(.secrets.SERVICENOW_USER)
+      password: jq(.secrets.SERVICENOW_PASSWORD)
+      instance: jq(.secrets.SERVICENOW_INSTANCE)
+      "sys_id": "example_sys_id"
+      payload:
+        "short_description": "This sets the 'short_description' field of the targeted normal change request!"
 ```

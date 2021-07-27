@@ -3,9 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       container:
-        description: 'Build What?'
-      tags:
-        description: 'Version Tag'
+        description: 'Name of folder to build from'
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -19,4 +17,8 @@ jobs:
     - name: run singular
       run: |
         make dependencies
-        make build-singular VERSION=${{ github.event.inputs.tags }} CONTAINER=${{ github.event.inputs.container }}
+        make build-singular CONTAINER=${{ github.event.inputs.container }}
+    - name: Commit & Push Changes
+      uses: actions-js/push@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}

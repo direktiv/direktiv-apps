@@ -1,9 +1,6 @@
 name: all
 on:
   workflow_dispatch:
-    inputs:
-      tags:
-        description: 'Version Tag'
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -17,4 +14,8 @@ jobs:
     - name: run all
       run: |
         make dependencies
-        make all VERSION=${{ github.event.inputs.tags }}
+        make all
+    - name: Commit & Push Changes
+      uses: actions-js/push@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}

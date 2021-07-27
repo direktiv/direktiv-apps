@@ -24,7 +24,7 @@ states:
   type: action
   action:
     function: nats-consume
-    input: .
+    input: jq(.)
 ```
 
 ## Input
@@ -38,15 +38,14 @@ The property `max-messages` is optional(default=10) and is the amount of message
 This app will consume messages until either the `max-messages` are consumed or the timeout is reached.
 
 
-```json
-{
-    "address": "localhost:4222",
-    "username": "test",
-    "password": "test",
-    "subject": "direktiv",
-    "timeout": 1000,
-    "max-messages": 10
-}
+```yaml
+input:
+  address: "localhost:4222"
+  username: "test"
+  password: "test"
+  subject: "direktiv"
+  timeout: 1000
+  "max-messages": 10
 ```
 
 ## Output

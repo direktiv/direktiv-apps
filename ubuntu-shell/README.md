@@ -27,11 +27,11 @@ states:
   type: action
   action:
     function: shell
-    input: |
-        {
-          "script": "myscript",
-          "args": ["arg1", "arg2"]
-        }
+    input:
+      script: "myscript"
+      args: 
+        - "arg1"
+        - "arg2"
 ```
 
 ## Input

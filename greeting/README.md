@@ -23,16 +23,16 @@ states:
   type: action
   action:
     function: greeting-function
-    input: '{ name: .person.name }'
-  transform: '{ greeting: .return.greeting }'
+    input: 
+      name: jq(.person.name)
+  transform: 'jq({ greeting: .return.greeting })'
 ```
 
 ## input
 
-```json
-{
-    "name": "Trent"
-}
+```yaml
+input:
+  name: "Trent"
 ```
 
 ## Output

@@ -24,21 +24,20 @@ states:
   type: action
   action:
     function: write
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input required to run the above workflow properly is the following:
 
-```json
-{
-    "policy": .secrets.AZURE_POLICY,
-    "key": .secrets.AZURE_POLICY_KEY,
-    "namespace": "direktiv",
-    "message": "Hello World!",
-    "queue": "listener"
-}
+```yaml
+input:
+  policy: jq(.secrets.AZURE_POLICY)
+  key: jq(.secrets.AZURE_POLICY_KEY)
+  namespace: "direktiv"
+  message: "Hello World!"
+  queue: "listener"
 ```
 
 ## Output
