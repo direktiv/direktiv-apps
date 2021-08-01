@@ -11,7 +11,7 @@ Prints all the information that direktiv sends to the container
 
 ## Direktiv
 
-An example workflow of using the container on direktiv
+An example workflow of using the container on Direktiv.
 
 ```yaml
 id: debugging
