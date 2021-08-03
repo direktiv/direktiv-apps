@@ -3,7 +3,9 @@ package main
 import (
 	"bytes"
 	b64 "encoding/base64"
+	"encoding/json"
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	"github.com/alexmullins/zip"
@@ -26,6 +28,8 @@ type FilePath struct {
 
 type RequestInput struct {
 	Files    []FilePath `json:"files"`
+	VarName  string     `json:"var"`  // variable name the zipfile will be saved as
+	File     string     `json:"file"` // if u want to pass the array as a variable
 	Password string     `json:"password"`
 }
 
@@ -43,7 +47,7 @@ func ZipHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	direktivapps.LogDouble(aid, "creating zip file")
-	zFile, err := os.Create("tmp.zip")
+	zFile, err := os.Create("attach.zip")
 	if err != nil {
 		direktivapps.RespondWithError(w, fmt.Sprintf(code, "create-zip"), err.Error())
 		return
@@ -52,6 +56,27 @@ func ZipHandler(w http.ResponseWriter, r *http.Request) {
 
 	zWriter := zip.NewWriter(zFile)
 	defer zWriter.Close()
+
+	var files []FilePath
+	direktivapps.LogDouble(aid, "checking if files are provided or file is provided")
+	if len(ri.Files) == 0 {
+		if ri.File != "" {
+			data, err := ioutil.ReadFile(filepath.Join(r.Header.Get("Direktiv-TempDir"), ri.File))
+			if err != nil {
+				direktivapps.RespondWithError(w, fmt.Sprintf(code, "readfile"), err.Error())
+				return
+			}
+			err = json.Unmarshal(data, &files)
+			if err != nil {
+				direktivapps.RespondWithError(w, fmt.Sprintf(code, "unmarshalfiles"), err.Error())
+				return
+			}
+			ri.Files = files
+		} else {
+			direktivapps.RespondWithError(w, fmt.Sprintf(code, "nofiles"), err.Error())
+			return
+		}
+	}
 
 	direktivapps.LogDouble(aid, "creating temp files for zip")
 	for _, fp := range ri.Files {
@@ -100,6 +125,13 @@ func ZipHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	zFile.Seek(0, 0)
+	// f, err := os.Create(filepath.Join(r.Header.Get("Direktiv-TempDir"), "out", "instance", ri.VarName))
+	// if err != nil {
+	// 	direktivapps.RespondWithError(w, fmt.Sprintf(code, "create-out-file"), err.Error())
+	// 	return
+	// }
+
+	// io.Copy(f, zFile)
 	data, err := ioutil.ReadAll(zFile)
 	if err != nil {
 		direktivapps.RespondWithError(w, fmt.Sprintf(code, "read-zip"), err.Error())
@@ -118,12 +150,41 @@ func addFileToZip(zW *zip.Writer, filename, password string) error {
 	}
 	defer fileToZip.Close()
 
-	// encrypt step
-	w, err := zW.Encrypt(filename, password)
-	if err != nil {
+	if password != "" {
+		// encrypt step
+		w, err := zW.Encrypt(filename, password)
+		if err != nil {
+			return err
+		}
+
+		// zW.Flush()
+		_, err = io.Copy(w, fileToZip)
+		return err
+	} else {
+		// Get the file information
+		info, err := fileToZip.Stat()
+		if err != nil {
+			return err
+		}
+
+		header, err := zip.FileInfoHeader(info)
+		if err != nil {
+			return err
+		}
+
+		// Using FileInfoHeader() above only uses the basename of the file. If we want
+		// to preserve the folder structure we can overwrite this with the full path.
+		header.Name = filename
+
+		// Change to deflate to gain better compression
+		// see http://golang.org/pkg/archive/zip/#pkg-constants
+		header.Method = zip.Deflate
+
+		writer, err := zW.CreateHeader(header)
+		if err != nil {
+			return err
+		}
+		_, err = io.Copy(writer, fileToZip)
 		return err
 	}
-	zW.Flush()
-	_, err = io.Copy(w, fileToZip)
-	return err
 }

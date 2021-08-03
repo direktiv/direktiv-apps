@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -77,7 +78,7 @@ func SMTPHandler(w http.ResponseWriter, r *http.Request) {
 	server.ConnectTimeout = 10 * time.Second
 
 	// Timeout for send the data and wait respond
-	server.SendTimeout = 10 * time.Second
+	server.SendTimeout = 60 * time.Second
 
 	// SMTP client
 	ee, err := server.Connect()
@@ -100,15 +101,42 @@ func SMTPHandler(w http.ResponseWriter, r *http.Request) {
 		switch attach.Type {
 		case "base64":
 			direktivapps.LogDouble(aid, "adding base64 attachment")
+
+			if attach.Data == "" {
+				direktivapps.LogDouble(aid, "pulling from temp variable")
+				data, err := ioutil.ReadFile(filepath.Join(r.Header.Get("Direktiv-TempDir"), attach.Name))
+				if err != nil {
+					direktivapps.RespondWithError(w, fmt.Sprintf(code, "read-file"), err.Error())
+					return
+				}
+				attach.Data = strings.TrimSuffix(strings.TrimPrefix(string(data), "\""), "\"")
+
+			}
 			email.AddAttachmentBase64(attach.Data, attach.Name)
 		default:
-			f, err := os.Create(attach.Name)
-			if err != nil {
-				direktivapps.RespondWithError(w, fmt.Sprintf(code, "create-file"), err.Error())
-				return
+			var f *os.File
+			if attach.Data == "" {
+				direktivapps.LogDouble(aid, "pulling from temp variable")
+				f, err = os.Open(filepath.Join(r.Header.Get("Direktiv-TempDir"), attach.Name))
+				if err != nil {
+					direktivapps.RespondWithError(w, fmt.Sprintf(code, "read-file"), err.Error())
+					return
+				}
+				defer f.Close()
+			} else {
+				f, err = os.Create(attach.Name)
+				if err != nil {
+					direktivapps.RespondWithError(w, fmt.Sprintf(code, "create-file"), err.Error())
+					return
+				}
+				defer f.Close()
+				_, err = io.Copy(f, strings.NewReader(attach.Data))
+				if err != nil {
+					direktivapps.RespondWithError(w, fmt.Sprintf(code, "copy"), err.Error())
+					return
+				}
 			}
-			defer f.Close()
-			io.Copy(f, strings.NewReader(attach.Data))
+
 			email.AddAttachment(f.Name(), filepath.Base(f.Name()))
 		}
 	}
