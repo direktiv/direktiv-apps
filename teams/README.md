@@ -17,6 +17,7 @@ An example workflow of sending `Hello World!` as plain text:
 id: post-to-teams
 functions:
 - id: post
+  type: reusable
   image: vorteil/teams:v1
 description: Sends a JSON body to a webhook provided by Microsoft Teams.
 states:
@@ -36,6 +37,7 @@ Another example workflow that sends `Hello World!` in an AdaptiveCard.
 id: post-to-teams
 functions:
 - id: post
+  type: reusable
   image: vorteil/teams:v1
 description: Sends a JSON body to a webhook provided by Microsoft Teams.
 states:

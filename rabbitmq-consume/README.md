@@ -17,6 +17,7 @@ An example workflow of consuming from a RabbitMQ service.
 id: rabbitmq
 functions:
 - id: rabbit-consume
+  type: reusable
   image: vorteil/rabbitmq-consume:v1
 description: "Read messages from a RabbitMQ service"
 states:

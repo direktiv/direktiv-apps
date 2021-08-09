@@ -1,6 +1,7 @@
 id: consume-event
 functions:
 - id: greeter
+  type: reusable
   image: vorteil/greeting:v2
 description: A simple 'consumeEvent' state that listens for the greetingcloudevent generated from the template 'generate-event'.
 states:

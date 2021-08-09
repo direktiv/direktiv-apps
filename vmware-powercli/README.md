@@ -17,6 +17,7 @@ An example workflow of getting the version of `vmware-powercli` we run.
 id: get-version
 functions:
 - id: power-cli
+  type: reusable
   image: vorteil/vmware-powercli:v1
 description: The ability to send multiple `vmware-powercli` commands.
 states:

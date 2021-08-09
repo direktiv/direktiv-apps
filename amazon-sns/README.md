@@ -17,6 +17,7 @@ An example workflow of writing 'Hello World!' to the notification service.
 id: write-helloworld
 functions:
 - id: write
+  type: reusable
   image: vorteil/amazon-sns:v2
 description: "Writes 'Hello World!' to an Amazon Simple Notification Service"
 states:

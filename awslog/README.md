@@ -17,6 +17,7 @@ An example workflow of using the container on Direktiv.
 id: log-to-aws
 functions:
 - id: log
+  type: reusable
   image: vorteil/awslog:v2
 description: "Log a message to AWS cloudwatch"
 states:

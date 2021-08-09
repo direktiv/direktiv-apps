@@ -17,6 +17,7 @@ An example workflow of using the container on Direktiv.
 id: go-build
 functions:
 - id: go
+  type: reusable
   image: vorteil/go:v1
   files:
   - key: helloworld

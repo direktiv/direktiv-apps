@@ -17,6 +17,7 @@ An example workflow of using the RabbitMQ service.
 id: rabbitmq
 functions:
 - id: rabbit-mqwrite
+  type: reusable
   image: vorteil/rabbitmq:v2
 description: "Writes a message to a RabbitMQ service"
 states:

@@ -17,6 +17,7 @@ An example workflow that acknowledges an alert on EMC.
 id: acknowledge-alert
 functions:
 - id: acknowledge
+  type: reusable
   image: vorteil/emc-modify-alert:v1
 description: "Acknowledge the alert."
 states:

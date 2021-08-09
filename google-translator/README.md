@@ -17,6 +17,7 @@ An example workflow of reading the string and converting to a target language.
 id: read-message
 functions:
 - id: translate
+  type: reusable
   image: vorteil/google-translator:v2
 states:
 - id: read

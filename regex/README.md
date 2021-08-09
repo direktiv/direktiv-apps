@@ -17,6 +17,7 @@ An example workflow of using the container on Direktiv.
 id: regex-msg
 functions:
 - id: regex
+  type: reusable
   image: vorteil/regex:v1
 description: Checks a string against regex and returns the matches
 states:

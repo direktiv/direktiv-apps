@@ -18,6 +18,7 @@ id: aws-create-ec2-instance
 description: "Create a new ec2 instance"
 functions:
 - id: aws-create-instance
+  type: reusable
   image: vorteil/aws-ec2-create:v3
   size: medium
 states:

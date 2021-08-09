@@ -15,6 +15,7 @@ An example workflow of using the container in a workflow on Direktiv.
 id: watermark
 functions:
 - id: mywatermark
+  type: reusable
   image: vorteil/image-watermark:v2
 states:
 - id: hello

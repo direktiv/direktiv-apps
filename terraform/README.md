@@ -14,6 +14,7 @@ An example workflow of using the container on Direktiv. Notice we're providing t
 id: spawn-gcp-ubuntu-instance
 functions:
 - id: tfrun
+  type: reusable
   image: vorteil/terraform:v1
   files:
   - key: main.tf

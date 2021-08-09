@@ -1,8 +1,10 @@
 id: event-xor
 functions:
 - id: greeter
+  type: reusable
   image: vorteil/greeting:v2
 - id: solve2
+  type: reusable
   image: vorteil/solve:v2
 description: A simple 'eventXor' that waits for events to be received.
 states:

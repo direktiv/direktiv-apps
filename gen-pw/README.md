@@ -18,6 +18,7 @@ id: genpw
 description: Generates a random password
 functions:
 - id: genpw
+  type: reusable
   image: vorteil/gen-pw:v1
 states:
 - id: gen-password

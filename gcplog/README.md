@@ -17,6 +17,7 @@ An example workflow of using the container on Direktiv.
 id: log-to-google
 functions:
 - id: log
+  type: reusable
   image: vorteil/gcplog:v2
 description: "Log a message to google cloud"
 states:

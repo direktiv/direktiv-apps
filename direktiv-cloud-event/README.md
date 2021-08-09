@@ -16,6 +16,7 @@ An example workflow sending a cloud event via the container
 id: send-event
 functions:
 - id: sendcloud
+  type: reusable
   image: vorteil/direktiv-cloud-event:v1
 description: Send a cloud event to a different namespace 
 states:

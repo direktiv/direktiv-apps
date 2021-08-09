@@ -17,6 +17,7 @@ An example workflow of uploading a base64 encoded string to Azure.
 id: upload-object
 functions:
 - id: upload
+  type: reusable
   image: vorteil/azure-upload:v2
 description: "Uploads a base64 encoded string to blob storage"
 states:

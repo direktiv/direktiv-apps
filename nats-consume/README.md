@@ -17,6 +17,7 @@ An example workflow of consuming from a NATS service.
 id: nats
 functions:
 - id: nats-consume
+  type: reusable
   image: vorteil/nats-consume:v1
 description: "Read messages from a NATS service"
 states:

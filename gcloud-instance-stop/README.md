@@ -17,6 +17,7 @@ id: gcloud-stop-compute-instance
 description: "Stop a gcp project instance"
 functions:
 - id: gcp-stop-instance
+  type: reusable
   image: vorteil/gcloud-instance-stop:v2
   size: medium
 states:

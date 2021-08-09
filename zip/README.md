@@ -18,6 +18,7 @@ id: zip-file
 description: Listens for a smtp-event to send the email appropriately.
 functions:
 - id: zip
+  type: reusable
   image: vorteil/zip:v1
 states:
 - id: zip-data

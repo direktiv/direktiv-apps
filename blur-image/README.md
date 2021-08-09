@@ -17,6 +17,7 @@ An example workflow of using the container on Direktiv
 id: blur-image
 functions:
 - id: blur
+  type: reusable
   image: vorteil/blur:v1
 description: Takes a URL of an image and blurs it
 states:

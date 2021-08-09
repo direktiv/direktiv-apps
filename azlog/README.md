@@ -17,6 +17,7 @@ An example workflow of using the container on Direktiv.
 id: log-to-azure
 functions:
 - id: log
+  type: reusable
   image: vorteil/azlog:v2
 description: "Log a message to Azure Analytics Workspace"
 states:

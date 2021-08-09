@@ -18,6 +18,7 @@ An example workflow of consuming from a Kafka service.
 id: kafka
 functions:
 - id: kafka-consume
+  type: reusable
   image: vorteil/kafka-consume:v2
 description: "Read messages from a Kafka service"
 states:

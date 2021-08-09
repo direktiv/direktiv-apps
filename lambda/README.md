@@ -14,6 +14,7 @@ Executes a cloud function on aws using their golang SDK.
 id: invoke-function
 functions:
 - id: post
+  type: reusable
   image: vorteil/lambda:v2
 description: "Invokes a cloud function based on the given details"
 states:

@@ -22,6 +22,7 @@ start:
       source: "https://github.com/cloudevents/spec/pull"
 functions:
 - id: postgres
+  type: reusable
   image: vorteil/simple-postgres-client:v2
 states:
 - id: store

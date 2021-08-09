@@ -57,6 +57,7 @@ user: api/now/table/sys_user
 id: example
 functions:
 - id: servicenow
+  type: reusable
   image: vorteil/servicenow:v8
 description: "send a get request" 
 states:

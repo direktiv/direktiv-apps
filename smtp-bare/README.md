@@ -18,6 +18,7 @@ id: new-smtp-event
 description: Send an email
 functions:
 - id: send
+  type: reusable
   image: vorteil/smtp-bare:v1
 states:
 - id: test-input

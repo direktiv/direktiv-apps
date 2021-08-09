@@ -18,6 +18,7 @@ id: aws-delete-ec2-instance
 description: "Delete a ec2 instance"
 functions:
 - id: aws-delete-instance
+  type: reusable
   image: vorteil/aws-ec2-delete:v2
   size: medium
 states:

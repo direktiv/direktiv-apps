@@ -17,6 +17,7 @@ An example workflow that deletes an alert on EMC.
 id: delete-alert
 functions:
 - id: delete
+  type: reusable
   image: vorteil/emc-delete-alert:v1
 description: "Delete the alert"
 states:

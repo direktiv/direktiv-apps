@@ -17,6 +17,7 @@ An example workflow of writing 'Hello World!' to the servicebus.
 id: write-helloworld
 functions:
 - id: write
+  type: reusable
   image: vorteil/azure-servicebus:v2
 description: "Writes 'Hello World!' to an Azure Servicebus."
 states:

@@ -17,6 +17,7 @@ An example workflow of writing to a NATS service.
 id: nats
 functions:
 - id: nats-write
+  type: reusable
   image: vorteil/nats:v1
 description: "Writes a message to a NATS service"
 states:

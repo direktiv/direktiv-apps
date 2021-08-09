@@ -19,6 +19,7 @@ The input is an array of objects.
 id: dump-metrics
 functions:
 - id: store
+  type: reusable
   image: vorteil/srm:v2
 description: "Sends metrics to a Dell SRM service"
 states:

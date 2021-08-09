@@ -17,6 +17,7 @@ id: gcloud-delete-compute-instance
 description: "Deletes a gcp project instance"
 functions:
 - id: gcp-delete-instance
+  type: reusable
   image: vorteil/gcloud-instance-delete:v2
   size: medium
 states:

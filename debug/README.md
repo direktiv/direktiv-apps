@@ -17,6 +17,7 @@ An example workflow of using the container on Direktiv.
 id: debugging
 functions:
 - id: debug
+  type: reusable
   image: vorteil/debug:v2
 description: "Prints all input the container receives"
 states:

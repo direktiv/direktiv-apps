@@ -18,6 +18,7 @@ id: test2
 description: "" 
 functions:
 - id: es
+  type: reusable
   image: vorteil/elasticsearch:v2
 states:
 - id: hello

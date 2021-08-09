@@ -16,6 +16,7 @@ An example workflow of using the container solve container to solve basic math.
 id: solver
 functions: 
 - id: solve-math-expression
+  type: reusable
   image: vorteil/solve:v2
 states:
 - id: solve

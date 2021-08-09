@@ -17,6 +17,7 @@ id: gcloud-start-compute-instance
 description: "Start a gcp project instance"
 functions:
 - id: gcp-start-instance
+  type: reusable
   image: vorteil/gcloud-instance-start:v2
   size: medium
 states:

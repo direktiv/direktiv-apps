@@ -17,6 +17,7 @@ An example workflow of using the container in a workflow on Direktiv.
 id: shell
 functions:
 - id: myshell
+  type: reusable
   image: vorteil/ubuntu-shell:v1
   files:
     - key: "myscript"

@@ -1,8 +1,10 @@
 id: event-and
 functions:
 - id: greeter
+  type: reusable
   image: vorteil/greeting:v2
 - id: solve
+  type: reusable
   image: vorteil/solve:v2
 description: A simple 'eventAnd' that waits for events to be received.
 states:

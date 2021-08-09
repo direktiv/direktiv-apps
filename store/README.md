@@ -15,6 +15,7 @@ An example workflow of using the container in a workflow on Direktiv.
 id: store-excel
 functions: 
 - id: store
+  type: reusable
   image: vorteil/store:v2
 description: "Stores who accessed into excel"
 states:

@@ -2,6 +2,7 @@ id: parallel
 description: A simple 'parallel' state workflow that runs solve container to solve expressions.
 functions: 
 - id: solve
+  type: reusable
   image: vorteil/solve:v2
 states:
 - id: run

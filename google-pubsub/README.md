@@ -18,6 +18,7 @@ An example workflow of writing 'Hello World!' to the service.
 id: write-helloworld
 functions:
 - id: write
+  type: reusable
   image: vorteil/google-pubsub:v2
 description: "Writes 'Hello World!' to Google Pubsub service."
 states:

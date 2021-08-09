@@ -17,6 +17,7 @@ An example workflow of using the container in a workflow on Direktiv.
 id: git
 functions:
 - id: mygit
+  type: reusable
   image: vorteil/git:v1
 description: "send git commands"
 states:

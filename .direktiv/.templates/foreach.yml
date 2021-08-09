@@ -2,6 +2,7 @@ id: foreach
 description: A simple 'foreach' state that solves expressions
 functions: 
 - id: solve
+  type: reusable
   image: vorteil/solve:v2
 states:
 - id: data

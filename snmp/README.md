@@ -18,6 +18,7 @@ An example workflow of sending `Hello World!` as a SNMP Trap:
 id: send-snmp-message
 functions:
 - id: snmp
+  type: reusable
   image: vorteil/snmp:v1
 description: Sends a SNMP trap to an address
 states:
