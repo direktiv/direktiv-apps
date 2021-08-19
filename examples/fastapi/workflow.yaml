@@ -1,0 +1,48 @@
+# Call workflow with name:
+# http://servername/api/namespaces/mynamespace/workflows/fastapi/execute?wait=true&name=MyName
+# Call workflow with names:
+# http://servername/api/namespaces/mynamespace/workflows/fastapi/execute?wait=true&names=MyName&names=YourName
+id: fastapi
+description: fastapi greeter
+functions:
+  - id: fastapi
+    type: reusable
+    image: vorteil/fastapi-example:v1
+states:
+  # this state checks if either names or name is set
+  # a condition is true if jq returns a non-nil value
+  - id: decision
+    type: switch
+    conditions:
+    - condition: 'jq(.name)'
+      transition: greeter
+    - condition: 'jq(.names)'
+      transition: multi-greeter
+    # "error" handling if no name or names is set in payload
+    defaultTransition: no-names
+  # simple function which takes "name" from the workflow data
+  - id: greeter
+    type: action
+    action:
+      function: fastapi
+      input:
+        name: 'jq(.name)'
+    transform: 'jq(.return)'
+  # this action logs the input and creates an array from the input "names"
+  # with 'jq(.names[] | { name: . })' there is array with items like:
+  # { "name": "myname" } for each name provided in "names"
+  # this calls the same fastapi function for each of those
+  - id: multi-greeter
+    type: foreach
+    log: 'jq(.)'
+    array: 'jq(.names[] | { name: . })'
+    action:
+      function: fastapi
+      input:
+        name: 'jq(.name)'
+    # the result merges all results into one "msg" value
+    transform: 'jq(.return | map(.msg)  | join(", ") | { msg: . })'
+  - id: no-names
+    type: error
+    error: greeter.nonames
+    message: "name or names are required"
