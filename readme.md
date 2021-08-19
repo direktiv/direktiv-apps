@@ -2,61 +2,13 @@
 
 Simple Containers that run on Direktiv
 
-<em>created by [4ac2a918](https://github.com/vorteil/direktiv-apps/tree/4ac2a9180bc344dc845fa5e6eccdb920d200a47d)</em>
+## Contributing
 
+To contribute to this repository, fork this repository and add the following files in a new directory(the directory name will be the name of the image as displayed on the website):
 
-## Containers
-
-| Image | Description | How to Use |
-| ----- | ----------- | ---------- |
-| [vorteil/amazon-sns](https://hub.docker.com/r/vorteil/amazon-sns) | Writes a message to Amazon's Simple Notification Service | [README](https://github.com/vorteil/direktiv-apps/tree/master/amazon-sns) |
-| [vorteil/amazon-terraform](https://hub.docker.com/r/vorteil/amazon-terraform) | Executes a terraform script. | [README](https://github.com/vorteil/direktiv-apps/tree/master/amazon-terraform) |
-| [vorteil/amazon-upload](https://hub.docker.com/r/vorteil/amazon-upload) | Uploads a base64 encoded string to a blob on Amazon. | [README](https://github.com/vorteil/direktiv-apps/tree/master/amazon-upload) |
-| [vorteil/aws-ec2-create](https://hub.docker.com/r/vorteil/aws-ec2-create) | Creates an amazon ec2 instance on aws. | [README](https://github.com/vorteil/direktiv-apps/tree/master/aws-ec2-create) |
-| [vorteil/aws-ec2-delete](https://hub.docker.com/r/vorteil/aws-ec2-delete) | Delete a amazon ec2 instance. | [README](https://github.com/vorteil/direktiv-apps/tree/master/aws-ec2-delete) |
-| [vorteil/aws-ec2-start](https://hub.docker.com/r/vorteil/aws-ec2-start) | Start a amazon ec2 instance. | [README](https://github.com/vorteil/direktiv-apps/tree/master/aws-ec2-start) |
-| [vorteil/aws-ec2-stop](https://hub.docker.com/r/vorteil/aws-ec2-stop) | Stops a amazon ec2 instance. | [README](https://github.com/vorteil/direktiv-apps/tree/master/aws-ec2-stop) |
-| [vorteil/awsgo](https://hub.docker.com/r/vorteil/awsgo) | Executes any cli command with aws using a golang wrapper to provide the authentication before executing. | [README](https://github.com/vorteil/direktiv-apps/tree/master/awsgo) |
-| [vorteil/awslog](https://hub.docker.com/r/vorteil/awslog) | Writes a log line to aws cloudwatch logs with provided log stream and group. | [README](https://github.com/vorteil/direktiv-apps/tree/master/awslog) |
-| [vorteil/azgo](https://hub.docker.com/r/vorteil/azgo) | Executes any azure cli command using a golang wrapper to provide the authentication before executing. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azgo) |
-| [vorteil/azinvoke](https://hub.docker.com/r/vorteil/azinvoke) | Executes a cloud function on azure using the function name, function app and function key as authentication to do so. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azinvoke) |
-| [vorteil/azlog](https://hub.docker.com/r/vorteil/azlog) | Writes a log line to Azure Log Analytics Workspace. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azlog) |
-| [vorteil/azure-servicebus](https://hub.docker.com/r/vorteil/azure-servicebus) | Writes a message to Azure's Servicebus | [README](https://github.com/vorteil/direktiv-apps/tree/master/azure-servicebus) |
-| [vorteil/azure-terraform](https://hub.docker.com/r/vorteil/azure-terraform) | Executes a terraform script. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azure-terraform) |
-| [vorteil/azure-upload](https://hub.docker.com/r/vorteil/azure-upload) | Uploads a base64 encoded string to a blob on Azure. | [README](https://github.com/vorteil/direktiv-apps/tree/master/azure-upload) |
-| [vorteil/debug](https://hub.docker.com/r/vorteil/debug) | Prints all the information that direktiv sends to the container | [README](https://github.com/vorteil/direktiv-apps/tree/master/debug) |
-| [vorteil/direktiv-cloud-event](https://hub.docker.com/r/vorteil/direktiv-cloud-event) | Send a cloud event to a different namespace mid workflow. | [README](https://github.com/vorteil/direktiv-apps/tree/master/direktiv-cloud-event) |
-| [vorteil/discordmsg](https://hub.docker.com/r/vorteil/discordmsg) | Writes a discord message to a webhook URL. | [README](https://github.com/vorteil/direktiv-apps/tree/master/discordmsg) |
-| [vorteil/elasticsearch](https://hub.docker.com/r/vorteil/elasticsearch) | Writes a new JSON document to an index or queries an index in its entirety. | [README](https://github.com/vorteil/direktiv-apps/tree/master/elasticsearch) |
-| [vorteil/gcloud](https://hub.docker.com/r/vorteil/gcloud) | Executes a gcloud cli command using a golang wrapper to provide authentication via service account key file. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud) |
-| [vorteil/gcloud-instance-create](https://hub.docker.com/r/vorteil/gcloud-instance-create) | Create a compute engine instance on google cloud. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud-instance-create) |
-| [vorteil/gcloud-instance-delete](https://hub.docker.com/r/vorteil/gcloud-instance-delete) | Delete a compute engine instance on google cloud. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud-instance-delete) |
-| [vorteil/gcloud-instance-start](https://hub.docker.com/r/vorteil/gcloud-instance-start) | Starts a compute engine instance on google cloud. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud-instance-start) |
-| [vorteil/gcloud-instance-stop](https://hub.docker.com/r/vorteil/gcloud-instance-stop) | Stop a compute engine instance on google cloud. | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcloud-instance-stop) |
-| [vorteil/gcplog](https://hub.docker.com/r/vorteil/gcplog) | Writes a log line to a stackdriver logging implementation | [README](https://github.com/vorteil/direktiv-apps/tree/master/gcplog) |
-| [vorteil/git](https://hub.docker.com/r/vorteil/git) | Perform git commands | [README](https://github.com/vorteil/direktiv-apps/tree/master/git) |
-| [vorteil/google-pubsub](https://hub.docker.com/r/vorteil/google-pubsub) | Writes a message to Google's Pubsub service. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-pubsub) |
-| [vorteil/google-sentiment-check](https://hub.docker.com/r/vorteil/google-sentiment-check) | Reads a string and tells you the sentiment of the written text. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-sentiment-check) |
-| [vorteil/google-terraform](https://hub.docker.com/r/vorteil/google-terraform) | Executes a terraform script. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-terraform) |
-| [vorteil/google-translator](https://hub.docker.com/r/vorteil/google-translator) | Reads a string and converts it to the targeted language. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-translator) |
-| [vorteil/google-upload](https://hub.docker.com/r/vorteil/google-upload) | Uploads a base64 encoded string to a bucket on Google. | [README](https://github.com/vorteil/direktiv-apps/tree/master/google-upload) |
-| [vorteil/googleinvoke](https://hub.docker.com/r/vorteil/googleinvoke) | Executes a cloud function on google using a client authenticated via a service account key. | [README](https://github.com/vorteil/direktiv-apps/tree/master/googleinvoke) |
-| [vorteil/googlemsg](https://hub.docker.com/r/vorteil/googlemsg) | Writes a google message to a webhook URL. | [README](https://github.com/vorteil/direktiv-apps/tree/master/googlemsg) |
-| [vorteil/greeting](https://hub.docker.com/r/vorteil/greeting) | Outputs a greeting | [README](https://github.com/vorteil/direktiv-apps/tree/master/greeting) |
-| [vorteil/watermark](https://hub.docker.com/r/vorteil/image-watermark) | Generates a basic watermark. | [README](https://github.com/vorteil/direktiv-apps/tree/master/image-watermark) |
-| [vorteil/imagerecognition](https://hub.docker.com/r/vorteil/imagerecognition) | Checks an image to see if it is safe for work and responds with content is likely to be racy, adult or violence themed. | [README](https://github.com/vorteil/direktiv-apps/tree/master/imagerecognition) |
-| [vorteil/influxdb](https://hub.docker.com/r/vorteil/influxdb) | A container that provides the opportunities to write or query data on an InfluxDB instance. | [README](https://github.com/vorteil/direktiv-apps/tree/master/influxdb) |
-| [vorteil/kafka](https://hub.docker.com/r/vorteil/kafka) | Writes a message to a Kafka service | [README](https://github.com/vorteil/direktiv-apps/tree/master/kafka) |
-| [vorteil/lambda](https://hub.docker.com/r/vorteil/lambda) | Executes a cloud function on aws using their golang SDK. | [README](https://github.com/vorteil/direktiv-apps/tree/master/lambda) |
-| [vorteil/rabbitmq](https://hub.docker.com/r/vorteil/rabbitmq) | Writes a message to the RabbitMQ Service | [README](https://github.com/vorteil/direktiv-apps/tree/master/rabbitmq) |
-| [vorteil/redis](https://hub.docker.com/r/vorteil/redis) | Sets and gets on a redis memory store. | [README](https://github.com/vorteil/direktiv-apps/tree/master/redis) |
-| [vorteil/request](https://hub.docker.com/r/vorteil/request) | Perform a basic HTTP/S request. | [README](https://github.com/vorteil/direktiv-apps/tree/master/request) |
-| [vorteil/simplepostgresclient](https://hub.docker.com/r/vorteil/simplepostgresclient) | Perform simple interactions on a PostgreSQL database.  | [README](https://github.com/vorteil/direktiv-apps/tree/master/simplepostgresclient) |
-| [vorteil/slackmsg](https://hub.docker.com/r/vorteil/slackmsg) | Writes a message to a slack webhook url | [README](https://github.com/vorteil/direktiv-apps/tree/master/slackmsg) |
-| [vorteil/smtp](https://hub.docker.com/r/vorteil/smtp) | A simple smtp client to send an email | [README](https://github.com/vorteil/direktiv-apps/tree/master/smtp) |
-| [vorteil/solve](https://hub.docker.com/r/vorteil/solve) | Solves math expressions | [README](https://github.com/vorteil/direktiv-apps/tree/master/solve) |
-| [vorteil/store](https://hub.docker.com/r/vorteil/store) | Add a row to a 'Google Sheets' spreadsheet. | [README](https://github.com/vorteil/direktiv-apps/tree/master/store) |
-| [vorteil/tweet](https://hub.docker.com/r/vorteil/tweet) | Tweets a message to a twitter account. | [README](https://github.com/vorteil/direktiv-apps/tree/master/tweet) |
-| [vorteil/twilio](https://hub.docker.com/r/vorteil/twilio) | Sends an email or SMS message using Twilio. | [README](https://github.com/vorteil/direktiv-apps/tree/master/twilio) |
-| [vorteil/ubuntu-shell](https://hub.docker.com/r/vorteil/ubuntu-shell) | Executing shell scripts | [README](https://github.com/vorteil/direktiv-apps/tree/master/ubuntu-shell) |
-
+  - README.md (ideally, this file should contain useful information such as an example, or an explanation of what the container does and how it is used)
+  - logo.png (a 'logo for the container, displayed on the website)
+  - Dockerfile (used to build the Docker image from the source files)
+  - Source code of the container
+  
+Checkout how to make your own custom [isolate](https://github.com/vorteil/direktiv-apps/tree/master/examples).

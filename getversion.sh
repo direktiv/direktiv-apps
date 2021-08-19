@@ -1,0 +1,4 @@
+REPOSITORY=$(printenv REPOSITORY)
+CONTAINER=$(printenv CONTAINER)
+
+echo $(REPOSITORY=${REPOSITORY} CONTAINER=${CONTAINER} go run cli/main.go)

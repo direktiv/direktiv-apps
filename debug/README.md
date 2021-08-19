@@ -11,7 +11,7 @@ Prints all the information that direktiv sends to the container
 
 ## Direktiv
 
-An example workflow of using the container on direktiv
+An example workflow of using the container on Direktiv.
 
 ```yaml
 id: debugging
@@ -24,17 +24,16 @@ states:
   type: action
   action:
     function: print
-    input: .
+    input: jq(.)
 ```
 
 ## Input & Output
 
 The input will get printed as output for debugging purposes.
 
-```json
-{
-    "hello":"world"
-}
+```yaml
+input:
+  hello: "world"
 ```
 
 ## Error

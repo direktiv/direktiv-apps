@@ -23,19 +23,18 @@ states:
   type: action
   action:
     function: translate
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input required to run the above workflow properly is the following:
 
-```json
-{
-    "message": "Hello World!",
-    "target-language": "ja",
-    "serviceAccountKey": .secrets.SERVICE_ACCOUNT_KEY
-}
+```yaml
+input:
+  message: "Hello World!"
+  "target-language": "ja"
+  serviceAccountKey: jq(.secrets.SERVICE_ACCOUNT_KEY)
 ```
 
 ## Output

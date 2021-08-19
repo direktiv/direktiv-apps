@@ -95,7 +95,11 @@ func shutdown(srv *http.Server) {
 }
 
 func log(aid, l string) {
-	http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(l))
+	if aid == "development" || aid == "Development" {
+		fmt.Println(l)
+	} else {
+		http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(l))
+	}
 }
 
 func respond(w http.ResponseWriter, data []byte) {

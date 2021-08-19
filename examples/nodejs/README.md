@@ -39,16 +39,20 @@ const greetingHandler = function(req, res) {
 }
 
 const log = async (aid, l) => {
-    try {
-        fetch(`http://localhost:8889/log?aid=${aid}`, {
-            method: "POST",
-            body: l,
-            headers: {
-                "Content-Type": "plain/text"
-            }
-        })
-    } catch(e) {
-        console.log('unable to post log message', e)
+    if (aid != "development" && aid != "Development") {
+        try {
+            fetch(`http://localhost:8889/log?aid=${aid}`, {
+                method: "POST",
+                body: l,
+                headers: {
+                    "Content-Type": "plain/text"
+                }
+            })
+        } catch(e) {
+            console.log('unable to post log message', e)
+        }
+    } else {
+        console.log(l)
     }
 }
 

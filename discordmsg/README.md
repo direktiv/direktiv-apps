@@ -24,19 +24,18 @@ states:
   type: action
   action:
     function: post
-    input: .
+    input: jq(.)
 ```
 
 ## Input 
 
 The input needed to run the above workflow properly is the following:
 
-```json
-{
-    "message": "",
-    "tts": false,
-    "url": "DISCORD_CHAT_WEBHOOK_URL"
-}
+```yaml
+input:
+  message: ""
+  tts: false
+  url: "DISCORD_CHAT_WEBHOOK_URL"
 ```
 
 **NOTE:** The `tts` field is optional. Its whether you want discord to announce the message e.g. talk to speech.

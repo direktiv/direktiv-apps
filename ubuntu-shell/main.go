@@ -3,12 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"os/exec"
 	"path"
+	"strings"
 
 	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
 )
@@ -20,40 +19,11 @@ type shell struct {
 	Args   []string `json:"args"`
 }
 
-func copyFile(path string) (*os.File, error) {
-
-	in, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-
-	out, err := ioutil.TempFile("", "exe")
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = io.Copy(out, in)
-	if err != nil {
-		os.RemoveAll(out.Name())
-		return nil, err
-	}
-
-	out.Sync()
-
-	err = os.Chmod(out.Name(), 0755)
-	if err != nil {
-		os.RemoveAll(out.Name())
-		return nil, err
-	}
-
-	out.Close()
-
-	return out, nil
-}
-
-func execScript(path string, args []string) ([]byte, error) {
+func execScript(path string, args []string, envs []string) ([]byte, error) {
 
 	cmd := exec.Command(path, args...)
+	cmd.Env = envs
+
 	d, err := cmd.Output()
 	if err != nil {
 		if e, ok := err.(*exec.ExitError); ok {
@@ -75,36 +45,42 @@ func request(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log(aid, "getting script")
+	if s.Script == "" {
+		direktivapps.RespondWithError(w, code, "no script provided")
+		return
+	}
+
+	direktivapps.LogDouble(aid, "getting script")
 
 	dtmp := r.Header.Get("Direktiv-TempDir")
 	if len(dtmp) == 0 {
-		direktivapps.RespondWithError(w, code, fmt.Sprintf("direktiv tmp direktory not provided"))
+		direktivapps.RespondWithError(w, code, fmt.Sprintf("direktiv tmp directory not provided"))
 		return
 	}
 
 	f := path.Join(dtmp, s.Script)
-	rf, err := copyFile(f)
+
+	err = os.Chmod(f, 0755)
 	if err != nil {
 		direktivapps.RespondWithError(w, code, err.Error())
 		return
 	}
-	defer os.Remove(rf.Name())
 
-	log(aid, fmt.Sprintf("found script %v -> %v", f, rf.Name()))
+	direktivapps.LogDouble(aid, fmt.Sprintf("found script %v", f))
 
-	ret, err := execScript(rf.Name(), s.Args)
+	envs := []string{fmt.Sprintf("Direktiv_TempDir=%s",
+		r.Header.Get("Direktiv-TempDir"))}
+
+	ret, err := execScript(f, s.Args, envs)
 	if err != nil {
 		direktivapps.RespondWithError(w, code, fmt.Sprintf("%v: %s", err, string(ret)))
 		return
 	}
 
-	log(aid, fmt.Sprintf("script return: %v", string(ret)))
+	ret = []byte(strings.TrimSpace(string(ret)))
+	direktivapps.LogDouble(aid, fmt.Sprintf("script return: %v", string(ret)))
 
-	// check if base64
-	var j map[string]interface{}
-	err = json.Unmarshal(ret, &j)
-	if err != nil {
+	if !json.Valid(ret) {
 		o := make(map[string]string)
 		o["output"] = string(ret)
 
@@ -123,9 +99,4 @@ func request(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	direktivapps.StartServer(request)
-}
-
-func log(aid, l string) {
-	fmt.Println(l)
-	direktivapps.Log(aid, l)
 }

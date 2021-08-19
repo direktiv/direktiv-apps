@@ -24,19 +24,19 @@ states:
   type: action
   action:
     function: log
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input needed to run the above workflow properly is the following:
 
-```json
-{
-    "message": "Hello",
-    "workspace-id": .secrets.WORKSPACE_ID,
-    "key": .secrets.WORKSPACE_KEY,
-    "type": "direktiv"
+```yaml
+input:
+  message: "Hello"
+  "workspace-id": jq(.secrets.WORKSPACE_ID)
+  key: jq(.secrets.WORKSPACE_KEY)
+  type: "direktiv"
 }
 ```
 

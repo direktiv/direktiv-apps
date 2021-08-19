@@ -10,8 +10,11 @@ import (
 	"os"
 	"os/signal"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 const (
@@ -73,12 +76,27 @@ func StartServer(f func(w http.ResponseWriter, r *http.Request)) {
 
 	fmt.Println("Starting server")
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", f)
+	r := mux.NewRouter()
+	r.HandleFunc("/", cancelHandler).Methods(http.MethodDelete)
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+
+		aid := r.Header.Get(DirektivActionIDHeader)
+		if aid == "" {
+			// cant handle a DELETE request with no specific AID
+			return
+		}
+
+		ctx, cancel := context.WithCancel(r.Context())
+		r = r.WithContext(ctx)
+
+		reqMap.Store(aid, cancel)
+		f(w, r)
+		reqMap.Delete(aid)
+	})
 
 	srv := &http.Server{
 		Addr:    ":8080",
-		Handler: mux,
+		Handler: r,
 	}
 
 	sigs := make(chan os.Signal, 1)
@@ -92,7 +110,25 @@ func StartServer(f func(w http.ResponseWriter, r *http.Request)) {
 	srv.ListenAndServe()
 }
 
-// Shutdown turns off the server
+var reqMap *RequestMap
+
+func init() {
+	reqMap = new(RequestMap)
+	reqMap.internal = make(map[string]context.CancelFunc)
+}
+
+func cancelHandler(w http.ResponseWriter, r *http.Request) {
+
+	aid := r.Header.Get(DirektivActionIDHeader)
+	if aid == "" {
+		// cant handle a DELETE request with no specific AID
+		return
+	}
+
+	reqMap.Delete(aid)
+}
+
+// ShutDown turns off the server
 func ShutDown(srv *http.Server) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -101,7 +137,21 @@ func ShutDown(srv *http.Server) {
 
 // Log sends a string to log via kubernetes
 func Log(aid, l string) {
-	http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(l))
+	if aid == "Development" || aid == "development" {
+		fmt.Println(l)
+	} else {
+		http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(l))
+	}
+}
+
+// LogDouble logs to direktiv and stdout
+func LogDouble(aid, l string) {
+	if aid == "Development" || aid == "development" {
+		fmt.Println(l)
+	} else {
+		fmt.Println(l)
+		http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(l))
+	}
 }
 
 // ReadIn reads data from dataInPath and returns struct provided with json fields
@@ -140,4 +190,39 @@ func WriteOut(by []byte, g ActionError) {
 		WriteError(g)
 	}
 	os.Exit(0)
+}
+
+// Sync map
+type RequestMap struct {
+	sync.RWMutex
+	internal map[string]context.CancelFunc
+}
+
+// Load ..
+func (rm *RequestMap) Load(key string) (value context.CancelFunc, ok bool) {
+	rm.RLock()
+	res, ok := rm.internal[key]
+	rm.RUnlock()
+	return res, ok
+}
+
+// Delete ..
+func (rm *RequestMap) Delete(key string) {
+
+	cancel, ok := rm.Load(key)
+	if !ok {
+		return
+	}
+
+	rm.Lock()
+	cancel()
+	delete(rm.internal, key)
+	rm.Unlock()
+}
+
+// Store ..
+func (rm *RequestMap) Store(key string, value context.CancelFunc) {
+	rm.Lock()
+	rm.internal[key] = value
+	rm.Unlock()
 }

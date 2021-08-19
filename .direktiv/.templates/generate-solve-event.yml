@@ -6,7 +6,5 @@ states:
   event:
     type: solveexpressioncloudevent
     source: Direktiv
-    data: |
-      {
-        x: "10+5"
-      }
+    data: 
+      x: "10+5"

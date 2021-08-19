@@ -6,8 +6,6 @@
 ---
 # Watermark
 
-
-
 ## Direktiv
 
 An example workflow of using the container in a workflow on Direktiv.
@@ -17,17 +15,16 @@ An example workflow of using the container in a workflow on Direktiv.
 id: watermark
 functions:
 - id: mywatermark
-  image: vorteil/watermark:v2
+  image: vorteil/image-watermark:v2
 states:
 - id: hello
   type: action
   action:
     function: mywatermark
-    input: '{
-      "text": "Hello",
-      "img": "bas64image==",
-      "color": "#ffffffC0"
-    }'
+    input: 
+      text: "Hello"
+      img: "base64image=="
+      color: "#FFFFFFC0"
 ```
 
 The 'img' value has to be a base64 encoded image (png/jpg).

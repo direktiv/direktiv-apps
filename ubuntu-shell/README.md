@@ -18,21 +18,25 @@ id: shell
 functions:
 - id: myshell
   image: vorteil/ubuntu-shell:v1
+  files:
+    - key: "myscript"
+      scope: workflow
+      type: plain
 states:
 - id: hello
   type: action
   action:
     function: shell
-    input: |
-        {
-          "script": (.var.script),
-          "args": ["arg1", "arg2"]
-        }'
+    input:
+      script: "myscript"
+      args: 
+        - "arg1"
+        - "arg2"
 ```
 
 ## Input
 
-The action takes two parameters. The first one is 'script' which is a base64 encoded shell script. Usually it comes from a workflow-scoped variable. The seoncd is an array of arguments for the script.
+The action takes two parameters. The first one is 'script' which is a name of a variable containing the script. Usually it comes from a workflow-scoped variable. The seoncd is an array of arguments for the script. The environment variable 'Direktiv_TempDir' is set for the script.
 
 ## Output
 

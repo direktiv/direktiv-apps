@@ -14,7 +14,7 @@ An example workflow of using the container on Direktiv
 
 ```yaml
 id: post-to-slack
-function:
+functions:
 - id: post
   image: vorteil/slackmsg:v2
 description: "Send a message to a slack channel"
@@ -23,18 +23,17 @@ states:
   type: action
   action:
     function: post
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 The input needed to run the above workflow properly is the following:
 
-```json
-{
-  "message": "This message will be posted to slack chat",
-  "url": "SLACK_CHAT_WEBHOOK_URL"
-}
+```yaml
+input:
+  message: "This message will be posted to slack chat"
+  url: "SLACK_CHAT_WEBHOOK_URL"
 ```
 
 ## Output

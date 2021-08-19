@@ -25,20 +25,19 @@ states:
   type: action
   action:
     function: kafka-write
-    input: .
+    input: jq(.)
 ```
 
 ## Input
 
 Writes a message to a Kafka service hosted on the address.
 
-```json
-{
-        "topic": "quickstart-events",
-        "partition": 0,
-        "message": "Hello World :)!",
-        "address": "localhost:9092"
-}
+```yaml
+input:
+  topic: "quickstart-events"
+  partition: 0
+  message: "Hello World :)!"
+  address: "localhost:9092"
 ```
 
 ## Output

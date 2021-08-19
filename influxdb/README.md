@@ -23,7 +23,7 @@ states:
   type: action
   action:
     function: influxdb
-    input: .
+    input: jq(.)
 ```
 
 ## Query Data on InfluxDB
@@ -32,15 +32,14 @@ states:
 
 The input needed to run a query on an InfluxDB instance is the following: 
 
-```json
-{
-    "url": "http://localhost:8089",
-    "token": .secrets.AUTH_TOKEN,
-    "type": "query",
-    "organisation": "vorteil.io",
-    "bucket": "vorteil",
-    "query": "from(bucket:\"my-bucket\")|> range(start: -1h) |> filter(fn: (r) => r._measurement == \"stat\""
-}
+```yaml
+input:
+  url: "http://localhost:8089"
+  token: jq(.secrets.AUTH_TOKEN)
+  type: "query"
+  organisation: "vorteil.io"
+  bucket: "vorteil"
+  query: "from(bucket:\"my-bucket\")|> range(start: -1h) |> filter(fn: (r) => r._measurement == \"stat\""
 ```
 
 ### Output 
