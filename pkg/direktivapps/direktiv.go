@@ -140,6 +140,7 @@ func Log(aid, l string) {
 	if aid == "Development" || aid == "development" {
 		fmt.Println(l)
 	} else {
+		fmt.Println(l)
 		http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(l))
 	}
 }
