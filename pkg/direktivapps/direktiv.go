@@ -74,7 +74,7 @@ func Unmarshal(obj interface{}, r *http.Request) (string, error) {
 // StartServer starts a new server
 func StartServer(f func(w http.ResponseWriter, r *http.Request)) {
 
-	fmt.Println("Starting server")
+	fmt.Println("Starting server.")
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", cancelHandler).Methods(http.MethodDelete)
