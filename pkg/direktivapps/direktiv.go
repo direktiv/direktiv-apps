@@ -17,6 +17,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Direktiv headers
 const (
 	DirektivActionIDHeader    = "Direktiv-ActionID"
 	DirektivInstanceIDHeader  = "Direktiv-InstanceID"
@@ -40,7 +41,9 @@ const outPath = "/direktiv-data/data.out"
 const dataInPath = "/direktiv-data/data.in"
 const errorPath = "/direktiv-data/error.json"
 
-// Respond with error
+const devMode = "development"
+
+// RespondWithError sets error headers
 func RespondWithError(w http.ResponseWriter, code string, err string) {
 	w.Header().Set(DirektivErrorCodeHeader, code)
 	w.Header().Set(DirektivErrorMessageHeader, err)
@@ -137,17 +140,19 @@ func ShutDown(srv *http.Server) {
 
 // Log sends a string to log via kubernetes
 func Log(aid, l string) {
-	if aid == "Development" || aid == "development" {
+
+	if strings.ToLower(aid) == devMode {
 		fmt.Println(l)
 	} else {
 		fmt.Println(l)
 		http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(l))
 	}
+
 }
 
 // LogDouble logs to direktiv and stdout
 func LogDouble(aid, l string) {
-	if aid == "Development" || aid == "development" {
+	if strings.ToLower(aid) == devMode {
 		fmt.Println(l)
 	} else {
 		fmt.Println(l)
@@ -193,7 +198,7 @@ func WriteOut(by []byte, g ActionError) {
 	os.Exit(0)
 }
 
-// Sync map
+// RequestMap sync map
 type RequestMap struct {
 	sync.RWMutex
 	internal map[string]context.CancelFunc
@@ -226,4 +231,41 @@ func (rm *RequestMap) Store(key string, value context.CancelFunc) {
 	rm.Lock()
 	rm.internal[key] = value
 	rm.Unlock()
+}
+
+// DirektivLogWriter writes logs to the post backend and stdout
+type DirektivLogWriter struct {
+	actionID string
+}
+
+// NewDirektivLogWriter returns a new DirektivLogWriter
+func NewDirektivLogWriter(aid string) (*DirektivLogWriter, error) {
+
+	if len(aid) == 0 {
+		return nil, fmt.Errorf("action id required for direktiv log writer")
+	}
+
+	return &DirektivLogWriter{
+		actionID: aid,
+	}, nil
+}
+
+// ActionID returns the action id of the direktiv log writer
+func (lw *DirektivLogWriter) ActionID() string {
+	return lw.actionID
+}
+
+// Write writes log output
+func (lw *DirektivLogWriter) Write(p []byte) (n int, err error) {
+
+	if lw.actionID == "" {
+		return 0, fmt.Errorf("action id can not be nil")
+	} else if lw.actionID != devMode {
+		_, err := http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", lw.actionID), "plain/text", bytes.NewBuffer(p))
+		return len(p), err
+	}
+
+	fmt.Println(string(p))
+
+	return len(p), nil
 }
