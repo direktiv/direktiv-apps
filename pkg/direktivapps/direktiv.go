@@ -265,7 +265,7 @@ func (lw *DirektivLogWriter) Write(p []byte) (n int, err error) {
 		return len(p), err
 	}
 
-	fmt.Println(string(p))
+	fmt.Print(string(p))
 
 	return len(p), nil
 }
