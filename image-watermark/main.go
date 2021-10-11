@@ -47,7 +47,20 @@ func checkReqFields(data []byte) (imgInfo, error) {
 
 	img, ok := m["img"]
 	if !ok {
-		return i, fmt.Errorf("field 'img' is missing in payload")
+		url, ok := m["url"]
+		if ok {
+			resp, err := http.Get(url)
+			if err != nil {
+				return i, err
+			}
+			data, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return i, err
+			}
+			img = base64.StdEncoding.EncodeToString(data)
+		} else {
+			return i, fmt.Errorf("field 'img' or 'url' is missing in payload")
+		}
 	}
 
 	dec, err := base64.StdEncoding.DecodeString(img)
