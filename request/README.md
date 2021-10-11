@@ -17,16 +17,17 @@ An example workflow of using the container in a workflow on Direktiv.
 id: request
 functions:
 - id: myrequest
+  type: reusable
   image: vorteil/request:v6
-description: "send a get request" 
+description: "send a get request"
 states:
 - id: hello
   type: action
-  action: 
+  action:
     function: myrequest
-    input: 
+    input:
       method: "GET"
-      host: "https://jsonplaceholder.typicode.com/posts"
+      url: "https://jsonplaceholder.typicode.com/posts"
 ```
 
 ## Input
@@ -35,11 +36,11 @@ states:
 input:
   method: "GET"
   url: "https://vorteil.io"
-  body: 
+  body:
     hello: "world"
-  headers: 
-    "Content-Type": "application/json" 
-  params: 
+  headers:
+    "Content-Type": "application/json"
+  params:
     Hello: "world"
   username: "test"
   password: "test2"
