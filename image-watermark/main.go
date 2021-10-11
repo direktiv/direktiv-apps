@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -49,6 +50,7 @@ func checkReqFields(data []byte) (imgInfo, error) {
 	if !ok {
 		url, ok := m["url"]
 		if ok {
+			http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 			resp, err := http.Get(url)
 			if err != nil {
 				return i, err
