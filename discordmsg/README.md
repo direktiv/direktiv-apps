@@ -17,7 +17,7 @@ An example workflow of using the container on Direktiv.
 id: post-to-discord
 functions:
 - id: post
-  image: direktiv/discordmsg:v2
+  image: direktiv/discordmsg:v1
 description: "Sends a message to a discord channel"
 states:
 - id: postToDiscord

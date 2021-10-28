@@ -18,7 +18,7 @@ An example workflow of using the Kafka container.
 id: kafka
 functions:
 - id: kafka-write
-  image: direktiv/kafka:v2
+  image: direktiv/kafka:v1
 description: "Writes a message to a Kafka service"
 states:
 - id: writemsg

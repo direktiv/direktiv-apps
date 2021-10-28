@@ -17,7 +17,7 @@ An example workflow of uploading a base64 encoded string to Amazon.
 id: upload-object
 functions:
 - id: upload
-  image: direktiv/amazon-upload:v2
+  image: direktiv/amazon-upload:v1
 description: "Uploads a base64 encoded string to Amazon"
 states:
 - id: upload-file

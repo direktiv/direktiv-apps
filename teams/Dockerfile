@@ -1,8 +1,10 @@
 FROM golang:latest as build
 
-WORKDIR /go/src/app
-ADD . /go/src/app
-RUN go get -d -u -v 
+WORKDIR /app
+COPY ./main.go ./
+COPY ./go.mod ./
+COPY ./go.sum ./
+RUN go get -u -v
 RUN CGO_ENABLED=0 go build -o /teams -ldflags="-s -w" main.go
 
 FROM alpine:latest as certs

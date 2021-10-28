@@ -14,7 +14,7 @@ Executes a cloud function on aws using their golang SDK.
 id: invoke-function
 functions:
 - id: post
-  image: direktiv/lambda:v2
+  image: direktiv/lambda:v1
 description: "Invokes a cloud function based on the given details"
 states:
 - id: invoke-cloud

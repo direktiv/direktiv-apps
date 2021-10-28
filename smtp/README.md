@@ -14,7 +14,7 @@ An example workflow of using the container in a workflow on Direktiv.
 id: send-email
 functions:
 - id: send
-  image: direktiv/smtp:v2
+  image: direktiv/smtp:v1
 description: "Initializes a smtp server to send an email" 
 states:
 - id: SendEmail

@@ -17,7 +17,7 @@ An example workflow of using the container on Direktiv.
 id: post-to-google
 functions:
 - id: post
-  image: direktiv/googlemsg:v2
+  image: direktiv/googlemsg:v1
 description: "Send a message to a google chat"
 states:
 - id: postToGoogle

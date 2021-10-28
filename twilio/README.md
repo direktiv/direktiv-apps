@@ -16,7 +16,7 @@ An example workflow of using the container in a workflow on Direktiv.
 id: send-approval
 functions:
 - id: send
-  image: direktiv/twilio:v2
+  image: direktiv/twilio:v1
 description: "Sends a sms to provided number" 
 states:
 - id: fire

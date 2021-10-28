@@ -16,7 +16,7 @@ An example workflow of using the container solve container to solve basic math.
 id: solver
 functions: 
 - id: solve-math-expression
-  image: direktiv/solve:v2
+  image: direktiv/solve:v1
 states:
 - id: solve
   type: action

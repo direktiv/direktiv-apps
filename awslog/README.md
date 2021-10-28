@@ -17,7 +17,7 @@ An example workflow of using the container on Direktiv.
 id: log-to-aws
 functions:
 - id: log
-  image: direktiv/awslog:v2
+  image: direktiv/awslog:v1
 description: "Log a message to AWS cloudwatch"
 states:
 - id: log-hello

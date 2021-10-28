@@ -16,7 +16,7 @@ An example workflow of using the container on Direktiv
 id: post-to-slack
 functions:
 - id: post
-  image: direktiv/slackmsg:v2
+  image: direktiv/slackmsg:v1
 description: "Send a message to a slack channel"
 states:
 - id: postToSlack

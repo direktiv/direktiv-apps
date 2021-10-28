@@ -16,7 +16,7 @@ An example workflow of using the container on Direktiv.
 id: check-image
 functions:
 - id: check
-  image: direktiv/imagerecognition:v2
+  image: direktiv/imagerecognition:v1
 description: "Evaluates an image using Google Vision API"
 states:
 - id: checkImage

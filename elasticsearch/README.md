@@ -18,7 +18,7 @@ id: test2
 description: "" 
 functions:
 - id: es
-  image: direktiv/elasticsearch:v2
+  image: direktiv/elasticsearch:v1
 states:
 - id: hello
   type: action

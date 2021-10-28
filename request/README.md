@@ -18,7 +18,7 @@ id: request
 functions:
 - id: myrequest
   type: reusable
-  image: direktiv/request:v6
+  image: direktiv/request:v1
 description: "send a get request"
 states:
 - id: hello

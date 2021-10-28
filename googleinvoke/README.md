@@ -15,7 +15,7 @@ Executes a cloud function on google using a client authenticated via a service a
 id: invoke-function
 functions:
 - id: invoke
-  image: direktiv/googleinvoke:v2
+  image: direktiv/googleinvoke:v1
 description: "Invokes a cloud function based on the given details"
 states:
 - id: invoke-cloud

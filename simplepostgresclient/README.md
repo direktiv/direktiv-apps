@@ -22,7 +22,7 @@ start:
       source: "https://github.com/cloudevents/spec/pull"
 functions:
 - id: postgres
-  image: direktiv/simple-postgres-client:v2
+  image: direktiv/simple-postgres-client:v1
 states:
 - id: store
   type: action

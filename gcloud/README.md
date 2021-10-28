@@ -18,7 +18,7 @@ An example workflow that lists all instances in a Google cloud project
 id: get-instances-list
 functions:
 - id: post
-  image: direktiv/gcloud:v2
+  image: direktiv/gcloud:v1
   size: medium
 description: "Displays a gcp project instances"
 states:

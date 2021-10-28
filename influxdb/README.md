@@ -16,7 +16,7 @@ An example workflow to call the container to perform an operation on InfluxDB.
 id: get-influx-db
 functions:
 - id: influxdb
-  image: direktiv/influxdb:v2
+  image: direktiv/influxdb:v1
 description: "Writes or queries data inside a Influxdb instance"
 states:
 - id: listInfluxDBInstance

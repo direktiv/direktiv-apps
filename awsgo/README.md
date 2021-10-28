@@ -17,7 +17,7 @@ An example workflow of listing the iam account summary tied to the access key an
 id: get-account-data
 functions:
 - id: post
-  image: direktiv/awsgo:v2
+  image: direktiv/awsgo:v1
 description: "Displays account information about aws"
 states:
 - id: listAccountSummary

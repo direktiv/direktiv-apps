@@ -18,7 +18,7 @@ id: aws-delete-ec2-instance
 description: "Delete a ec2 instance"
 functions:
 - id: aws-delete-instance
-  image: direktiv/aws-ec2-delete:v2
+  image: direktiv/aws-ec2-delete:v1
   size: medium
 states:
 - id: deleteInstance

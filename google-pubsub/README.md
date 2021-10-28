@@ -18,7 +18,7 @@ An example workflow of writing 'Hello World!' to the service.
 id: write-helloworld
 functions:
 - id: write
-  image: direktiv/google-pubsub:v2
+  image: direktiv/google-pubsub:v1
 description: "Writes 'Hello World!' to Google Pubsub service."
 states:
 - id: write-message

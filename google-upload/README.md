@@ -17,7 +17,7 @@ An example workflow of uploading a base64 encoded string to Google.
 id: upload-object
 functions:
 - id: upload
-  image: direktiv/google-upload:v2
+  image: direktiv/google-upload:v1
 description: "Uploads a base64 encoded string to bucket storage"
 states:
 - id: upload-file

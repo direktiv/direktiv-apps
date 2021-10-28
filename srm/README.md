@@ -19,7 +19,7 @@ The input is an array of objects.
 id: dump-metrics
 functions:
 - id: store
-  image: direktiv/srm:v2
+  image: direktiv/srm:v1
 description: "Sends metrics to a Dell SRM service"
 states:
 - id: write-metrics

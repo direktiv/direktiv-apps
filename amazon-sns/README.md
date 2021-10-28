@@ -17,7 +17,7 @@ An example workflow of writing 'Hello World!' to the notification service.
 id: write-helloworld
 functions:
 - id: write
-  image: direktiv/amazon-sns:v2
+  image: direktiv/amazon-sns:v1
 description: "Writes 'Hello World!' to an Amazon Simple Notification Service"
 states:
 - id: write-message

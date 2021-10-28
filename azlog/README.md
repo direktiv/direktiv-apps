@@ -17,7 +17,7 @@ An example workflow of using the container on Direktiv.
 id: log-to-azure
 functions:
 - id: log
-  image: direktiv/azlog:v2
+  image: direktiv/azlog:v1
 description: "Log a message to Azure Analytics Workspace"
 states:
 - id: log-hello

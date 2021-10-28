@@ -17,7 +17,7 @@ id: gcloud-stop-compute-instance
 description: "Stop a gcp project instance"
 functions:
 - id: gcp-stop-instance
-  image: direktiv/gcloud-instance-stop:v2
+  image: direktiv/gcloud-instance-stop:v1
   size: medium
 states:
 - id: stopInstance

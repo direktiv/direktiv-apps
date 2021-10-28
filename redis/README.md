@@ -19,7 +19,7 @@ An example workflow of using the container on Direktiv.
 id: redis
 functions:
 - id: redis-op
-  image: direktiv/redis:v2
+  image: direktiv/redis:v1
 description: "Gets a key value or set an array of KEY=VALUE strings"
 states:
 - id: redis-obj

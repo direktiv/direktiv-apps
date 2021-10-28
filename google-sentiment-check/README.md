@@ -17,7 +17,7 @@ An example workflow of reading the sentiment of a text message.
 id: read-message
 functions:
 - id: read
-  image: direktiv/google-sentiment-check:v2
+  image: direktiv/google-sentiment-check:v1
 states:
 - id: readmsg
   type: action

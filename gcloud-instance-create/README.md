@@ -17,7 +17,7 @@ id: gcloud-new-compute-instance
 description: "Creates new gcp project instance"
 functions:
 - id: gcp-new-intance
-  image: direktiv/gcloud-instance-create:v2
+  image: direktiv/gcloud-instance-create:v1
   size: medium
 states:
 - id: createInstance

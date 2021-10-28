@@ -57,7 +57,7 @@ user: api/now/table/sys_user
 id: example
 functions:
 - id: servicenow
-  image: direktiv/servicenow:v8
+  image: direktiv/servicenow:v1
 description: "send a get request" 
 states:
 - id: example-state

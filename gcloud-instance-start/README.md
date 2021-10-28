@@ -17,7 +17,7 @@ id: gcloud-start-compute-instance
 description: "Start a gcp project instance"
 functions:
 - id: gcp-start-instance
-  image: direktiv/gcloud-instance-start:v2
+  image: direktiv/gcloud-instance-start:v1
   size: medium
 states:
 - id: startInstance

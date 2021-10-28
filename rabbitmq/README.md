@@ -17,7 +17,7 @@ An example workflow of using the RabbitMQ service.
 id: rabbitmq
 functions:
 - id: rabbit-mqwrite
-  image: direktiv/rabbitmq:v2
+  image: direktiv/rabbitmq:v1
 description: "Writes a message to a RabbitMQ service"
 states:
 - id: writemsg

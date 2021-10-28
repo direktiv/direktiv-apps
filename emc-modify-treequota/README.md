@@ -17,7 +17,7 @@ An example workflow that adjusts both the hardlimit, softlimit by adding an extr
 id: modify-tree-quota
 functions:
 - id: modify
-  image: trentis/emc-test-quota
+  image: direktiv/emc-modify-treequota:v1
 description: "Modify the tree quota."
 states:
   - id: get
