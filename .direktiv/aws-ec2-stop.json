@@ -1,7 +1,7 @@
 {
     "id": "aws-ec2-stop",
     "desc": "Stops a amazon ec2 instance.",
-    "image": "vorteil/aws-ec2-stop",
+    "image": "direktiv/aws-ec2-stop",
     "input": {
             "access-key": "AWS_ACCESS_KEY",
             "access-secret": "AWS_ACCESS_SECRET",

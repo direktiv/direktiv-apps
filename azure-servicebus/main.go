@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/michaelbironneau/asbclient"
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 	"net/http"
 )
 

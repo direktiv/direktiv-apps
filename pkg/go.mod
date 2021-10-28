@@ -1,4 +1,4 @@
-module github.com/vorteil/direktiv-apps/pkg
+module github.com/direktiv/direktiv-apps/pkg
 
 go 1.16
 

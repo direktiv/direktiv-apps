@@ -1,7 +1,7 @@
 {
     "id": "awslog",
     "desc": "Writes a message to Amazon Cloudwatch",
-    "image": "vorteil/awslog",
+    "image": "direktiv/awslog",
     "input": {
         "key": "",
         "secret": "",

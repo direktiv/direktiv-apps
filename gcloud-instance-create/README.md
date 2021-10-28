@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/gcloud-instance-create",
+  "image": "direktiv/gcloud-instance-create",
   "desc": "Create a compute engine instance on google cloud."
 }
 ---
@@ -17,7 +17,7 @@ id: gcloud-new-compute-instance
 description: "Creates new gcp project instance"
 functions:
 - id: gcp-new-intance
-  image: vorteil/gcloud-instance-create:v2
+  image: direktiv/gcloud-instance-create:v2
   size: medium
 states:
 - id: createInstance

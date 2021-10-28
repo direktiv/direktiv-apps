@@ -10,7 +10,7 @@ import (
 	"os"
 
 	"github.com/Azure/azure-storage-blob-go/azblob"
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 )
 
 type AzureBlobUpload struct {

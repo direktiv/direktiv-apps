@@ -1,4 +1,4 @@
-module github.com/vorteil/direktiv-apps/googlepusher
+module github.com/direktiv/direktiv-apps/googlepusher
 
 go 1.15
 

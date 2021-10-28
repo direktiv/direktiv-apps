@@ -1,4 +1,4 @@
-module github.com/vorteil/direktiv-apps/kafka
+module github.com/direktiv/direktiv-apps/kafka
 
 go 1.15
 

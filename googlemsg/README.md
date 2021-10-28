@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/googlemsg",
+  "image": "direktiv/googlemsg",
   "desc": "Writes a google message to a webhook URL."
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of using the container on Direktiv.
 id: post-to-google
 functions:
 - id: post
-  image: vorteil/googlemsg:v2
+  image: direktiv/googlemsg:v2
 description: "Send a message to a google chat"
 states:
 - id: postToGoogle

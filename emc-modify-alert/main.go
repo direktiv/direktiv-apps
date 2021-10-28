@@ -13,7 +13,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 	"golang.org/x/net/publicsuffix"
 )
 

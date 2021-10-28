@@ -1,4 +1,4 @@
-module github.com/vorteil/direktiv-apps/simple-postgres-client
+module github.com/direktiv/direktiv-apps/simple-postgres-client
 
 go 1.15
 

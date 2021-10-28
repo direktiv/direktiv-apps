@@ -1,7 +1,7 @@
 {
     "id": "gcloud-instance-create",
     "desc": "Create a compute engine instance on google cloud",
-    "image": "vorteil/gcloud-instance-create",
+    "image": "direktiv/gcloud-instance-create",
     "input": {
             "project": "GCP_PROJECT",
             "serviceAccountKey": "SERVICE_ACCOUNT_KEY",

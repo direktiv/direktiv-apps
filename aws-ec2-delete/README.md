@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/aws-ec2-delete",
+  "image": "direktiv/aws-ec2-delete",
   "desc": "Delete a amazon ec2 instance."
 }
 ---
@@ -18,7 +18,7 @@ id: aws-delete-ec2-instance
 description: "Delete a ec2 instance"
 functions:
 - id: aws-delete-instance
-  image: vorteil/aws-ec2-delete:v2
+  image: direktiv/aws-ec2-delete:v2
   size: medium
 states:
 - id: deleteInstance

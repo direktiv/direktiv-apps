@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/ansible",
+  "image": "direktiv/ansible",
   "desc": "Performs an 'ansible-playbook' action. Requires a playbook variable, and a private key (PEM) variable."
 }
 ---
@@ -18,7 +18,7 @@ The following code block demonstrates how to include this isolate in a workflow,
 
 ```yaml
   - id: ansible
-    image: vorteil/ansible:v1
+    image: direktiv/ansible:v1
     files:
       - key: playbook.yml
         scope: workflow

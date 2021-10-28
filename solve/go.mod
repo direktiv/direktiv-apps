@@ -1,4 +1,4 @@
-module github.com/vorteil/direktiv-apps/solve
+module github.com/direktiv/direktiv-apps/solve
 
 go 1.15
 

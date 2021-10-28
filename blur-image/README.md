@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/blur",
+  "image": "direktiv/blur",
   "desc": "Takes a URL of an image and blurs it"
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of using the container on Direktiv
 id: blur-image
 functions:
 - id: blur
-  image: vorteil/blur:v1
+  image: direktiv/blur:v1
 description: Takes a URL of an image and blurs it
 states:
 - id: blur

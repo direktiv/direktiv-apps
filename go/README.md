@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/go",
+  "image": "direktiv/go",
   "desc": "Reads a variable in and go builds"
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of using the container on Direktiv.
 id: go-build
 functions:
 - id: go
-  image: vorteil/go:v1
+  image: direktiv/go:v1
   files:
   - key: helloworld
     scope: instance

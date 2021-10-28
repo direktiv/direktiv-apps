@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/kafka-consume",
+  "image": "direktiv/kafka-consume",
   "desc": "Consume messages from a Kafka service"
 }
 ---
@@ -18,7 +18,7 @@ An example workflow of consuming from a Kafka service.
 id: kafka
 functions:
 - id: kafka-consume
-  image: vorteil/kafka-consume:v2
+  image: direktiv/kafka-consume:v2
 description: "Read messages from a Kafka service"
 states:
 - id: readmsg

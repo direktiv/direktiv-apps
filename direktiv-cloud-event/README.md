@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/direktiv-cloud-event",
+  "image": "direktiv/direktiv-cloud-event",
   "desc": "Send a cloud event to a different namespace mid workflow."
 }
 ---
@@ -16,7 +16,7 @@ An example workflow sending a cloud event via the container
 id: send-event
 functions:
 - id: sendcloud
-  image: vorteil/direktiv-cloud-event:v1
+  image: direktiv/direktiv-cloud-event:v1
 description: Send a cloud event to a different namespace 
 states:
 - id: send

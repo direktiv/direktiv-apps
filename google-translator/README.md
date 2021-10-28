@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/google-translator",
+  "image": "direktiv/google-translator",
   "desc": "Reads a string and converts it to the targeted language."
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of reading the string and converting to a target language.
 id: read-message
 functions:
 - id: translate
-  image: vorteil/google-translator:v2
+  image: direktiv/google-translator:v2
 states:
 - id: read
   type: action

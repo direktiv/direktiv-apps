@@ -9,7 +9,7 @@ import (
 	"github.com/emersion/go-imap"
 	"github.com/emersion/go-imap/client"
 	"github.com/emersion/go-message/mail"
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 )
 
 var code = "com.imap.error"

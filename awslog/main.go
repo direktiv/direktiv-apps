@@ -9,7 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/cloudwatchlogs"
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 )
 
 type AWSLogDetails struct {

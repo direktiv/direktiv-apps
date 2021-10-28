@@ -1,7 +1,7 @@
 {
     "id": "twilio",
     "desc": "Sends a sms or email using twilio",
-    "image": "vorteil/twilio",
+    "image": "direktiv/twilio",
     "input": {
         "typeof"    : "sms",
         "sid"       : "TWILIO_SID",

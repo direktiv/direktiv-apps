@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/simplepostgresclient",
+  "image": "direktiv/simplepostgresclient",
   "desc": "Perform simple interactions on a PostgreSQL database. "
 }
 ---
@@ -22,7 +22,7 @@ start:
       source: "https://github.com/cloudevents/spec/pull"
 functions:
 - id: postgres
-  image: vorteil/simple-postgres-client:v2
+  image: direktiv/simple-postgres-client:v2
 states:
 - id: store
   type: action
@@ -30,7 +30,7 @@ states:
     function: postgres
     secrets: ["DB_PASSWORD"]
     input:
-      conn: "postgres://vorteil:jq(.secrets.DB_PASSWORD)@203.0.113.5:5432/github_events_db"
+      conn: "postgres://direktiv:jq(.secrets.DB_PASSWORD)@203.0.113.5:5432/github_events_db"
       table: "github_events"
       transaction: 
         - type: "insert"
@@ -43,7 +43,7 @@ The Simple Postgres Client can support a handful of different operations, and ca
 
 ```yaml
 input:
-  conn: "postgres://vorteil:password@localhost:5432/postgres?sslmode=disable"
+  conn: "postgres://direktiv:password@localhost:5432/postgres?sslmode=disable"
   table: "test"
   transaction: 
     - type: "update"

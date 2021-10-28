@@ -14,7 +14,7 @@ import (
 	"time"
 
 	bytefmt "code.cloudfoundry.org/bytefmt"
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 	"golang.org/x/net/publicsuffix"
 )
 

@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/twilio",
+  "image": "direktiv/twilio",
   "desc": "Sends an email or SMS message using Twilio."
 }
 ---
@@ -16,7 +16,7 @@ An example workflow of using the container in a workflow on Direktiv.
 id: send-approval
 functions:
 - id: send
-  image: vorteil/twilio:v2
+  image: direktiv/twilio:v2
 description: "Sends a sms to provided number" 
 states:
 - id: fire

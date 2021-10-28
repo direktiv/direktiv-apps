@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/snmp",
+  "image": "direktiv/snmp",
   "desc": "Sends a snmp trap to an address"
 }
 ---
@@ -18,7 +18,7 @@ An example workflow of sending `Hello World!` as a SNMP Trap:
 id: send-snmp-message
 functions:
 - id: snmp
-  image: vorteil/snmp:v1
+  image: direktiv/snmp:v1
 description: Sends a SNMP trap to an address
 states:
 - id: write-message

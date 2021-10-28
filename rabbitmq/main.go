@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/streadway/amqp"
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 )
 
 type RabbitMQInput struct {

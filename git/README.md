@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/git",
+  "image": "direktiv/git",
   "desc": "Perform git commands"
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of using the container in a workflow on Direktiv.
 id: git
 functions:
 - id: mygit
-  image: vorteil/git:v1
+  image: direktiv/git:v1
 description: "send git commands"
 states:
 - id: hello
@@ -26,7 +26,7 @@ states:
     function: mygit
     input: 
       cmds:
-        - "clone https://github.com/vorteil/direktiv.git"
+        - "clone https://github.com/direktiv/direktiv.git"
         - "-C direktiv tag"
 ```
 
@@ -37,7 +37,7 @@ The action takes a list of git commands to run. The working directory is not bei
 ```yaml
 input:
   cmds: 
-    - "clone https://github.com/vorteil/direktiv.git $out/instance/direktiv"
+    - "clone https://github.com/direktiv/direktiv.git $out/instance/direktiv"
     - "-C $out/instance/direktiv tag"
 ```
 
@@ -50,7 +50,7 @@ action:
       function: get
       input: 
         cmds:
-          - jq("clone https://" + .secrets.gittoken + "@github.com/vorteil/direktiv.git")
+          - jq("clone https://" + .secrets.gittoken + "@github.com/direktiv/direktiv.git")
 ```
 
 
@@ -64,7 +64,7 @@ If the request is successful, the response lists the commands with 'cmdX' as key
 {
   "return": {
     "cmd0": {
-      "cmd": "clone https://github.com/vorteil/direktiv.git",
+      "cmd": "clone https://github.com/direktiv/direktiv.git",
       "output": "direktiv"
     },
     "cmd1": {

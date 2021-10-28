@@ -1,6 +1,6 @@
 ---
 {
-    "image": "vorteil/emc-modify-alert",
+    "image": "direktiv/emc-modify-alert",
     "desc": "Acknowledges an alert."
 }
 ---
@@ -17,7 +17,7 @@ An example workflow that acknowledges an alert on EMC.
 id: acknowledge-alert
 functions:
 - id: acknowledge
-  image: vorteil/emc-modify-alert:v1
+  image: direktiv/emc-modify-alert:v1
 description: "Acknowledge the alert."
 states:
   - id: acknowledge-alert-test

@@ -1,7 +1,7 @@
 {
     "id": "gcplog",
     "desc": "Writes a message to Google's Stackdriver Logging",
-    "image": "vorteil/gcplog",
+    "image": "direktiv/gcplog",
     "input": {
         "serviceAccountKey": "",
         "message": "Hello Log Message",

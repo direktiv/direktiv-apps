@@ -1,3 +1,3 @@
-module github.com/vorteil/direktiv-apps/azinvoke
+module github.com/direktiv/direktiv-apps/azinvoke
 
 go 1.16

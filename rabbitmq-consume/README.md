@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/rabbitmq-consume",
+  "image": "direktiv/rabbitmq-consume",
   "desc": "Consumes messages from a RabbitMQ Service"
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of consuming from a RabbitMQ service.
 id: rabbitmq
 functions:
 - id: rabbit-consume
-  image: vorteil/rabbitmq-consume:v1
+  image: direktiv/rabbitmq-consume:v1
 description: "Read messages from a RabbitMQ service"
 states:
 - id: readmsg

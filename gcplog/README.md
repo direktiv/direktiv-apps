@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/gcplog",
+  "image": "direktiv/gcplog",
   "desc": "Writes a log line to a stackdriver logging implementation"
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of using the container on Direktiv.
 id: log-to-google
 functions:
 - id: log
-  image: vorteil/gcplog:v2
+  image: direktiv/gcplog:v2
 description: "Log a message to google cloud"
 states:
 - id: log-hello

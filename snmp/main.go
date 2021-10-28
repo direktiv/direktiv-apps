@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gosnmp/gosnmp"
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 )
 
 var code = "com.snmp.%s.error"

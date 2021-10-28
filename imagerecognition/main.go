@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	vision "cloud.google.com/go/vision/apiv1"
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 	"google.golang.org/api/option"
 	visionpb "google.golang.org/genproto/googleapis/cloud/vision/v1"
 )

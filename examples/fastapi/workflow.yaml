@@ -7,7 +7,7 @@ description: fastapi greeter
 functions:
   - id: fastapi
     type: reusable
-    image: vorteil/fastapi-example:v1
+    image: direktiv/fastapi-example:v1
 states:
   # this state checks if either names or name is set
   # a condition is true if jq returns a non-nil value

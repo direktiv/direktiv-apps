@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/solve",
+  "image": "direktiv/solve",
   "desc": "Solves math expressions"
 }
 ---
@@ -16,7 +16,7 @@ An example workflow of using the container solve container to solve basic math.
 id: solver
 functions: 
 - id: solve-math-expression
-  image: vorteil/solve:v2
+  image: direktiv/solve:v2
 states:
 - id: solve
   type: action

@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/azinvoke",
+  "image": "direktiv/azinvoke",
   "desc": "Executes a cloud function on azure using the function name, function app and function key as authentication to do so."
 }
 ---
@@ -15,7 +15,7 @@ Executes a cloud function on azure using the function name, function app and fun
 id: invoke-function
 functions:
 - id: invoke
-  image: vorteil/azinvoke:v2
+  image: direktiv/azinvoke:v2
 description: "Invokes a cloud function based on the given details"
 states:
 - id: invoke-cloud

@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/azure-upload",
+  "image": "direktiv/azure-upload",
   "desc": "Uploads a base64 encoded string to a blob on Azure."
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of uploading a base64 encoded string to Azure.
 id: upload-object
 functions:
 - id: upload
-  image: vorteil/azure-upload:v2
+  image: direktiv/azure-upload:v2
 description: "Uploads a base64 encoded string to blob storage"
 states:
 - id: upload-file

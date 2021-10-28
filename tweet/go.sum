@@ -7,5 +7,5 @@ github.com/google/go-querystring v1.0.0/go.mod h1:odCYkC5MyYFN7vkCjXpyrEuKhc/BUO
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
-github.com/vorteil/direktiv-apps v0.0.0-20210408034809-a0a8f93fbec9 h1:4FMWbZa1idV7Fsqm6PVTQS+999nHHC4T/Tvf5ykQbw0=
-github.com/vorteil/direktiv-apps v0.0.0-20210408034809-a0a8f93fbec9/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
+github.com/direktiv/direktiv-apps v0.0.0-20210408034809-a0a8f93fbec9 h1:4FMWbZa1idV7Fsqm6PVTQS+999nHHC4T/Tvf5ykQbw0=
+github.com/direktiv/direktiv-apps v0.0.0-20210408034809-a0a8f93fbec9/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=

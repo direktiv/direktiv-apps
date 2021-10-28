@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/greeting",
+  "image": "direktiv/greeting",
   "desc": "Outputs a greeting"
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of using the container in a workflow on Direktiv.
 id: greeting
 functions: 
 - id: greeting-function
-  image: vorteil/greeting:v2
+  image: direktiv/greeting:v2
 states:
 - id: Greet
   type: action

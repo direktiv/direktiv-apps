@@ -1,7 +1,7 @@
 {
     "id": "aws-ec2-create",
     "desc": "Creates an amazon ec2 instance on aws.",
-    "image": "vorteil/aws-ec2-create",
+    "image": "direktiv/aws-ec2-create",
     "input": {
             "access-key": "AWS_ACCESS_KEY",
             "access-secret": "AWS_ACCESS_SECRET",

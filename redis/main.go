@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/go-redis/redis/v8"
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 )
 
 type RedisInput struct {

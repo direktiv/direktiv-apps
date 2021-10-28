@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/nats-consume",
+  "image": "direktiv/nats-consume",
   "desc": "Consumes messages from a NATS Service"
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of consuming from a NATS service.
 id: nats
 functions:
 - id: nats-consume
-  image: vorteil/nats-consume:v1
+  image: direktiv/nats-consume:v1
 description: "Read messages from a NATS service"
 states:
 - id: natsread

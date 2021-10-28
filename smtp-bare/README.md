@@ -1,7 +1,7 @@
 ---
 {
-  "image": "vorteil/smtp-bare",
-  "desc": "Similar to vorteil/smtp but right now does not allow templating via HTML."
+  "image": "direktiv/smtp-bare",
+  "desc": "Similar to direktiv/smtp but right now does not allow templating via HTML."
 }
 ---
 
@@ -18,7 +18,7 @@ id: new-smtp-event
 description: Send an email
 functions:
 - id: send
-  image: vorteil/smtp-bare:v1
+  image: direktiv/smtp-bare:v1
 states:
 - id: test-input
   type: action

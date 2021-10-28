@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/redis",
+  "image": "direktiv/redis",
   "desc": "Sets and gets on a redis memory store."
 }
 ---
@@ -19,7 +19,7 @@ An example workflow of using the container on Direktiv.
 id: redis
 functions:
 - id: redis-op
-  image: vorteil/redis:v2
+  image: direktiv/redis:v2
 description: "Gets a key value or set an array of KEY=VALUE strings"
 states:
 - id: redis-obj

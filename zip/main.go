@@ -15,7 +15,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 )
 
 const code = "com.zip.%s.error"

@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	cloudevents "github.com/cloudevents/sdk-go/v2"
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
-	"github.com/vorteil/direktiv-apps/pkg/requester"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/requester"
 )
 
 type CloudEventSend struct {

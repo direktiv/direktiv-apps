@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/google-upload",
+  "image": "direktiv/google-upload",
   "desc": "Uploads a base64 encoded string to a bucket on Google."
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of uploading a base64 encoded string to Google.
 id: upload-object
 functions:
 - id: upload
-  image: vorteil/google-upload:v2
+  image: direktiv/google-upload:v2
 description: "Uploads a base64 encoded string to bucket storage"
 states:
 - id: upload-file
@@ -33,7 +33,7 @@ The input required to run the above workflow properly is the following:
 
 ```yaml
 input:
-  bucket: "vorteil"
+  bucket: "direktiv"
   data: "base64 decoded string"
   "upload-name": "test"
   serviceAccountKey: jq(.secrets.GOOGLE_SERVICE_ACCOUNT)

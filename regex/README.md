@@ -1,6 +1,6 @@
 ---
 {
-    "image": "vorteil/regex",
+    "image": "direktiv/regex",
     "desc": "Takes a regex string and returns the results"
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of using the container on Direktiv.
 id: regex-msg
 functions:
 - id: regex
-  image: vorteil/regex:v1
+  image: direktiv/regex:v1
 description: Checks a string against regex and returns the matches
 states:
 - id: reg

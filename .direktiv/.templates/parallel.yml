@@ -2,7 +2,7 @@ id: parallel
 description: A simple 'parallel' state workflow that runs solve container to solve expressions.
 functions: 
 - id: solve
-  image: vorteil/solve:v2
+  image: direktiv/solve:v2
 states:
 - id: run
   type: parallel

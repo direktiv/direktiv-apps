@@ -1,3 +1,3 @@
-module github.com/vorteil/direktiv-apps/cli
+module github.com/direktiv/direktiv-apps/cli
 
 go 1.16

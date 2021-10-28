@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/srm",
+  "image": "direktiv/srm",
   "desc": "Sends metrics to a Dell SRM service"
 }
 ---
@@ -19,7 +19,7 @@ The input is an array of objects.
 id: dump-metrics
 functions:
 - id: store
-  image: vorteil/srm:v2
+  image: direktiv/srm:v2
 description: "Sends metrics to a Dell SRM service"
 states:
 - id: write-metrics

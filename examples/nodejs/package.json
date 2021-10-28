@@ -12,8 +12,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "github.com/vorteil/direktiv-apps/examples/nodejs"
+    "url": "github.com/direktiv/direktiv-apps/examples/nodejs"
   },
-  "author": "vorteil.io",
+  "author": "direktiv.io",
   "license": "ISC"
 }

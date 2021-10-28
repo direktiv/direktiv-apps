@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/gcloud-instance-stop",
+  "image": "direktiv/gcloud-instance-stop",
   "desc": "Stop a compute engine instance on google cloud."
 }
 ---
@@ -17,7 +17,7 @@ id: gcloud-stop-compute-instance
 description: "Stop a gcp project instance"
 functions:
 - id: gcp-stop-instance
-  image: vorteil/gcloud-instance-stop:v2
+  image: direktiv/gcloud-instance-stop:v2
   size: medium
 states:
 - id: stopInstance

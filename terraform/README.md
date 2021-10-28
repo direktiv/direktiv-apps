@@ -1,6 +1,6 @@
 ---
 {
-    "image": "vorteil/terraform",
+    "image": "direktiv/terraform",
     "desc": "A simple container to use terraform on Direktiv."
 }
 ---
@@ -14,7 +14,7 @@ An example workflow of using the container on Direktiv. Notice we're providing t
 id: spawn-gcp-ubuntu-instance
 functions:
 - id: tfrun
-  image: vorteil/terraform:v1
+  image: direktiv/terraform:v1
   files:
   - key: main.tf
     scope: workflow

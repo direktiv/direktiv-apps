@@ -1,3 +1,3 @@
-module github.com/vorteil/direktiv-apps/azgo
+module github.com/direktiv/direktiv-apps/azgo
 
 go 1.16

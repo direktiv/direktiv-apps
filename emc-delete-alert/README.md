@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/emc-delete-alert",
+  "image": "direktiv/emc-delete-alert",
   "desc": "Delete an alert"
 }
 ---
@@ -17,7 +17,7 @@ An example workflow that deletes an alert on EMC.
 id: delete-alert
 functions:
 - id: delete
-  image: vorteil/emc-delete-alert:v1
+  image: direktiv/emc-delete-alert:v1
 description: "Delete the alert"
 states:
   - id: delete-alert-test

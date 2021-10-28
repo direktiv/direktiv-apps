@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/rabbitmq",
+  "image": "direktiv/rabbitmq",
   "desc": "Writes a message to the RabbitMQ Service"
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of using the RabbitMQ service.
 id: rabbitmq
 functions:
 - id: rabbit-mqwrite
-  image: vorteil/rabbitmq:v2
+  image: direktiv/rabbitmq:v2
 description: "Writes a message to a RabbitMQ service"
 states:
 - id: writemsg

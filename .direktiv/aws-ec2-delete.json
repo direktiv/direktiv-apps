@@ -1,7 +1,7 @@
 {
     "id": "aws-ec2-delete",
     "desc": "Delete a amazon ec2 instance.",
-    "image": "vorteil/aws-ec2-delete",
+    "image": "direktiv/aws-ec2-delete",
     "input": {
             "access-key": "AWS_ACCESS_KEY",
             "access-secret": "AWS_ACCESS_SECRET",

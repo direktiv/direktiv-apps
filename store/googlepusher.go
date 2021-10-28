@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/jwt"
 	sheets "google.golang.org/api/sheets/v4"

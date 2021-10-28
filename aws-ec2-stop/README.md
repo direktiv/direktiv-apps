@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/aws-ec2-stop",
+  "image": "direktiv/aws-ec2-stop",
   "desc": "Stops a amazon ec2 instance."
 }
 ---
@@ -18,7 +18,7 @@ id: aws-stop-ec2-instance
 description: "Stop a ec2 instance"
 functions:
 - id: aws-stop-instance
-  image: vorteil/aws-ec2-stop:v2
+  image: direktiv/aws-ec2-stop:v2
   size: medium
 states:
 - id: stopInstance

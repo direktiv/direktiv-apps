@@ -1,7 +1,7 @@
 {
     "id": "solve",
     "desc": "Solves the expression provided by x",
-    "image": "vorteil/solve",
+    "image": "direktiv/solve",
     "input": {
 		"x": "10*3"
 	}

@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/nats",
+  "image": "direktiv/nats",
   "desc": "Writes a message to a NATS Service"
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of writing to a NATS service.
 id: nats
 functions:
 - id: nats-write
-  image: vorteil/nats:v1
+  image: direktiv/nats:v1
 description: "Writes a message to a NATS service"
 states:
 - id: natswrite

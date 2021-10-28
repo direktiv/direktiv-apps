@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 )
 
 var code = "com.srm.%s.error"

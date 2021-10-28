@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/azgo",
+  "image": "direktiv/azgo",
   "desc": "Executes any azure cli command using a golang wrapper to provide the authentication before executing."
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of listing the account data tied to my service account princ
 id: get-account-data
 functions:
 - id: post
-  image: vorteil/azgo:v2
+  image: direktiv/azgo:v2
 description: "Displays account information about your azure account"
 states:
 - id: listAccountInfo

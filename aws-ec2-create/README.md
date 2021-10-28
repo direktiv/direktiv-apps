@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/aws-ec2-create",
+  "image": "direktiv/aws-ec2-create",
   "desc": "Creates an amazon ec2 instance on aws."
 }
 ---
@@ -18,7 +18,7 @@ id: aws-create-ec2-instance
 description: "Create a new ec2 instance"
 functions:
 - id: aws-create-instance
-  image: vorteil/aws-ec2-create:v3
+  image: direktiv/aws-ec2-create:v3
   size: medium
 states:
 - id: createInstance

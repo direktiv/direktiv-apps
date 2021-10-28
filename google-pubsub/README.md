@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/google-pubsub",
+  "image": "direktiv/google-pubsub",
   "desc": "Writes a message to Google's Pubsub service."
 }
 ---
@@ -18,7 +18,7 @@ An example workflow of writing 'Hello World!' to the service.
 id: write-helloworld
 functions:
 - id: write
-  image: vorteil/google-pubsub:v2
+  image: direktiv/google-pubsub:v2
 description: "Writes 'Hello World!' to Google Pubsub service."
 states:
 - id: write-message

@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/gcloud-instance-start",
+  "image": "direktiv/gcloud-instance-start",
   "desc": "Starts a compute engine instance on google cloud."
 }
 ---
@@ -17,7 +17,7 @@ id: gcloud-start-compute-instance
 description: "Start a gcp project instance"
 functions:
 - id: gcp-start-instance
-  image: vorteil/gcloud-instance-start:v2
+  image: direktiv/gcloud-instance-start:v2
   size: medium
 states:
 - id: startInstance

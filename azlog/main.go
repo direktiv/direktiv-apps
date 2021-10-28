@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 )
 
 const code = "com.azlog.error"

@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/awsgo",
+  "image": "direktiv/awsgo",
   "desc": "Executes any cli command with aws using a golang wrapper to provide the authentication before executing."
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of listing the iam account summary tied to the access key an
 id: get-account-data
 functions:
 - id: post
-  image: vorteil/awsgo:v2
+  image: direktiv/awsgo:v2
 description: "Displays account information about aws"
 states:
 - id: listAccountSummary

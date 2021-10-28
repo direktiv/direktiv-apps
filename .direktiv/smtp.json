@@ -1,7 +1,7 @@
 {
     "id": "smtp",
     "desc": "Sends an email using SMTP protocol",
-    "image": "vorteil/smtp",
+    "image": "direktiv/smtp",
     "input": {
         "to"      : "recipient@example.com",
         "subject" : "SMTP Email",

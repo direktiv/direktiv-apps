@@ -11,7 +11,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 )
 
 const code = "com.git.error"

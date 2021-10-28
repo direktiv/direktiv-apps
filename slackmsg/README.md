@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/slackmsg",
+  "image": "direktiv/slackmsg",
   "desc": "Writes a message to a slack webhook url"
 }
 ---
@@ -16,7 +16,7 @@ An example workflow of using the container on Direktiv
 id: post-to-slack
 functions:
 - id: post
-  image: vorteil/slackmsg:v2
+  image: direktiv/slackmsg:v2
 description: "Send a message to a slack channel"
 states:
 - id: postToSlack

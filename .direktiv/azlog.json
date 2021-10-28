@@ -1,7 +1,7 @@
 {
     "id": "azlog",
     "desc": "Writes a message to an Azure Log Workspace",
-    "image": "vorteil/azlog",
+    "image": "direktiv/azlog",
     "input": {
         "message": "Hello LOG Message",
         "workspace-id": "",

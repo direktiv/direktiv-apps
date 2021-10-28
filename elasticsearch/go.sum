@@ -1,4 +1,4 @@
 github.com/elastic/go-elasticsearch/v8 v8.0.0-20210317102009-a9d74cec0186 h1:F07rUXGNyhzJZKXI08EI/eAURqzhDqoRSdb//R+BOx4=
 github.com/elastic/go-elasticsearch/v8 v8.0.0-20210317102009-a9d74cec0186/go.mod h1:xe9a/L2aeOgFKKgrO3ibQTnMdpAeL0GC+5/HpGScSa4=
-github.com/vorteil/direktiv-apps v0.0.0-20210409025405-5209fd99f8b4 h1:vwSo+CXP1AY7Z4OPxo3798Ir9touJaegjjix6Gtt/48=
-github.com/vorteil/direktiv-apps v0.0.0-20210409025405-5209fd99f8b4/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=
+github.com/direktiv/direktiv-apps v0.0.0-20210409025405-5209fd99f8b4 h1:vwSo+CXP1AY7Z4OPxo3798Ir9touJaegjjix6Gtt/48=
+github.com/direktiv/direktiv-apps v0.0.0-20210409025405-5209fd99f8b4/go.mod h1:VNs8NmkIypVdwk5wc7G0lGYDSfKXL4yjH8Pt7aUYn/s=

@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/influxdb",
+  "image": "direktiv/influxdb",
   "desc": "A container that provides the opportunities to write or query data on an InfluxDB instance."
 }
 ---
@@ -16,7 +16,7 @@ An example workflow to call the container to perform an operation on InfluxDB.
 id: get-influx-db
 functions:
 - id: influxdb
-  image: vorteil/influxdb:v2
+  image: direktiv/influxdb:v2
 description: "Writes or queries data inside a Influxdb instance"
 states:
 - id: listInfluxDBInstance
@@ -37,8 +37,8 @@ input:
   url: "http://localhost:8089"
   token: jq(.secrets.AUTH_TOKEN)
   type: "query"
-  organisation: "vorteil.io"
-  bucket: "vorteil"
+  organisation: "direktiv.io"
+  bucket: "direktiv"
   query: "from(bucket:\"my-bucket\")|> range(start: -1h) |> filter(fn: (r) => r._measurement == \"stat\""
 ```
 
@@ -70,8 +70,8 @@ The input needed to write data to an InfluxDB instance is the following:
     "url": "http://localhost:8089",
     "token": .secrets.AUTH_TOKEN,
     "type": "write",
-    "organisation": "vorteil.io",
-    "bucket": "vorteil",
+    "organisation": "direktiv.io",
+    "bucket": "direktiv",
     "measurement": "stat",
     "tags": {
         "unit": "temperature",

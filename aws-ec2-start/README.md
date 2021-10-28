@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/aws-ec2-start",
+  "image": "direktiv/aws-ec2-start",
   "desc": "Start a amazon ec2 instance."
 }
 ---
@@ -18,7 +18,7 @@ id: aws-start-ec2-instance
 description: "Start a ec2 instance"
 functions:
 - id: aws-start-instance
-  image: vorteil/aws-ec2-start:v2
+  image: direktiv/aws-ec2-start:v2
   size: medium
 states:
 - id: startInstance

@@ -1,7 +1,7 @@
 {
     "id": "request",
     "desc": "Sends a generic HTTP request",
-    "image": "vorteil/request",
+    "image": "direktiv/request",
     "input": {
         "method": "GET",
         "url": "https://google.com",

@@ -1,7 +1,7 @@
 {
     "id": "azgo",
     "desc": "A golang Azure CLI wrapper",
-    "image": "vorteil/azgo",
+    "image": "direktiv/azgo",
     "input": {
         "name": "SERVICE_PRINCIPAL_APPNAME",
         "password": "SERVICE_PRINCIPAL_APPPW",

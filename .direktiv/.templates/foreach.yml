@@ -2,7 +2,7 @@ id: foreach
 description: A simple 'foreach' state that solves expressions
 functions: 
 - id: solve
-  image: vorteil/solve:v2
+  image: direktiv/solve:v2
 states:
 - id: data
   type: noop

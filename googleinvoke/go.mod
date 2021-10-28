@@ -1,10 +1,10 @@
-module github.com/vorteil/direktiv-apps/googleinvoke
+module github.com/direktiv/direktiv-apps/googleinvoke
 
 go 1.15
 
 require (
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
-	github.com/vorteil/direktiv-apps v0.0.0-20210411230116-de04d850c5ec
+	github.com/direktiv/direktiv-apps v0.0.0-20210411230116-de04d850c5ec
 	golang.org/x/net v0.0.0-20210410081132-afb366fc7cd1 // indirect
 	golang.org/x/oauth2 v0.0.0-20210402161424-2e8d93401602
 	google.golang.org/api v0.44.0

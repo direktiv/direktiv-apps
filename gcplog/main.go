@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"cloud.google.com/go/logging"
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
-	"github.com/vorteil/direktiv-apps/pkg/validator"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/validator"
 	"google.golang.org/api/option"
 )
 

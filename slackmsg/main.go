@@ -3,8 +3,8 @@ package main
 import (
 	"net/http"
 
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
-	"github.com/vorteil/direktiv-apps/pkg/requester"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/requester"
 )
 
 const code = "com.slack.error"

@@ -1,7 +1,7 @@
 {
     "id": "gcloud-instance-start",
     "desc": "Start a compute engine instance on google cloud",
-    "image": "vorteil/gcloud-instance-start",
+    "image": "direktiv/gcloud-instance-start",
     "input": {
             "project": "GCP_PROJECT",
             "serviceAccountKey": "SERVICE_ACCOUNT_KEY",

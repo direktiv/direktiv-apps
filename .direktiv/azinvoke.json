@@ -1,7 +1,7 @@
 {
     "id": "azinvoke",
     "desc": "Invokes an Azure Cloud Function",
-    "image": "vorteil/azinvoke",
+    "image": "direktiv/azinvoke",
     "input": {
         "function-app": "",
         "function-name": "",

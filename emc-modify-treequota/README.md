@@ -1,6 +1,6 @@
 ---
 {
-    "image": "vorteil/emc-modify-treequota",
+    "image": "direktiv/emc-modify-treequota",
     "desc": "Modifies the hardlimit, softlimit or description on a treeQuota."
 }
 ---

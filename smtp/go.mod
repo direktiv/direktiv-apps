@@ -1,4 +1,4 @@
-module github.com/vorteil/direktiv-apps/smtp
+module github.com/direktiv/direktiv-apps/smtp
 
 go 1.15
 

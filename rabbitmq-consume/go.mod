@@ -1,4 +1,4 @@
-module github.com/vorteil/direktiv-apps/rabbitmq
+module github.com/direktiv/direktiv-apps/rabbitmq
 
 go 1.15
 

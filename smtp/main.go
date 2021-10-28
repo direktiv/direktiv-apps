@@ -11,7 +11,7 @@ import (
 	"strings"
 	"path/filepath"
 
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 	gomail "gopkg.in/mail.v2"
 )
 

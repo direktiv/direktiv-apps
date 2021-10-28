@@ -1,7 +1,7 @@
 {
     "id": "amazon-sns",
     "desc": "Sends a message to Simple Notification Service",
-    "image": "vorteil/amazon-sns",
+    "image": "direktiv/amazon-sns",
     "input": {
         "key": "",
         "secret": "",

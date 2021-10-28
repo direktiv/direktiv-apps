@@ -1,4 +1,4 @@
-module github.com/vorteil/direktiv-apps/twilio
+module github.com/direktiv/direktiv-apps/twilio
 
 go 1.15
 

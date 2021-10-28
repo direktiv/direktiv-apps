@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/request",
+  "image": "direktiv/request",
   "desc": "Perform a basic HTTP/S request."
 }
 ---
@@ -18,7 +18,7 @@ id: request
 functions:
 - id: myrequest
   type: reusable
-  image: vorteil/request:v6
+  image: direktiv/request:v6
 description: "send a get request"
 states:
 - id: hello
@@ -35,7 +35,7 @@ states:
 ```yaml
 input:
   method: "GET"
-  url: "https://vorteil.io"
+  url: "https://direktiv.io"
   body:
     hello: "world"
   headers:

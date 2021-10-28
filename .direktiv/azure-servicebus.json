@@ -1,7 +1,7 @@
 {
     "id": "azure-servicebus",
     "desc": "Writes a message to the Azure Servicebus",
-    "image": "vorteil/azure-servicebus",
+    "image": "direktiv/azure-servicebus",
     "input": {
         "policy": "",
         "key": "",

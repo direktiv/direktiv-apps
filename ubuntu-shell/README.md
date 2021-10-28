@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/ubuntu-shell",
+  "image": "direktiv/ubuntu-shell",
   "desc": "Executing shell scripts"
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of using the container in a workflow on Direktiv.
 id: shell
 functions:
 - id: myshell
-  image: vorteil/ubuntu-shell:v1
+  image: direktiv/ubuntu-shell:v1
   files:
     - key: "myscript"
       scope: workflow

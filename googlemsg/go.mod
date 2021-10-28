@@ -1,3 +1,3 @@
-module github.com/vorteil/direktiv-apps/googlechat
+module github.com/direktiv/direktiv-apps/googlechat
 
 go 1.15

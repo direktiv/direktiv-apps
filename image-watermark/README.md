@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/watermark",
+  "image": "direktiv/watermark",
   "desc": "Generates a basic watermark."
 }
 ---
@@ -15,7 +15,7 @@ An example workflow of using the container in a workflow on Direktiv.
 id: watermark
 functions:
 - id: mywatermark
-  image: vorteil/image-watermark:v2
+  image: direktiv/image-watermark:v2
 states:
 - id: hello
   type: action

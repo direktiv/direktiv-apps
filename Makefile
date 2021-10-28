@@ -1,4 +1,4 @@
-REPOSITORY := vorteil
+REPOSITORY := direktiv
 # dependencies
 .PHONY: dependencies
 dependencies:

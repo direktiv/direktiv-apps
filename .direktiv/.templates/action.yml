@@ -2,7 +2,7 @@ id: action
 description: A simple 'action' state that sends a get request"
 functions:
 - id: get
-  image: vorteil/request:v6
+  image: direktiv/request:v6
 states:
 - id: getter 
   type: action

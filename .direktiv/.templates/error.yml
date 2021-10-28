@@ -4,7 +4,7 @@ states:
 - id: data
   type: noop
   transform: 
-    email: "trent.hilliamvorteil.io"
+    email: "trent.hilliamdirektiv.io"
   transition: validate-email
 - id: validate-email
   type: validate

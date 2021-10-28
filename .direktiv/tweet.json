@@ -1,7 +1,7 @@
 {
     "id": "tweet",
     "desc": "Tweets a message",
-    "image": "vorteil/tweet",
+    "image": "direktiv/tweet",
     "input": {
         "consumerKey": "CONSUMER_KEY",
         "consumerSecret": "CONSUMER_SECRET",

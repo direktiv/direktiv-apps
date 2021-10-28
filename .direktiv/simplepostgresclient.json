@@ -1,7 +1,7 @@
 {
     "id": "simple-postgres-client",
     "desc": "Interacts with a postgres server",
-    "image": "vorteil/simplepostgresclient",
+    "image": "direktiv/simplepostgresclient",
     "input": {
         "conn": "POSTGRES CONNECTION STRING",
         "table": "POSTGRES TABLE NAME",

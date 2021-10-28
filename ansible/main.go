@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	da "github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	da "github.com/direktiv/direktiv-apps/pkg/direktivapps"
 )
 
 func main() {

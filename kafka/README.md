@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/kafka",
+  "image": "direktiv/kafka",
   "desc": "Writes a message to a Kafka service"
 }
 ---
@@ -18,7 +18,7 @@ An example workflow of using the Kafka container.
 id: kafka
 functions:
 - id: kafka-write
-  image: vorteil/kafka:v2
+  image: direktiv/kafka:v2
 description: "Writes a message to a Kafka service"
 states:
 - id: writemsg

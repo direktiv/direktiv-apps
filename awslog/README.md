@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/awslog",
+  "image": "direktiv/awslog",
   "desc": "Writes a log line to aws cloudwatch logs with provided log stream and group."
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of using the container on Direktiv.
 id: log-to-aws
 functions:
 - id: log
-  image: vorteil/awslog:v2
+  image: direktiv/awslog:v2
 description: "Log a message to AWS cloudwatch"
 states:
 - id: log-hello
@@ -36,7 +36,7 @@ input:
   key: jq(.secrets.AWS_KEY)
   secret: jq(.secrets.AWS_SECRET)
   region: "us-east-2"
-  "log-group": "vorteil"
+  "log-group": "direktiv"
   "log-stream": "direktiv"
   message: "Hello"
 ```

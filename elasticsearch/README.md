@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/elasticsearch",
+  "image": "direktiv/elasticsearch",
   "desc": "Writes a new JSON document to an index or queries an index in its entirety."
 }
 ---
@@ -18,7 +18,7 @@ id: test2
 description: "" 
 functions:
 - id: es
-  image: vorteil/elasticsearch:v2
+  image: direktiv/elasticsearch:v2
 states:
 - id: hello
   type: action

@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/sethvargo/go-password/password"
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 )
 
 type GenPWInput struct {

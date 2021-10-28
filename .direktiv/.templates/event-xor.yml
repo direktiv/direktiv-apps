@@ -1,9 +1,9 @@
 id: event-xor
 functions:
 - id: greeter
-  image: vorteil/greeting:v2
+  image: direktiv/greeting:v2
 - id: solve2
-  image: vorteil/solve:v2
+  image: direktiv/solve:v2
 description: A simple 'eventXor' that waits for events to be received.
 states:
 - id: event-xor

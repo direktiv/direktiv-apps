@@ -1,7 +1,7 @@
 {
     "id": "discordmsg",
     "desc": "Writes a message to a Discord Channel",
-    "image": "vorteil/discordmsg",
+    "image": "direktiv/discordmsg",
     "input": {
         "message": "HELLO WORLD",
         "tts": false,

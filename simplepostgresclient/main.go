@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	_ "github.com/lib/pq"
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 )
 
 var debug bool

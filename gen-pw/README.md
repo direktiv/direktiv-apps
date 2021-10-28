@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/genpw",
+  "image": "direktiv/genpw",
   "desc": "Generates a random password"
 }
 ---
@@ -18,7 +18,7 @@ id: genpw
 description: Generates a random password
 functions:
 - id: genpw
-  image: vorteil/gen-pw:v1
+  image: direktiv/gen-pw:v1
 states:
 - id: gen-password
   type: action

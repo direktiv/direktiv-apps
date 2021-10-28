@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/azure-servicebus",
+  "image": "direktiv/azure-servicebus",
   "desc": "Writes a message to Azure's Servicebus"
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of writing 'Hello World!' to the servicebus.
 id: write-helloworld
 functions:
 - id: write
-  image: vorteil/azure-servicebus:v2
+  image: direktiv/azure-servicebus:v2
 description: "Writes 'Hello World!' to an Azure Servicebus."
 states:
 - id: write-message

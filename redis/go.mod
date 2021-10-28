@@ -1,4 +1,4 @@
-module github.com/vorteil/direktiv-apps/redis
+module github.com/direktiv/direktiv-apps/redis
 
 go 1.15
 

@@ -1,13 +1,13 @@
 ---
 {
-	"image": "vorteil/servicenow",
+	"image": "direktiv/servicenow",
 	"desc": "perform a Service Now API request"
 }
 ---
 
 # Service Now
 
-The `vorteil/service-now` image is a work-in-progress, but is fairly straightforward to use. This example of the input provided to the isolate contains fields to set the method of the request, and payload (body), basic authentication, and more. 
+The `direktiv/service-now` image is a work-in-progress, but is fairly straightforward to use. This example of the input provided to the isolate contains fields to set the method of the request, and payload (body), basic authentication, and more. 
 
 ## Example Input
 
@@ -57,7 +57,7 @@ user: api/now/table/sys_user
 id: example
 functions:
 - id: servicenow
-  image: vorteil/servicenow:v8
+  image: direktiv/servicenow:v8
 description: "send a get request" 
 states:
 - id: example-state

@@ -1,7 +1,7 @@
 {
     "id": "awsgo",
     "desc": "A golang AWS CLI wrapper",
-    "image": "vorteil/awsgo",
+    "image": "direktiv/awsgo",
     "input": {
         "access-key": "",
         "access-secret": "",

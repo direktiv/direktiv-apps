@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/vmware-powercli",
+  "image": "direktiv/vmware-powercli",
   "desc": "Ability to send multiple vmware power-cli commands."
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of getting the version of `vmware-powercli` we run.
 id: get-version
 functions:
 - id: power-cli
-  image: vorteil/vmware-powercli:v1
+  image: direktiv/vmware-powercli:v1
 description: The ability to send multiple `vmware-powercli` commands.
 states:
 - id: execute

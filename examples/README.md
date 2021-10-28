@@ -30,4 +30,4 @@ input:
 
 | Languages |
 | -------- |
-| [Golang](https://github.com/vorteil/direktiv-apps/tree/master/examples/golang), [NodeJS](https://github.com/vorteil/direktiv-apps/tree/master/examples/nodejs), [.NET](https://github.com/vorteil/direktiv-apps/tree/master/examples/dotnet), [Rust](https://github.com/vorteil/direktiv-apps/tree/master/examples/rust), [Python](https://github.com/vorteil/direktiv-apps/tree/master/examples/python), [Java](https://github.com/vorteil/direktiv-apps/tree/master/examples/java) |
+| [Golang](https://github.com/direktiv/direktiv-apps/tree/master/examples/golang), [NodeJS](https://github.com/direktiv/direktiv-apps/tree/master/examples/nodejs), [.NET](https://github.com/direktiv/direktiv-apps/tree/master/examples/dotnet), [Rust](https://github.com/direktiv/direktiv-apps/tree/master/examples/rust), [Python](https://github.com/direktiv/direktiv-apps/tree/master/examples/python), [Java](https://github.com/direktiv/direktiv-apps/tree/master/examples/java) |

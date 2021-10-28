@@ -1,7 +1,7 @@
 {
     "id": "gcloud",
     "desc": "A golang gcloud wrapper",
-    "image": "vorteil/gcloud",
+    "image": "direktiv/gcloud",
     "input": {
         "project": "GCP_PROJECT",
         "serviceAccountKey": "SERVICE_ACCOUNT_KEY",

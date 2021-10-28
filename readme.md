@@ -11,4 +11,4 @@ To contribute to this repository, fork this repository and add the following fil
   - Dockerfile (used to build the Docker image from the source files)
   - Source code of the container
   
-Checkout how to make your own custom [isolate](https://github.com/vorteil/direktiv-apps/tree/master/examples).
+Checkout how to make your own custom [isolate](https://github.com/direktiv/direktiv-apps/tree/master/examples).

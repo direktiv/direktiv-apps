@@ -1,9 +1,9 @@
 id: event-and
 functions:
 - id: greeter
-  image: vorteil/greeting:v2
+  image: direktiv/greeting:v2
 - id: solve
-  image: vorteil/solve:v2
+  image: direktiv/solve:v2
 description: A simple 'eventAnd' that waits for events to be received.
 states:
 - id: event-and

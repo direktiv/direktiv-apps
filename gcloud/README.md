@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/gcloud",
+  "image": "direktiv/gcloud",
   "desc": "Executes a gcloud cli command using a golang wrapper to provide authentication via service account key file."
 }
 ---
@@ -18,7 +18,7 @@ An example workflow that lists all instances in a Google cloud project
 id: get-instances-list
 functions:
 - id: post
-  image: vorteil/gcloud:v2
+  image: direktiv/gcloud:v2
   size: medium
 description: "Displays a gcp project instances"
 states:

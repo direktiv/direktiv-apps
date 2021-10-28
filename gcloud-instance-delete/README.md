@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/gcloud-instance-delete",
+  "image": "direktiv/gcloud-instance-delete",
   "desc": "Delete a compute engine instance on google cloud."
 }
 ---
@@ -17,7 +17,7 @@ id: gcloud-delete-compute-instance
 description: "Deletes a gcp project instance"
 functions:
 - id: gcp-delete-instance
-  image: vorteil/gcloud-instance-delete:v2
+  image: direktiv/gcloud-instance-delete:v2
   size: medium
 states:
 - id: deleteInstance

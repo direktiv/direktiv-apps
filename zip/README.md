@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/zip",
+  "image": "direktiv/zip",
   "desc": "Prints all the information that direktiv sends to the container"
 }
 ---
@@ -18,7 +18,7 @@ id: zip-file
 description: Listens for a smtp-event to send the email appropriately.
 functions:
 - id: zip
-  image: vorteil/zip:v1
+  image: direktiv/zip:v1
 states:
 - id: zip-data
   type: action

@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/vorteil/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 	"google.golang.org/api/option"
 
 	"cloud.google.com/go/storage"

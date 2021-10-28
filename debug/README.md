@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/debug",
+  "image": "direktiv/debug",
   "desc": "Prints all the information that direktiv sends to the container"
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of using the container on Direktiv.
 id: debugging
 functions:
 - id: debug
-  image: vorteil/debug:v2
+  image: direktiv/debug:v2
 description: "Prints all input the container receives"
 states:
 - id: print

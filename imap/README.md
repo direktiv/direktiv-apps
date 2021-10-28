@@ -1,6 +1,6 @@
 ---
 {
-  "image": "vorteil/imap",
+  "image": "direktiv/imap",
   "desc": "reads the first message of an email inbox."
 }
 ---
@@ -17,7 +17,7 @@ An example workflow of using the container on Direktiv.
 id: imap-listener
 functions:
 - id: imap
-  image: vorteil/imap:v1
+  image: direktiv/imap:v1
 description: Reads the first message of an email inbox
 states:
 - id: read-msg

@@ -1,3 +1,3 @@
-module github.com/vorteil/direktiv-apps/terraform
+module github.com/direktiv/direktiv-apps/terraform
 
 go 1.16

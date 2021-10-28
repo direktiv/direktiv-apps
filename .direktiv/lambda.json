@@ -1,7 +1,7 @@
 {
     "id": "lambda",
     "desc": "Invokes an Amazon Lambda Function",
-    "image": "vorteil/lambda",
+    "image": "direktiv/lambda",
     "input": {
         "key": "",
         "secret": "",
