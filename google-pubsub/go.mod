@@ -1,9 +1,9 @@
 module github.com/direktiv/direktiv-apps/google-pubsub
 
-go 1.15
+go 1.16
 
 require (
-	cloud.google.com/go/pubsub v1.10.1
-	github.com/direktiv/direktiv-apps v0.0.0-20210408230501-a3de7d705397
-	google.golang.org/api v0.42.0
+	cloud.google.com/go/pubsub v1.17.1
+	github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c
+	google.golang.org/api v0.59.0
 )

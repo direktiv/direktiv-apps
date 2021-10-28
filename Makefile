@@ -27,3 +27,14 @@ all:
 		docker pushrm docker.io/${REPOSITORY}/$${f}; \
 		cd ../; \
 	done
+
+.PHONY: reinit
+reinit:
+	@for f in $(shell ls ${MYDIR} -I LICENSE -I examples -I build-local.sh -I pushall.sh -I getversion.sh -I pkg -I Makefile -I readme.md -I docker-pushrm_linux_amd64 -I cli); do \
+		cd $${f}; \
+		rm go.mod; \
+		rm go.sum; \
+		go mod init github.com/direktiv/direktiv-apps/$${f}; \
+		go mod tidy; \
+		cd ../; \
+	done

@@ -1,10 +1,10 @@
-module github.com/direktiv/direktiv-apps/image-recognition
+module github.com/direktiv/direktiv-apps/imagerecognition
 
-go 1.15
+go 1.16
 
 require (
-	cloud.google.com/go v0.78.0
-	github.com/direktiv/direktiv-apps v0.0.0-20210408031041-3442505a3984
-	google.golang.org/api v0.40.0
-	google.golang.org/genproto v0.0.0-20210303154014-9728d6b83eeb
+	cloud.google.com/go/vision v1.0.0
+	github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c
+	google.golang.org/api v0.59.0
+	google.golang.org/genproto v0.0.0-20211028162531-8db9c33dc351
 )

@@ -1,8 +1,8 @@
-module github.com/direktiv/direktiv-apps/lambdainvoke
+module github.com/direktiv/direktiv-apps/lambda
 
-go 1.15
+go 1.16
 
 require (
-	github.com/aws/aws-sdk-go v1.37.26
-	github.com/direktiv/direktiv-apps v0.0.0-20210408230501-a3de7d705397
+	github.com/aws/aws-sdk-go v1.41.13
+	github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c
 )

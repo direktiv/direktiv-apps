@@ -1,10 +1,11 @@
 module github.com/direktiv/direktiv-apps/aws-ec2-create
 
-go 1.15
+go 1.16
 
 require (
-	github.com/go-playground/universal-translator v0.17.0 // indirect
+	github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c
+	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
-	github.com/direktiv/direktiv-apps v0.0.0-20210408034809-a0a8f93fbec9
+	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )

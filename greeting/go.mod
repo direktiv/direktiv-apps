@@ -1,4 +1,4 @@
-module github.com/direktiv/direktiv-apps/go
+module github.com/direktiv/direktiv-apps/greeting
 
 go 1.16
 

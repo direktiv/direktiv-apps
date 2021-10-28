@@ -1,5 +1,5 @@
 module github.com/direktiv/direktiv-apps/ansible
 
-go 1.15
+go 1.16
 
-require github.com/direktiv/direktiv-apps v0.0.0-20210621213448-d8a4249ffffd
+require github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c

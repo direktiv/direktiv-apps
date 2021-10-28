@@ -1,9 +1,9 @@
-module github.com/direktiv/direktiv-apps/twitter
+module github.com/direktiv/direktiv-apps/tweet
 
-go 1.15
+go 1.16
 
 require (
-	github.com/dghubble/go-twitter v0.0.0-20201011215211-4b180d0cc78d
+	github.com/dghubble/go-twitter v0.0.0-20211002212826-ad02880e616b
 	github.com/dghubble/oauth1 v0.7.0
-	github.com/direktiv/direktiv-apps v0.0.0-20210408034809-a0a8f93fbec9
+	github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c
 )

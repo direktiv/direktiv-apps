@@ -1,9 +1,8 @@
-module github.com/direktiv/direktiv-apps/simple-postgres-client
+module github.com/direktiv/direktiv-apps/simplepostgresclient
 
-go 1.15
+go 1.16
 
 require (
-	github.com/go-jet/jet v2.3.0+incompatible // indirect
-	github.com/go-jet/jet/v2 v2.4.0
-	github.com/lib/pq v1.9.0
+	github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c
+	github.com/lib/pq v1.10.3
 )

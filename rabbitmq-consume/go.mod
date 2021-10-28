@@ -1,5 +1,8 @@
-module github.com/direktiv/direktiv-apps/rabbitmq
+module github.com/direktiv/direktiv-apps/rabbitmq-consume
 
-go 1.15
+go 1.16
 
-require github.com/streadway/amqp v1.0.0 // indirect
+require (
+	github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c
+	github.com/streadway/amqp v1.0.0
+)

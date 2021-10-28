@@ -2,8 +2,8 @@ code.cloudfoundry.org/bytefmt v0.0.0-20211005130812-5bb3c17173e5 h1:tM5+dn2C9xZw
 code.cloudfoundry.org/bytefmt v0.0.0-20211005130812-5bb3c17173e5/go.mod h1:v4VVB6oBMz/c9fRY6vZrwr5xKRWOH5NPDjQZlPk0Gbs=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028221037-a49bf7be71d0 h1:U0cFGc0Ap3DPc7dIIqoLK/G0AznGoKmRpP7wF2Jjfi8=
-github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028221037-a49bf7be71d0/go.mod h1:+fJQXv09OvZkT9IgRA0QKP4BTCIKG6HOzcEvz3P3yc0=
+github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c h1:t1jfACYmQ4wd6dY08dftaHkc/IBexpoY6y0B0Fo1K4Y=
+github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c/go.mod h1:+fJQXv09OvZkT9IgRA0QKP4BTCIKG6HOzcEvz3P3yc0=
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/fsnotify/fsnotify v1.4.9 h1:hsms1Qyu0jgnwNXIxa+/V/PDsU6CfLf6CNO8H7IWoS4=
 github.com/fsnotify/fsnotify v1.4.9/go.mod h1:znqG4EE+3YCdAaPaxE2ZRY/06pZUdp0tY4IgpuI1SZQ=

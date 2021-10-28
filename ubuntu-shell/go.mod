@@ -1,8 +1,5 @@
-module github.com/direktiv/direktiv-apps/request
+module github.com/direktiv/direktiv-apps/ubuntu-shell
 
 go 1.16
 
-require (
-	entgo.io/ent v0.8.0
-	github.com/direktiv/direktiv-apps v0.0.0-20210604024939-0767a080261a
-)
+require github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c

@@ -1,5 +1,8 @@
-module github.com/direktiv/direktiv-apps/kafka
+module github.com/direktiv/direktiv-apps/kafka-consume
 
-go 1.15
+go 1.16
 
-require github.com/segmentio/kafka-go v0.4.12 // indirect
+require (
+	github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c
+	github.com/segmentio/kafka-go v0.4.22
+)

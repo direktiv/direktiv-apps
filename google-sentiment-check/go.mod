@@ -1,13 +1,10 @@
 module github.com/direktiv/direktiv-apps/google-sentiment-check
 
-go 1.15
+go 1.16
 
 require (
-	cloud.google.com/go v0.80.0
-	github.com/direktiv/direktiv-apps v0.0.0-20210408230501-a3de7d705397
-	golang.org/x/net v0.0.0-20210324205630-d1beb07c2056 // indirect
-	golang.org/x/oauth2 v0.0.0-20210323180902-22b0adad7558 // indirect
-	google.golang.org/api v0.43.0
-	google.golang.org/genproto v0.0.0-20210325224202-eed09b1b5210
-	google.golang.org/grpc v1.36.1 // indirect
+	cloud.google.com/go/language v1.0.0
+	github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c
+	google.golang.org/api v0.59.0
+	google.golang.org/genproto v0.0.0-20211028162531-8db9c33dc351
 )

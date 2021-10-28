@@ -1,6 +1,6 @@
+github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c h1:t1jfACYmQ4wd6dY08dftaHkc/IBexpoY6y0B0Fo1K4Y=
+github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c/go.mod h1:+fJQXv09OvZkT9IgRA0QKP4BTCIKG6HOzcEvz3P3yc0=
 github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
 github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
-github.com/direktiv/direktiv-apps/pkg v0.0.0-20210723004018-0190e95a18a1 h1:GHcEcldSjI77MGOev79XsucPQAJsZBNEBSSC3rwSNtg=
-github.com/direktiv/direktiv-apps/pkg v0.0.0-20210723004018-0190e95a18a1/go.mod h1:VChd1dPyFTsapvTek20mvTGx8uda62ZL5lJTlJc+NbI=
 github.com/xhit/go-simple-mail v2.2.2+incompatible h1:Hm2VGfLqiQJ/NnC8SYsrPOPyVYIlvP2kmnotP4RIV74=
 github.com/xhit/go-simple-mail v2.2.2+incompatible/go.mod h1:I8Ctg6vIJZ+Sv7k/22M6oeu/tbFumDY0uxBuuLbtU7Y=

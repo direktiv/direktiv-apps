@@ -1,4 +1,4 @@
-github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028222356-e128caf67db0 h1:sgXfTOfHlwLbzalkVDvvmQjOZ3jaPXgwHBnRycAdwZc=
-github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028222356-e128caf67db0/go.mod h1:+fJQXv09OvZkT9IgRA0QKP4BTCIKG6HOzcEvz3P3yc0=
+github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c h1:t1jfACYmQ4wd6dY08dftaHkc/IBexpoY6y0B0Fo1K4Y=
+github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c/go.mod h1:+fJQXv09OvZkT9IgRA0QKP4BTCIKG6HOzcEvz3P3yc0=
 github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
 github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
