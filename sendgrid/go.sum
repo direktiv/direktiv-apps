@@ -1,0 +1,12 @@
+github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c h1:t1jfACYmQ4wd6dY08dftaHkc/IBexpoY6y0B0Fo1K4Y=
+github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c/go.mod h1:+fJQXv09OvZkT9IgRA0QKP4BTCIKG6HOzcEvz3P3yc0=
+github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
+github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
+github.com/sendgrid/rest v2.6.5+incompatible h1:MZsDqRdwKTHXNABhVgiZFLgVDN698H4QtFrTX3WlrN0=
+github.com/sendgrid/rest v2.6.5+incompatible/go.mod h1:kXX7q3jZtJXK5c5qK83bSGMdV6tsOE70KbHoqJls4lE=
+github.com/sendgrid/sendgrid-go v3.10.3+incompatible h1:p+gXRxF51RJTBlMUpVuWopM+UkLoZQ5ETyR2KLrH4zw=
+github.com/sendgrid/sendgrid-go v3.10.3+incompatible/go.mod h1:QRQt+LX/NmgVEvmdRw0VT/QgUn499+iza2FnDca9fg8=
+gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc h1:2gGKlE2+asNV9m7xrywl36YYNnBG5ZQ0r/BOOxqPpmk=
+gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc/go.mod h1:m7x9LTH6d71AHyAX77c9yqWCCa3UKHcVEj9y7hAtKDk=
+gopkg.in/mail.v2 v2.3.1 h1:WYFn/oANrAGP2C0dcV6/pbkPzv8yGzqTjPmTeO7qoXk=
+gopkg.in/mail.v2 v2.3.1/go.mod h1:htwXN1Qh09vZJ1NVKxQqHPBaCBbzKhp5GzuJEA4VJWw=
