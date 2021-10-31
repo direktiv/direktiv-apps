@@ -39,8 +39,8 @@ type InputInstanceDetails struct {
 // Defaults
 const (
 	code             = "com.aws-ec2-create.error"
-	AWS_CLI_TEMPLATE = ` ec2 run-instances 
-	--image-id {{.ImageID}} 
+	AWS_CLI_TEMPLATE = ` ec2 run-instances
+	--image-id {{.ImageID}}
 	--instance-type {{.InstanceType}}
 	{{if .Name}} --name {{.Name}}{{else}}{{end}}
 	{{if .KeyName}} --key-name {{.KeyName}}{{else}}{{end}}
@@ -85,7 +85,7 @@ func AWSInstanceCreate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(tagsJSON) > 0 {
-		obj.TagsFormatted = fmt.Sprintf("'ResourceType=instance,Tags=[%s]'", strings.Join(tagsJSON, ","))
+		obj.TagsFormatted = fmt.Sprintf("ResourceType=instance,Tags=[%s]", strings.Join(tagsJSON, ","))
 	}
 
 	// Create cli command from template
@@ -101,6 +101,8 @@ func AWSInstanceCreate(w http.ResponseWriter, r *http.Request) {
 		direktivapps.RespondWithError(w, code, fmt.Sprintf("Failed to create AWS Command: %v", err))
 		return
 	}
+
+	direktivapps.Log(aid, fmt.Sprintf("command: %v %v", "/usr/bin/aws", strings.Fields(cliCommand.String())))
 
 	// Auth
 	os.Setenv("AWS_ACCESS_KEY_ID", obj.Key)
