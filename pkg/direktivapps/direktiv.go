@@ -142,22 +142,22 @@ func ShutDown(srv *http.Server) {
 }
 
 // Log sends a string to log via kubernetes
-func Log(aid string, format string, l ...string) {
+func Log(aid string, format string, l ...interface{}) {
 	if strings.ToLower(aid) == devMode {
-		fmt.Printf(format, l)
+		fmt.Printf(format, l...)
 	} else {
-		fmt.Printf(format, l)
-		http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(fmt.Sprintf(format, l)))
+		fmt.Printf(format, l...)
+		http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(fmt.Sprintf(format, l...)))
 	}
 }
 
 // LogDouble logs to direktiv and stdout
-func LogDouble(aid string, format string, l ...string) {
+func LogDouble(aid string, format string, l ...interface{}) {
 	if strings.ToLower(aid) == devMode {
-		fmt.Printf(format, l)
+		fmt.Printf(format, l...)
 	} else {
-		fmt.Println(format, l)
-		http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(fmt.Sprintf(format, l)))
+		fmt.Printf(format, l...)
+		http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(fmt.Sprintf(format, l...)))
 	}
 }
 
