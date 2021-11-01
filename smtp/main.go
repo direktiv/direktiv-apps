@@ -8,8 +8,8 @@ import (
 	"html/template"
 	"net/http"
 	"net/smtp"
-	"strings"
 	"path/filepath"
+	"strings"
 
 	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 	gomail "gopkg.in/mail.v2"
@@ -26,12 +26,14 @@ type SMTPEmail struct {
 	Base64   bool                   `json:"template"`
 	Server   string                 `json:"server"`
 	Port     float64                `json:"port"`
+	User     string                 `json:"user"`
 	Password string                 `json:"password"`
 	Args     map[string]interface{} `json:"args"` // optional
-	Images []string `json:"images"`
+	Images   []string               `json:"images"`
 }
 
 func SMTPEmailHandler(w http.ResponseWriter, r *http.Request) {
+
 	tm := new(SMTPEmail)
 	var err error
 	aid, err := direktivapps.Unmarshal(tm, r)
@@ -82,7 +84,7 @@ func SMTPEmailHandler(w http.ResponseWriter, r *http.Request) {
 	m.SetHeader("Subject", tm.Subject)
 
 	for _, imageBody := range tm.Images {
-		direktivapps.Log(aid, fmt.Sprintf("%s",filepath.Join(r.Header.Get("Direktiv-TempDir"), imageBody)))
+		direktivapps.Log(aid, fmt.Sprintf("%s", filepath.Join(r.Header.Get("Direktiv-TempDir"), imageBody)))
 		m.Embed(filepath.Join(r.Header.Get("Direktiv-TempDir"), imageBody))
 	}
 
@@ -130,8 +132,9 @@ func SMTPEmailHandler(w http.ResponseWriter, r *http.Request) {
 
 		c.Quit()
 	} else {
+
 		// Settings for SMTP server
-		d := gomail.NewDialer(tm.Server, int(tm.Port), tm.From, tm.Password)
+		d := gomail.NewDialer(tm.Server, int(tm.Port), tm.User, tm.Password)
 		d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 		direktivapps.Log(aid, "Sending Message")
