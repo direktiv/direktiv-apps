@@ -126,7 +126,8 @@ func cancelHandler(w http.ResponseWriter, r *http.Request) {
 
 	aid := r.Header.Get(DirektivActionIDHeader)
 	if aid == "" {
-		// cant handle a DELETE request with no specific AID
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("A Direktiv-ActionID header is required to cancel the instance"))
 		return
 	}
 
