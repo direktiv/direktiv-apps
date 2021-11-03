@@ -143,11 +143,11 @@ func ShutDown(srv *http.Server) {
 
 // Log sends a string to log via kubernetes
 func Log(aid string, format string, l ...interface{}) {
-	if !strings.HasSuffix(format, "\n") {
-		format += "\n"
-	}
 
 	if strings.ToLower(aid) == devMode {
+		if !strings.HasSuffix(format, "\n") {
+			format += "\n"
+		}
 		fmt.Printf(format, l...)
 	} else {
 		fmt.Printf(format, l...)
@@ -157,10 +157,11 @@ func Log(aid string, format string, l ...interface{}) {
 
 // LogDouble logs to direktiv and stdout
 func LogDouble(aid string, format string, l ...interface{}) {
-	if !strings.HasSuffix(format, "\n") {
-		format += "\n"
-	}
+
 	if strings.ToLower(aid) == devMode {
+		if !strings.HasSuffix(format, "\n") {
+			format += "\n"
+		}
 		fmt.Printf(format, l...)
 	} else {
 		fmt.Printf(format, l...)
