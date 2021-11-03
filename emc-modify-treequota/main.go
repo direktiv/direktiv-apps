@@ -94,14 +94,14 @@ func EMCModifyTreeQuota(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	direktivapps.Log(aid, fmt.Sprintf("fetch treeQuota id from path '%s'", obj.Path))
+	direktivapps.LogDouble(aid, fmt.Sprintf("fetch treeQuota id from path '%s'", obj.Path))
 	id, hsize, ssize, err := getTreeQuotaId(client, obj.URL, aid, obj.Path, obj.Username, obj.Password)
 	if err != nil {
 		direktivapps.RespondWithError(w, fmt.Sprintf(code, "get-treequota-id"), err.Error())
 		return
 	}
 
-	direktivapps.Log(aid, fmt.Sprintf("modify '%s' treeQuota", id))
+	direktivapps.LogDouble(aid, fmt.Sprintf("modify '%s' treeQuota", id))
 	// work out the new size were changing to
 	updateH, err := bytefmt.ToBytes(obj.HardLimit)
 	if err != nil {
@@ -118,8 +118,8 @@ func EMCModifyTreeQuota(w http.ResponseWriter, r *http.Request) {
 	newHSize := hsize + int64(updateH)
 	newSSize := ssize + int64(updateS)
 
-	direktivapps.Log(aid, fmt.Sprintf("adjusting softLimit from '%v' to '%v'", ssize, newSSize))
-	direktivapps.Log(aid, fmt.Sprintf("adjusting hardlimit from '%v' to '%v'", hsize, newHSize))
+	direktivapps.LogDouble(aid, fmt.Sprintf("adjusting softLimit from '%v' to '%v'", ssize, newSSize))
+	direktivapps.LogDouble(aid, fmt.Sprintf("adjusting hardlimit from '%v' to '%v'", hsize, newHSize))
 
 	err = modifyHardLimit(client, obj.URL, aid, id, newHSize, newSSize, obj.Description, obj.Username, obj.Password)
 	if err != nil {
@@ -168,16 +168,16 @@ func modifyHardLimit(client *http.Client, urlpath string, aid, id string, newHSi
 		return err
 	}
 
-	direktivapps.Log(aid, "Adding required headers")
+	direktivapps.LogDouble(aid, "Adding required headers")
 
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("X-EMC-REST-CLIENT", "true")
 
-	direktivapps.Log(aid, "Adding authorization header")
+	direktivapps.LogDouble(aid, "Adding authorization header")
 	sEnc := b64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", username, password)))
 	req.Header.Add("Authorization", fmt.Sprintf("Basic %s", sEnc))
 
-	direktivapps.Log(aid, "Sending request")
+	direktivapps.LogDouble(aid, "Sending request")
 	resp, err := client.Do(req)
 	if err != nil {
 		return err
@@ -204,7 +204,7 @@ func getTreeQuotaId(client *http.Client, urlpath string, aid string, path string
 		return "", 0, 0, err
 	}
 
-	direktivapps.Log(aid, "adding required headers")
+	direktivapps.LogDouble(aid, "adding required headers")
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("X-EMC-REST-CLIENT", "true")
 

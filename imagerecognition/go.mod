@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	cloud.google.com/go/vision v1.0.0
-	github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c
-	google.golang.org/api v0.59.0
-	google.golang.org/genproto v0.0.0-20211028162531-8db9c33dc351
+	github.com/direktiv/direktiv-apps/pkg v0.0.0-20211101220616-f962c28e6465
+	google.golang.org/api v0.60.0
+	google.golang.org/genproto v0.0.0-20211101144312-62acf1d99145
 )

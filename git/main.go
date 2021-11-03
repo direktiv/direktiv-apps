@@ -170,7 +170,7 @@ func prepFile(path string) (*os.File, int64, error) {
 
 func log(aid, l string) {
 	fmt.Println(l)
-	direktivapps.Log(aid, l)
+	direktivapps.LogDouble(aid, l)
 }
 
 func runGitCmd(cmd string, envs []string, aid string) (interface{}, bool, error) {
@@ -212,7 +212,7 @@ func runGitCmd(cmd string, envs []string, aid string) (interface{}, bool, error)
 	git := exec.Command("git", f...)
 	osenv := os.Environ()
 	osenv = append(osenv, envs...)
-	direktivapps.Log(aid, fmt.Sprintf("applying envs: %v", osenv))
+	direktivapps.LogDouble(aid, fmt.Sprintf("applying envs: %v", osenv))
 	git.Env = osenv
 	d, err := git.CombinedOutput()
 	if err != nil {
@@ -223,7 +223,7 @@ func runGitCmd(cmd string, envs []string, aid string) (interface{}, bool, error)
 	}
 
 	d = []byte(strings.TrimSpace(string(d)))
-	direktivapps.Log(aid, fmt.Sprintf("cmd output: %v", string(d)))
+	direktivapps.LogDouble(aid, fmt.Sprintf("cmd output: %v", string(d)))
 
 	// check for log, tag, trying to json the output
 	if strings.Contains(cmd, "log ") || strings.Contains(cmd, " log") {

@@ -14,7 +14,7 @@ dependencies:
 build-singular:
 	echo "building ${CONTAINER}";
 	echo $(shell REPOSITORY=${REPOSITORY} CONTAINER=${CONTAINER} ./getversion.sh) > ${CONTAINER}/VERSION
-	docker build ${CONTAINER} -t ${REPOSITORY}/${CONTAINER}:latest -t ${REPOSITORY}/${CONTAINER}:$(shell REPOSITORY=${REPOSITORY} CONTAINER=${CONTAINER} ./getversion.sh)
+	DOCKER_BUILDKIT=1 docker build ${CONTAINER} -t ${REPOSITORY}/${CONTAINER}:latest -t ${REPOSITORY}/${CONTAINER}:$(shell REPOSITORY=${REPOSITORY} CONTAINER=${CONTAINER} ./getversion.sh) --no-cache
 	docker push ${REPOSITORY}/${CONTAINER}:$(shell REPOSITORY=${REPOSITORY} CONTAINER=${CONTAINER} ./getversion.sh)
 	docker push ${REPOSITORY}/${CONTAINER}:latest
 	cd ${CONTAINER} && docker pushrm docker.io/${REPOSITORY}/${CONTAINER}

@@ -41,7 +41,7 @@ func GCPLog(w http.ResponseWriter, r *http.Request) {
 
 	if missingFields := v.ValidateRequired(obj); len(missingFields) > 0 {
 		for _, mf := range missingFields {
-			direktivapps.Log(aid, fmt.Sprintf("Input Error: %s is required\n", mf))
+			direktivapps.LogDouble(aid, fmt.Sprintf("Input Error: %s is required\n", mf))
 		}
 
 		direktivapps.RespondWithError(w, code, fmt.Sprintf("Invalid input: Fields [%s] are required", strings.Join(missingFields, ",")))
@@ -85,7 +85,7 @@ func GCPLog(w http.ResponseWriter, r *http.Request) {
 	targetLogger := logger.StandardLogger(logging.ParseSeverity(obj.LogLevel))
 	targetLogger.Println(obj.Message)
 
-	direktivapps.Log(aid, "Writing Log Message to gcp")
+	direktivapps.LogDouble(aid, "Writing Log Message to gcp")
 	// Flush Logger
 	if err := logger.Flush(); err != nil {
 		direktivapps.RespondWithError(w, code, fmt.Sprintf("GCP Logger Error: %v", err))

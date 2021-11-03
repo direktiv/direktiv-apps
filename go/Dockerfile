@@ -1,13 +1,13 @@
-FROM golang:1.15-buster as build
+# FROM golang as build
 
-WORKDIR /app
-COPY ./main.go ./
-COPY ./go.mod ./
-COPY ./go.sum ./
-RUN go get -u -v
-RUN CGO_ENABLED=0 go build -o /build-go -ldflags="-s -w" main.go
+# WORKDIR /app
+# COPY ./main.go ./
+# COPY ./go.mod ./
+# COPY ./go.sum ./
+# RUN go get -u -v
 
-FROM alpine:latest
+FROM alpine:latest as certs
+# COPY --from=build /buildgo /
 
 RUN apk add --no-cache git make musl-dev go
 
@@ -15,7 +15,11 @@ ENV GOROOT /usr/lib/go
 ENV GOPATH /go
 ENV PATH /go/bin:$PATH
 
+WORKDIR /app
+COPY ./main.go ./
+COPY ./go.mod ./
+COPY ./go.sum ./
 RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
+RUN CGO_ENABLED=0 go build -o /buildgo -ldflags="-s -w" main.go
 
-COPY --from=build /build-go /
-CMD [ "/build-go" ]
+CMD [ "/buildgo" ]

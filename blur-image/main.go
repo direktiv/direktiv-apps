@@ -41,7 +41,7 @@ func BlurHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	direktivapps.Log(aid, "reading image from url")
+	direktivapps.LogDouble(aid, "%s", "reading image from url")
 
 	resp, err := http.Get(o.Image)
 	if err != nil {
@@ -56,16 +56,16 @@ func BlurHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	direktivapps.Log(aid, fmt.Sprintf("status %s", resp.Status))
+	direktivapps.LogDouble(aid, fmt.Sprintf("status %s", resp.Status))
 
-	direktivapps.Log(aid, "detecting content type")
+	direktivapps.LogDouble(aid, "%s", "detecting content type")
 	ct, err := getFileContentType(data[:512])
 	if err != nil {
 		direktivapps.RespondWithError(w, code, err.Error())
 		return
 	}
 
-	direktivapps.Log(aid, fmt.Sprintf("content-type: '%s' detected", ct))
+	direktivapps.LogDouble(aid, fmt.Sprintf("content-type: '%s' detected", ct))
 
 	newImage, err := os.Create(aid)
 	if err != nil {
@@ -94,7 +94,7 @@ func BlurHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case "image/jpeg":
-		direktivapps.Log(aid, "decoding jpeg...")
+		direktivapps.LogDouble(aid, "decoding jpeg...")
 
 		srcImage, err := jpeg.Decode(bytes.NewReader(data))
 		if err != nil {

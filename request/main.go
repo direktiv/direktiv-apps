@@ -60,13 +60,11 @@ func Request(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	cr := http.DefaultTransport.(*http.Transport).Clone()
+	cr.TLSClientConfig = &tls.Config{InsecureSkipVerify: obj.InsecureSkipVerify}
 	client := &http.Client{
-		Jar: jar,
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: obj.InsecureSkipVerify,
-			},
-		},
+		Jar:       jar,
+		Transport: cr,
 	}
 
 	direktivapps.LogDouble(aid, "%s", "Creating new request")

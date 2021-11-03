@@ -69,7 +69,7 @@ func GoogleSentimentCheck(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	direktivapps.Log(aid, fmt.Sprintf("Text being checked: %v\n", obj.Message))
+	direktivapps.LogDouble(aid, fmt.Sprintf("Text being checked: %v\n", obj.Message))
 
 	var outputSentiment SentimentAnalysis
 	outputSentiment.Magnitude = sentiment.DocumentSentiment.Magnitude
