@@ -86,6 +86,8 @@ func StartServer(f func(w http.ResponseWriter, r *http.Request)) {
 		aid := r.Header.Get(DirektivActionIDHeader)
 		if aid == "" {
 			// cant handle a DELETE request with no specific AID
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("A Direktiv-ActionID header is required if developing the app use 'development'."))
 			return
 		}
 
@@ -124,7 +126,8 @@ func cancelHandler(w http.ResponseWriter, r *http.Request) {
 
 	aid := r.Header.Get(DirektivActionIDHeader)
 	if aid == "" {
-		// cant handle a DELETE request with no specific AID
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("A Direktiv-ActionID header is required to cancel the instance"))
 		return
 	}
 
@@ -139,24 +142,30 @@ func ShutDown(srv *http.Server) {
 }
 
 // Log sends a string to log via kubernetes
-func Log(aid, l string) {
+func Log(aid string, format string, l ...interface{}) {
 
 	if strings.ToLower(aid) == devMode {
-		fmt.Println(l)
+		if !strings.HasSuffix(format, "\n") {
+			format += "\n"
+		}
+		fmt.Printf(format, l...)
 	} else {
-		fmt.Println(l)
-		http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(l))
+		fmt.Printf(format, l...)
+		http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(fmt.Sprintf(format, l...)))
 	}
-
 }
 
 // LogDouble logs to direktiv and stdout
-func LogDouble(aid, l string) {
+func LogDouble(aid string, format string, l ...interface{}) {
+
 	if strings.ToLower(aid) == devMode {
-		fmt.Println(l)
+		if !strings.HasSuffix(format, "\n") {
+			format += "\n"
+		}
+		fmt.Printf(format, l...)
 	} else {
-		fmt.Println(l)
-		http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(l))
+		fmt.Printf(format, l...)
+		http.Post(fmt.Sprintf("http://localhost:8889/log?aid=%s", aid), "plain/text", strings.NewReader(fmt.Sprintf(format, l...)))
 	}
 }
 

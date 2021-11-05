@@ -21,7 +21,7 @@ type CMDWriter struct {
 
 // Write writes to the new api for logging direktiv apps
 func (c *CMDWriter) Write(p []byte) (n int, err error) {
-	direktivapps.Log(c.Aid, string(p))
+	direktivapps.LogDouble(c.Aid, string(p))
 	return len(p), nil
 }
 
@@ -45,7 +45,7 @@ func GoHandler(w http.ResponseWriter, r *http.Request) {
 
 	executionPath := path.Join(r.Header.Get("Direktiv-TempDir"), goi.ExecutionFolder)
 
-	direktivapps.Log(aid, fmt.Sprintf("changing directory to '%s'", executionPath))
+	direktivapps.LogDouble(aid, fmt.Sprintf("changing directory to '%s'", executionPath))
 
 	err = os.Chdir(executionPath)
 	if err != nil {
@@ -53,7 +53,7 @@ func GoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	direktivapps.Log(aid, "Executing go command...")
+	direktivapps.LogDouble(aid, "Executing go command...")
 
 	cmd := exec.Command("go", goi.Arguments...)
 	cmd.Stderr = cmdW
@@ -90,7 +90,7 @@ func uploadVariable(aid string, f *os.File, name string, vartype string) error {
 	}
 	// get the size
 	size := fi.Size()
-	direktivapps.Log(aid, fmt.Sprintf("uploading '%s', size: '%v'", f.Name(), size))
+	direktivapps.LogDouble(aid, fmt.Sprintf("uploading '%s', size: '%v'", f.Name(), size))
 
 	req, err := http.NewRequest("POST", fmt.Sprintf("http://localhost:8889/var?aid=%s&scope=%s&key=%s", aid, vartype, name), f)
 	if err != nil {

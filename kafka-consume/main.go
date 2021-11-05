@@ -67,7 +67,7 @@ func KafkaHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err := batch.Close(); err != nil {
 		if err == kafka.RequestTimedOut {
-			direktivapps.Log(aid, "Warning - kafka request timed out")
+			direktivapps.LogDouble(aid, "Warning - kafka request timed out")
 		} else {
 			direktivapps.RespondWithError(w, code, err.Error())
 			return

@@ -10,9 +10,9 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
-	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 )
 
 // TwilioMessage input struct to send an sms or email
@@ -43,7 +43,7 @@ func TwilioMessageHandler(w http.ResponseWriter, r *http.Request) {
 	switch tm.TypeOf {
 	case "email":
 		if tm.Debug {
-			direktivapps.Log(aid, "Sending Email")
+			direktivapps.LogDouble(aid, "Sending Email")
 		}
 		response, err = SendEmail(tm, aid)
 		if err != nil {
@@ -52,7 +52,7 @@ func TwilioMessageHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	case "sms":
 		if tm.Debug {
-			direktivapps.Log(aid, "Sending SMS")
+			direktivapps.LogDouble(aid, "Sending SMS")
 		}
 		response, err = SendSMS(tm, aid)
 		if err != nil {
@@ -88,7 +88,7 @@ func SendEmail(tm *TwilioMessage, aid string) ([]byte, error) {
 	}
 
 	if tm.Debug {
-		direktivapps.Log(aid, fmt.Sprintf("Send to %s\n From %s\n  Body %s", tm.To, tm.From, tm.Message))
+		direktivapps.LogDouble(aid, fmt.Sprintf("Send to %s\n From %s\n  Body %s", tm.To, tm.From, tm.Message))
 	}
 
 	req, _ := http.NewRequest("POST", "https://api.sendgrid.com/v3/mail/send", b)
@@ -110,7 +110,7 @@ func SendEmail(tm *TwilioMessage, aid string) ([]byte, error) {
 	}
 
 	if tm.Debug {
-		direktivapps.Log(aid, fmt.Sprintf("Response Body: %s", br))
+		direktivapps.LogDouble(aid, fmt.Sprintf("Response Body: %s", br))
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
@@ -130,7 +130,7 @@ func SendSMS(tm *TwilioMessage, aid string) ([]byte, error) {
 	msgData.Set("Body", tm.Message)
 
 	if tm.Debug {
-		direktivapps.Log(aid, fmt.Sprintf("Send to %s\nFrom %s\n Body: %s", tm.To, tm.From, tm.Message))
+		direktivapps.LogDouble(aid, fmt.Sprintf("Send to %s\nFrom %s\n Body: %s", tm.To, tm.From, tm.Message))
 	}
 
 	msgDataReader := *strings.NewReader(msgData.Encode())

@@ -96,7 +96,7 @@ func AzureLog(w http.ResponseWriter, r *http.Request) {
 		direktivapps.RespondWithError(w, code, fmt.Sprintf("Response Message: %s, Response Code: %v \nResponseBody: %s", resp.Status, resp.StatusCode, bv))
 		return
 	}
-	direktivapps.Log(aid, fmt.Sprintf("Log Response Body: %s", bv))
+	direktivapps.LogDouble(aid, "Log Response Body: %s", bv)
 	direktivapps.Respond(w, bv)
 }
 

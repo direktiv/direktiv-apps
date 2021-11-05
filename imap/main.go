@@ -32,14 +32,14 @@ func IMAPHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	direktivapps.Log(aid, "Connecting to IMAP server...")
+	direktivapps.LogDouble(aid, "Connecting to IMAP server...")
 	// Connect to server
 	c, err := client.DialTLS(rr.IMAP, nil)
 	if err != nil {
 		direktivapps.RespondWithError(w, code, err.Error())
 		return
 	}
-	direktivapps.Log(aid, "Connected")
+	direktivapps.LogDouble(aid, "Connected")
 
 	// Don't forget to logout
 	defer c.Logout()
@@ -49,7 +49,7 @@ func IMAPHandler(w http.ResponseWriter, r *http.Request) {
 		direktivapps.RespondWithError(w, code, err.Error())
 		return
 	}
-	direktivapps.Log(aid, "Logged In")
+	direktivapps.LogDouble(aid, "Logged In")
 
 	// Select INBOX
 	mbox, err := c.Select("INBOX", false)

@@ -67,7 +67,7 @@ func AWSInstanceCreate(w http.ResponseWriter, r *http.Request) {
 
 	if missingFields := v.ValidateRequired(obj); len(missingFields) > 0 {
 		for _, mf := range missingFields {
-			direktivapps.Log(aid, fmt.Sprintf("Input Error: %s is required\n", mf))
+			direktivapps.LogDouble(aid, "Input Error: %s is required\n", mf)
 		}
 
 		direktivapps.RespondWithError(w, code, fmt.Sprintf("Invalid input: Fields [%s] are required", strings.Join(missingFields, ",")))
@@ -75,7 +75,7 @@ func AWSInstanceCreate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if obj.KeyName == "" {
-		direktivapps.Log(aid, "WARNING Field key-name is empty: If you do not specify a key pair, you can't connect to the instance unless you choose an AMI that is configured to allow users another way to log in.")
+		direktivapps.LogDouble(aid, "%s", "WARNING Field key-name is empty: If you do not specify a key pair, you can't connect to the instance unless you choose an AMI that is configured to allow users another way to log in.")
 	}
 
 	// Format Tags
@@ -102,7 +102,7 @@ func AWSInstanceCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	direktivapps.Log(aid, fmt.Sprintf("command: %v %v", "/usr/bin/aws", strings.Fields(cliCommand.String())))
+	direktivapps.LogDouble(aid, "command: %v %v", "/usr/bin/aws", strings.Fields(cliCommand.String()))
 
 	// Auth
 	os.Setenv("AWS_ACCESS_KEY_ID", obj.Key)

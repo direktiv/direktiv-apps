@@ -50,7 +50,7 @@ func Request(w http.ResponseWriter, r *http.Request) {
 
 	var b []byte
 
-	direktivapps.Log(aid, "Creating cookie jar")
+	direktivapps.LogDouble(aid, "%s", "Creating cookie jar")
 
 	jar, err := cookiejar.New(&cookiejar.Options{
 		PublicSuffixList: publicsuffix.List,
@@ -60,24 +60,22 @@ func Request(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	cr := http.DefaultTransport.(*http.Transport).Clone()
+	cr.TLSClientConfig = &tls.Config{InsecureSkipVerify: obj.InsecureSkipVerify}
 	client := &http.Client{
-		Jar: jar,
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: obj.InsecureSkipVerify,
-			},
-		},
+		Jar:       jar,
+		Transport: cr,
 	}
 
-	direktivapps.Log(aid, "Creating new request")
+	direktivapps.LogDouble(aid, "%s", "Creating new request")
 
 	if obj.Body != nil {
 		switch v := obj.Body.(type) {
 		case string:
-			direktivapps.Log(aid, "Body is a string ignore marshal.")
+			direktivapps.LogDouble(aid, "%s", "Body is a string ignore marshal.")
 			b = []byte(obj.Body.(string))
 		default:
-			direktivapps.Log(aid, fmt.Sprintf("Body is of type %v", v))
+			direktivapps.LogDouble(aid, "Body is of type: %v", v)
 			b, err = json.Marshal(obj.Body)
 			if err != nil {
 				direktivapps.RespondWithError(w, fmt.Sprintf(code, "marshal-body"), err.Error())
@@ -85,10 +83,10 @@ func Request(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		direktivapps.Log(aid, "Body exists, attaching to the request")
+		direktivapps.LogDouble(aid, "%s", "Body exists, attaching to the request")
 	}
 
-	direktivapps.Log(aid, "Creating URL...")
+	direktivapps.LogDouble(aid, "%s", "Creating URL...")
 	u, err := url.Parse(obj.URL)
 	if err != nil {
 		direktivapps.RespondWithError(w, fmt.Sprintf(code, "url-parse"), err.Error())
@@ -107,7 +105,7 @@ func Request(w http.ResponseWriter, r *http.Request) {
 		case string:
 			actualVal = t
 		}
-		direktivapps.Log(aid, fmt.Sprintf("Adding param %s=%s", k, actualVal))
+		direktivapps.LogDouble(aid, "Adding param %s=%s", k, actualVal)
 		q.Set(k, actualVal)
 	}
 
@@ -138,10 +136,10 @@ func Request(w http.ResponseWriter, r *http.Request) {
 	if obj.Username != "" && obj.Password != "" {
 		sEnc := b64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", obj.Username, obj.Password)))
 		req.Header.Add("Authorization", fmt.Sprintf("Basic %s", sEnc))
-		direktivapps.Log(aid, "Adding Basic authorization header")
+		direktivapps.LogDouble(aid, "%s", "Adding Basic authorization header")
 	}
 
-	direktivapps.Log(aid, "Sending request...")
+	direktivapps.LogDouble(aid, "%s", "Sending request...")
 
 	resp, err := client.Do(req)
 	if err != nil {

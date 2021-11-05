@@ -42,12 +42,12 @@ func SendGridHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 	aid, err := direktivapps.Unmarshal(tm, r)
 	if err != nil {
-		direktivapps.Log(aid, fmt.Sprintf("unmarshalling failed: %s", err.Error()))
+		direktivapps.LogDouble(aid, fmt.Sprintf("unmarshalling failed: %s", err.Error()))
 		direktivapps.RespondWithError(w, fmt.Sprintf(code, "unmarshal"), err.Error())
 		return
 	}
 
-	direktivapps.Log(aid, fmt.Sprintf("sending message to %s", tm.RecvEmail))
+	direktivapps.LogDouble(aid, fmt.Sprintf("sending message to %s", tm.RecvEmail))
 
 	from := mail.NewEmail(tm.SenderName, tm.SenderEmail)
 	to := mail.NewEmail(tm.RecvName, tm.RecvEmail)
@@ -68,7 +68,7 @@ func SendGridHandler(w http.ResponseWriter, r *http.Request) {
 	client := sendgrid.NewSendClient(tm.APIKey)
 	response, err := client.Send(message)
 	if err != nil {
-		direktivapps.Log(aid, fmt.Sprintf("sending failed: %s", err.Error()))
+		direktivapps.LogDouble(aid, fmt.Sprintf("sending failed: %s", err.Error()))
 		direktivapps.RespondWithError(w, fmt.Sprintf(code, "send"), err.Error())
 		return
 	}
@@ -81,12 +81,12 @@ func SendGridHandler(w http.ResponseWriter, r *http.Request) {
 			direktivapps.RespondWithError(w, fmt.Sprintf(code, "handleresponse"), err.Error())
 		}
 		errMsg := fmt.Sprintf("%s, field: %s", e.Errors[0].Message, e.Errors[0].Field)
-		direktivapps.Log(aid, fmt.Sprintf("sending failed: %s", errMsg))
+		direktivapps.LogDouble(aid, fmt.Sprintf("sending failed: %s", errMsg))
 		direktivapps.RespondWithError(w, fmt.Sprintf(code, "response"), errMsg)
 		return
 	}
 
-	direktivapps.Log(aid, fmt.Sprintf("sent message to %s", tm.RecvEmail))
+	direktivapps.LogDouble(aid, fmt.Sprintf("sent message to %s", tm.RecvEmail))
 	direktivapps.Respond(w, []byte{})
 
 }

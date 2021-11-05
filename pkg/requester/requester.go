@@ -43,7 +43,7 @@ func (m *Manager) Create(aid string) error {
 			return err
 		}
 		if m.Request.Debug {
-			direktivapps.Log(aid, fmt.Sprintf("Body Provided: %s", b))
+			direktivapps.LogDouble(aid, fmt.Sprintf("Body Provided: %s", b))
 		}
 	}
 
@@ -51,7 +51,7 @@ func (m *Manager) Create(aid string) error {
 	m.client = &http.Client{}
 
 	if m.Request.Debug {
-		direktivapps.Log(aid, fmt.Sprintf("Method: %s, Sending to %s", m.Request.Method, m.Request.URL))
+		direktivapps.LogDouble(aid, fmt.Sprintf("Method: %s, Sending to %s", m.Request.Method, m.Request.URL))
 	}
 
 	m.req, err = http.NewRequest(m.Request.Method, m.Request.URL, bytes.NewReader(b))
@@ -72,7 +72,7 @@ func (m *Manager) Create(aid string) error {
 			actualVal = t
 		}
 		if m.Request.Debug {
-			direktivapps.Log(aid, fmt.Sprintf("Adding %s=%s", k, actualVal))
+			direktivapps.LogDouble(aid, fmt.Sprintf("Adding %s=%s", k, actualVal))
 		}
 		// Adding a header requires it to be a string so might as well sprintf
 		m.req.Header.Add(k, actualVal)
@@ -103,7 +103,7 @@ func (m *Manager) Send(aid string) ([]byte, error) {
 	}
 
 	if m.Request.Debug {
-		direktivapps.Log(aid, fmt.Sprintf("Response body: %s", body))
+		direktivapps.LogDouble(aid, fmt.Sprintf("Response body: %s", body))
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {

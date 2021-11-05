@@ -61,7 +61,7 @@ func WriteToSpreadsheet(w http.ResponseWriter, r *http.Request) {
 
 	client := conf.Client(ctx)
 	if obj.Debug {
-		direktivapps.Log(aid, "JWT has been created and verified")
+		direktivapps.LogDouble(aid, "JWT has been created and verified")
 	}
 
 	service, err := sheets.New(client)
@@ -71,7 +71,7 @@ func WriteToSpreadsheet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if obj.Debug {
-		direktivapps.Log(aid, "Create a new sheets service")
+		direktivapps.LogDouble(aid, "Create a new sheets service")
 	}
 
 	var vr sheets.ValueRange
@@ -79,8 +79,8 @@ func WriteToSpreadsheet(w http.ResponseWriter, r *http.Request) {
 	vr.Values = append(vr.Values, obj.Values)
 
 	if obj.Debug {
-		direktivapps.Log(aid, "Appending new sheet values")
-		direktivapps.Log(aid, fmt.Sprintf("Writing %v", vr.Values))
+		direktivapps.LogDouble(aid, "Appending new sheet values")
+		direktivapps.LogDouble(aid, fmt.Sprintf("Writing %v", vr.Values))
 	}
 
 	_, err = service.Spreadsheets.Values.Append(obj.SpreadsheetID, writeRange, &vr).ValueInputOption("RAW").Do()

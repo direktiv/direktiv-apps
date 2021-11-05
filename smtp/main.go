@@ -42,21 +42,21 @@ func SMTPEmailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	direktivapps.Log(aid, "Decoding Message Input")
+	direktivapps.LogDouble(aid, "Decoding Message Input")
 
 	var message []byte
 	if tm.Base64 {
-		direktivapps.Log(aid, "decoding from base 64 string")
+		direktivapps.LogDouble(aid, "decoding from base 64 string")
 		message, err = b64.StdEncoding.DecodeString(tm.Message)
 		if err != nil {
 			message = []byte(tm.Message)
 		}
 	} else {
-		direktivapps.Log(aid, "using message as plain string")
+		direktivapps.LogDouble(aid, "using message as plain string")
 		message = []byte(tm.Message)
 	}
 
-	direktivapps.Log(aid, "Creating Template")
+	direktivapps.LogDouble(aid, "Creating Template")
 
 	t := template.New("email.html")
 	t, err = t.Parse(fmt.Sprintf("%s", message))
@@ -71,7 +71,7 @@ func SMTPEmailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	direktivapps.Log(aid, "Creating Message")
+	direktivapps.LogDouble(aid, "Creating Message")
 
 	m := gomail.NewMessage()
 	// Set E-Mail sender
@@ -84,7 +84,7 @@ func SMTPEmailHandler(w http.ResponseWriter, r *http.Request) {
 	m.SetHeader("Subject", tm.Subject)
 
 	for _, imageBody := range tm.Images {
-		direktivapps.Log(aid, fmt.Sprintf("%s", filepath.Join(r.Header.Get("Direktiv-TempDir"), imageBody)))
+		direktivapps.LogDouble(aid, fmt.Sprintf("%s", filepath.Join(r.Header.Get("Direktiv-TempDir"), imageBody)))
 		m.Embed(filepath.Join(r.Header.Get("Direktiv-TempDir"), imageBody))
 	}
 
@@ -137,7 +137,7 @@ func SMTPEmailHandler(w http.ResponseWriter, r *http.Request) {
 		d := gomail.NewDialer(tm.Server, int(tm.Port), tm.User, tm.Password)
 		d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
-		direktivapps.Log(aid, "Sending Message")
+		direktivapps.LogDouble(aid, "Sending Message")
 		if err := d.DialAndSend(m); err != nil {
 			direktivapps.RespondWithError(w, fmt.Sprintf(code, "send-message"), err.Error())
 			return

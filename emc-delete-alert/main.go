@@ -31,29 +31,29 @@ func authenticate(client *http.Client, urlpath, username, password, aid string) 
 
 	q := u.Query()
 
-	direktivapps.Log(aid, "setting fields and compact params")
+	direktivapps.LogDouble(aid, "setting fields and compact params")
 	q.Set("fields", "message,state")
 	q.Set("compact", "true")
 
 	u.RawQuery = q.Encode()
 
-	direktivapps.Log(aid, fmt.Sprintf("requesting '%s'", u.String()))
+	direktivapps.LogDouble(aid, fmt.Sprintf("requesting '%s'", u.String()))
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return err
 	}
 
-	direktivapps.Log(aid, "Adding required headers")
+	direktivapps.LogDouble(aid, "Adding required headers")
 
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("X-EMC-REST-CLIENT", "true")
 
-	direktivapps.Log(aid, "Adding authorization header")
+	direktivapps.LogDouble(aid, "Adding authorization header")
 	sEnc := b64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", username, password)))
 
 	req.Header.Add("Authorization", fmt.Sprintf("Basic %s", sEnc))
 
-	direktivapps.Log(aid, "Sending request")
+	direktivapps.LogDouble(aid, "Sending request")
 	resp, err := client.Do(req)
 	if err != nil {
 		return err
@@ -89,7 +89,7 @@ func Request(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	direktivapps.Log(aid, "authenticate")
+	direktivapps.LogDouble(aid, "authenticate")
 	err = authenticate(client, obj.URL, obj.Username, obj.Password, aid)
 	if err != nil {
 		direktivapps.RespondWithError(w, fmt.Sprintf(code, "authenticate"), err.Error())
@@ -108,16 +108,16 @@ func Request(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	direktivapps.Log(aid, "Adding required headers")
+	direktivapps.LogDouble(aid, "Adding required headers")
 
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("X-EMC-REST-CLIENT", "true")
 
-	direktivapps.Log(aid, "Adding authorization header")
+	direktivapps.LogDouble(aid, "Adding authorization header")
 	sEnc := b64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", obj.Username, obj.Password)))
 	req.Header.Add("Authorization", fmt.Sprintf("Basic %s", sEnc))
 
-	direktivapps.Log(aid, "Sending request")
+	direktivapps.LogDouble(aid, "Sending request")
 	resp, err := client.Do(req)
 	if err != nil {
 		direktivapps.RespondWithError(w, fmt.Sprintf(code, "send-response"), err.Error())
@@ -131,7 +131,7 @@ func Request(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	direktivapps.Log(aid, fmt.Sprintf("%s", data))
+	direktivapps.LogDouble(aid, fmt.Sprintf("%s", data))
 
 	direktivapps.Respond(w, []byte{})
 }

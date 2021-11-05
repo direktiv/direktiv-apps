@@ -75,7 +75,7 @@ func GoogleTranslate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var output OutputMessage
-	direktivapps.Log(aid, fmt.Sprintf("Translated: %v\n", resp[0].Text))
+	direktivapps.LogDouble(aid, fmt.Sprintf("Translated: %v\n", resp[0].Text))
 	output.Message = resp[0].Text
 
 	data, err := json.Marshal(output)

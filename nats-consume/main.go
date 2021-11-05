@@ -90,11 +90,11 @@ func NatsHandler(w http.ResponseWriter, r *http.Request) {
 			if len(messageList.Messages) >= obj.MaxMessages {
 				// Break - Max message count recieved
 				loopDone = true
-				direktivapps.Log(aid, "NATS max messages recieved")
+				direktivapps.LogDouble(aid, "NATS max messages recieved")
 			}
 		case loopDone = <-timeoutCh:
 			// Break - Timed out
-			direktivapps.Log(aid, "NATS timeout reached")
+			direktivapps.LogDouble(aid, "NATS timeout reached")
 		}
 	}
 

@@ -46,7 +46,7 @@ type CMDWriter struct {
 
 // Write writes to the new api for logging direktiv apps
 func (c *CMDWriter) Write(p []byte) (n int, err error) {
-	direktivapps.Log(c.Aid, string(p))
+	direktivapps.LogDouble(c.Aid, string(p))
 	return len(p), nil
 }
 
@@ -85,7 +85,7 @@ func TFStateHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodGet:
-		direktivapps.Log(runningTF[vars["id"]], "Fetching tfstate variable...")
+		direktivapps.LogDouble(runningTF[vars["id"]], "Fetching tfstate variable...")
 		resp, err := http.Get(url)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -102,7 +102,7 @@ func TFStateHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Write(data)
 	case http.MethodPost:
-		direktivapps.Log(runningTF[vars["id"]], "Saving new tfstate variable...")
+		direktivapps.LogDouble(runningTF[vars["id"]], "Saving new tfstate variable...")
 		req, err := http.NewRequest("POST", url, r.Body)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -152,9 +152,9 @@ func TerraformHandler(w http.ResponseWriter, r *http.Request) {
 
 	stateName, ok := obj.TFVars["state-name"].(string)
 	if !ok {
-		direktivapps.Log(aid, "state-name variable was not provided not using http backend")
+		direktivapps.LogDouble(aid, "state-name variable was not provided not using http backend")
 	} else {
-		direktivapps.Log(aid, "adding to the global map to control action ids")
+		direktivapps.LogDouble(aid, "adding to the global map to control action ids")
 		if runningTF[stateName] != "" {
 			direktivapps.RespondWithError(w, fmt.Sprintf(code, "state-name currently in use with a different action"), err.Error())
 			return
@@ -169,26 +169,26 @@ func TerraformHandler(w http.ResponseWriter, r *http.Request) {
 	terraformPath := path.Join(r.Header.Get("Direktiv-TempDir"), obj.ExecutionFolder)
 	// direktivapps.Log(aid, fmt.Sprintf("Found '%s'", terraformPath))
 
-	direktivapps.Log(aid, "Checking if tfstate service http backend is alive...")
+	direktivapps.LogDouble(aid, "Checking if tfstate service http backend is alive...")
 	alive := checkBackendIsAlive()
 	// if backend not alive spawn backend
 	if !alive {
 		go httpBackend()
 	}
 
-	direktivapps.Log(aid, "Wait till backend service is functional")
+	direktivapps.LogDouble(aid, "Wait till backend service is functional")
 	for !alive {
 		alive = checkBackendIsAlive()
 	}
 
-	direktivapps.Log(aid, "Initializing terraform....")
+	direktivapps.LogDouble(aid, "Initializing terraform....")
 
 	cmdW := &CMDWriter{
 		Aid: aid,
 	}
 	dirArg := fmt.Sprintf("-chdir=%s", terraformPath)
 
-	direktivapps.Log(aid, fmt.Sprintf("Reading in TFVars.json..."))
+	direktivapps.LogDouble(aid, fmt.Sprintf("Reading in TFVars.json..."))
 
 	data, err := json.Marshal(obj.TFVars)
 	if err != nil {
@@ -220,7 +220,7 @@ func TerraformHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	direktivapps.Log(aid, fmt.Sprintf("Executing '%s' for terraform", obj.Action))
+	direktivapps.LogDouble(aid, fmt.Sprintf("Executing '%s' for terraform", obj.Action))
 	switch obj.Action {
 	case "apply":
 		fallthrough
@@ -256,7 +256,7 @@ func TerraformHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	direktivapps.Log(aid, "Sending output back to direktiv...")
+	direktivapps.LogDouble(aid, "Sending output back to direktiv...")
 	cmd := exec.Command(terraformBin, dirArg, "output", "-json")
 	data, err = cmd.Output()
 	if err != nil {
@@ -284,7 +284,7 @@ func TerraformHandler(w http.ResponseWriter, r *http.Request) {
 				direktivapps.RespondWithError(w, fmt.Sprintf(code, "state-data-read"), err.Error())
 				return
 			}
-			direktivapps.Log(aid, fmt.Sprintf("read tfstate data from file: %s", tfstateData))
+			direktivapps.LogDouble(aid, fmt.Sprintf("read tfstate data from file: %s", tfstateData))
 		}
 	} else {
 		tfstateData, err = ioutil.ReadFile(path.Join(terraformPath, "terraform.tfstate"))
@@ -292,7 +292,7 @@ func TerraformHandler(w http.ResponseWriter, r *http.Request) {
 			direktivapps.RespondWithError(w, fmt.Sprintf(code, "state-data-read"), err.Error())
 			return
 		}
-		direktivapps.Log(aid, fmt.Sprintf("read tfstate data from file: %s", tfstateData))
+		direktivapps.LogDouble(aid, fmt.Sprintf("read tfstate data from file: %s", tfstateData))
 
 	}
 

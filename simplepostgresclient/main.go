@@ -530,7 +530,7 @@ func validateInput(input *Input) ([]operationDoerFunc, error) {
 
 func begin(input *Input, aid string) (*sql.Tx, error) {
 
-	direktivapps.Log(aid, "Connecting to postgres database...")
+	direktivapps.LogDouble(aid, "Connecting to postgres database...")
 
 	db, err := sql.Open("postgres", input.Conn)
 	if err != nil {
@@ -542,7 +542,7 @@ func begin(input *Input, aid string) (*sql.Tx, error) {
 	if err != nil {
 		return nil, err
 	}
-	direktivapps.Log(aid, "Beginning database transaction...")
+	direktivapps.LogDouble(aid, "Beginning database transaction...")
 
 	tx, err := db.BeginTx(context.Background(), nil)
 	if err != nil {
@@ -593,14 +593,14 @@ func SimplePostgresClient(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	direktivapps.Log(aid, "Committing transaction to database...")
+	direktivapps.LogDouble(aid, "Committing transaction to database...")
 	err = tx.Commit()
 	if err != nil {
 		direktivapps.RespondWithError(w, code, err.Error())
 		return
 	}
 
-	direktivapps.Log(aid, "Transaction complete!")
+	direktivapps.LogDouble(aid, "Transaction complete!")
 	direktivapps.Respond(w, data)
 }
 

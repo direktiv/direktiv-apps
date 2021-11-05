@@ -79,7 +79,7 @@ func Request(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	direktivapps.Log(aid, fmt.Sprintf("acknowledge '%s' alert", id))
+	direktivapps.LogDouble(aid, fmt.Sprintf("acknowledge '%s' alert", id))
 	u, err := url.Parse(fmt.Sprintf("%s//api/instances/alert/%s/action/modify", obj.URL, id))
 	if err != nil {
 		direktivapps.RespondWithError(w, fmt.Sprintf(code, "url-parse"), err.Error())
@@ -96,16 +96,16 @@ func Request(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	direktivapps.Log(aid, "Adding required headers")
+	direktivapps.LogDouble(aid, "Adding required headers")
 
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("X-EMC-REST-CLIENT", "true")
 
-	direktivapps.Log(aid, "Adding authorization header")
+	direktivapps.LogDouble(aid, "Adding authorization header")
 	sEnc := b64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", obj.Username, obj.Password)))
 	req.Header.Add("Authorization", fmt.Sprintf("Basic %s", sEnc))
 
-	direktivapps.Log(aid, "Sending request")
+	direktivapps.LogDouble(aid, "Sending request")
 	resp, err := client.Do(req)
 	if err != nil {
 		direktivapps.RespondWithError(w, fmt.Sprintf(code, "send-response"), err.Error())
@@ -119,7 +119,7 @@ func Request(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	direktivapps.Log(aid, fmt.Sprintf("%s", data))
+	direktivapps.LogDouble(aid, fmt.Sprintf("%s", data))
 
 	var response responseid
 	response.ID = id
@@ -141,29 +141,29 @@ func getAlertId(client *http.Client, urlpath, message, username, password, aid s
 
 	q := u.Query()
 
-	direktivapps.Log(aid, "setting fields and compact params")
+	direktivapps.LogDouble(aid, "setting fields and compact params")
 	q.Set("fields", "message,state")
 	q.Set("compact", "true")
 
 	u.RawQuery = q.Encode()
 
-	direktivapps.Log(aid, fmt.Sprintf("requesting '%s'", u.String()))
+	direktivapps.LogDouble(aid, fmt.Sprintf("requesting '%s'", u.String()))
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return "", err
 	}
 
-	direktivapps.Log(aid, "Adding required headers")
+	direktivapps.LogDouble(aid, "Adding required headers")
 
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("X-EMC-REST-CLIENT", "true")
 
-	direktivapps.Log(aid, "Adding authorization header")
+	direktivapps.LogDouble(aid, "Adding authorization header")
 	sEnc := b64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", username, password)))
 
 	req.Header.Add("Authorization", fmt.Sprintf("Basic %s", sEnc))
 
-	direktivapps.Log(aid, "Sending request")
+	direktivapps.LogDouble(aid, "Sending request")
 	resp, err := client.Do(req)
 	if err != nil {
 		return "", err
