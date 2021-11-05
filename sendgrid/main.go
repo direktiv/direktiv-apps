@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
+	"github.com/direktiv/direktiv-apps/pkg/template"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
@@ -29,8 +30,10 @@ type SendGrid struct {
 	RecvEmail   string `json:"recv-email"`
 	APIKey      string `json:"apikey"`
 
-	PlainMessage string `json:"message"`
-	HTMLMessage  string `json:"html-message"`
+	PlainMessage string      `json:"message"`
+	HTMLMessage  string      `json:"html-message"`
+	Template     string      `json:"template"`
+	TemplateData interface{} `json:"template-data"`
 }
 
 func SendGridHandler(w http.ResponseWriter, r *http.Request) {
@@ -49,7 +52,18 @@ func SendGridHandler(w http.ResponseWriter, r *http.Request) {
 	from := mail.NewEmail(tm.SenderName, tm.SenderEmail)
 	to := mail.NewEmail(tm.RecvName, tm.RecvEmail)
 
-	message := mail.NewSingleEmail(from, tm.Subject, to, tm.PlainMessage, tm.HTMLMessage)
+	var message *mail.SGMailV3
+	if tm.Template != "" {
+		msg, err := template.Render(tm.Template, tm.TemplateData)
+		if err != nil {
+			direktivapps.Log(aid, fmt.Sprintf("template failed: %s", err.Error()))
+			direktivapps.RespondWithError(w, fmt.Sprintf(code, "template"), err.Error())
+			return
+		}
+		message = mail.NewSingleEmail(from, tm.Subject, to, msg, msg)
+	} else {
+		message = mail.NewSingleEmail(from, tm.Subject, to, tm.PlainMessage, tm.HTMLMessage)
+	}
 
 	client := sendgrid.NewSendClient(tm.APIKey)
 	response, err := client.Send(message)

@@ -8,8 +8,23 @@
 # Sendgrid
 
 ## Direktiv
-An example workflow of using the container in a workflow on Direktiv.
+An example workflow of using the container in a workflow on Direktiv. The message content can be defined by three different values:
 
+- message: plain text message
+- html-message: html content as message
+- template & template-data: *template* defines a template in [golang templating format](https://pkg.go.dev/text/template) and template-data defines the input data for the template.
+
+*Templating example*
+```yaml
+template: "hello {{.name}}! {{range .items}}{{.}} {{end}}"
+template-data:
+  name: Testname
+  items:
+  - one
+  - two
+```
+
+*Workflow Example*
 ```yaml
 description: send emails
 functions:

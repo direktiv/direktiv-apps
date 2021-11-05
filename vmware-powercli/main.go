@@ -1,17 +1,13 @@
 package main
 
 import (
-	"bytes"
-	"crypto/sha1"
 	"encoding/json"
 	"fmt"
-	"github.com/mattn/go-shellwords"
-	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
-	"io/ioutil"
-	"math/rand"
 	"net/http"
-	"os/exec"
-	"time"
+
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
+	pss "github.com/direktiv/go-powershell"
+	"github.com/direktiv/go-powershell/backend"
 )
 
 const ps = "/bin/pwsh"
@@ -23,111 +19,127 @@ type PowerShell struct {
 	aid        string
 }
 
-// New create new session
-func New(aid string) *PowerShell {
-	ps, _ := exec.LookPath("pwsh")
-	return &PowerShell{
-		powerShell: ps,
-		aid:        aid,
-	}
-}
-
-func (p *PowerShell) execute(args ...string) (stdOut string, stdErr string, err error) {
-	args = append([]string{"-NoProfile", "-NonInteractive", "-c"}, args...)
-	hash := NewSHA1Hash()
-	args = append(args, fmt.Sprintf("1>%s", hash))
-	cmd := exec.Command(ps, args...)
-	direktivapps.LogDouble(p.aid, fmt.Sprintf("executing '%v", cmd.Args))
-	// var stdout bytes.Buffer
-	var stderr bytes.Buffer
-	// cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-
-	err = cmd.Run()
-
-	data, err := ioutil.ReadFile(hash)
-	if err != nil {
-		return "", stdErr, err
-	}
-	stdOut = string(data)
-	// stdOut, stdErr = stdout.String(), stderr.String()
-	// direktivapps.LogDouble(p.aid, fmt.Sprintf("stdout: %s\nstderr: %s", stdOut, stdErr))
-	return stdOut, stdErr, err
+type CmdOutput struct {
+	Result string      `json:"result"`
+	Output interface{} `json:"output"`
 }
 
 type VMWarePowerCLIInput struct {
-	Run []string `json:"run"`
+	Host    string   `json:"host"`
+	User    string   `json:"user"`
+	Pwd     string   `json:"password"`
+	Run     []string `json:"run"`
+	OnError string   `json:"on-error"`
+	Full    bool     `json:"full-command"`
+}
+
+func runShell(server, user, password string) (pss.Shell, error) {
+
+	back := &backend.Local{}
+	shell, err := pss.New(back)
+	if err != nil {
+		return nil, err
+	}
+
+	if server != "" {
+		_, _, err = shell.Execute(fmt.Sprintf("Connect-VIServer -Server %s -User %s -Password %s", server, user, password))
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	_, _, err = shell.Execute("$WarningPreference = 'SilentlyContinue'")
+	if err != nil {
+		return nil, err
+	}
+
+	return shell, nil
+
+}
+
+func execute(shell pss.Shell, psCmd string) (string, error) {
+
+	stdout, _, err := shell.Execute(psCmd)
+	if err != nil {
+		return "", err
+	}
+
+	return stdout, nil
+}
+
+func toJSON(aid, str string) interface{} {
+
+	var js json.RawMessage
+	err := json.Unmarshal([]byte(str), &js)
+	if err != nil {
+		direktivapps.LogDouble(aid, fmt.Sprintf("output is string value: %v", err))
+		return str
+	}
+
+	direktivapps.LogDouble(aid, fmt.Sprintf("output is json"))
+	return json.RawMessage(str)
+
 }
 
 func VMWarePowerCLIHandler(w http.ResponseWriter, r *http.Request) {
+
 	var obj VMWarePowerCLIInput
 	aid, err := direktivapps.Unmarshal(&obj, r)
 	if err != nil {
 		direktivapps.RespondWithError(w, fmt.Sprintf(code, "unmarshal-input"), err.Error())
 		return
 	}
-	posh := New(aid)
 
-	direktivapps.LogDouble(aid, "reading input...")
+	direktivapps.LogDouble(aid, fmt.Sprintf("getting powershell for %v", obj.Host))
+	sh, err := runShell(obj.Host, obj.User, obj.Pwd)
+	if err != nil {
+		direktivapps.RespondWithError(w, fmt.Sprintf(code, "connecting"), err.Error())
+		return
+	}
+	defer sh.Exit()
 
 	object := make(map[string]interface{})
-	for _, r := range obj.Run {
-		args, err := shellwords.Parse(r)
-		if err != nil {
-			direktivapps.RespondWithError(w, fmt.Sprintf(code, "shellwords"), err.Error())
-			return
-		}
-		o, e, err := posh.execute(args...)
-		if err != nil {
-			direktivapps.RespondWithError(w, fmt.Sprintf(code, "execution"), fmt.Sprintf("%v: %s", err, string(o)))
-			return
-		}
-		direktivapps.LogDouble(aid, fmt.Sprintf("%s%s", o, e))
 
-		object[r] = string(o + e)
+	for i := range obj.Run {
+		if obj.Full {
+			direktivapps.LogDouble(aid, fmt.Sprintf("running command: %s", obj.Run[i]))
+		} else {
+			direktivapps.LogDouble(aid, fmt.Sprintf("running command: %s...", obj.Run[i][0:15]))
+		}
+
+		o, err := execute(sh, obj.Run[i])
+		if err != nil {
+			object[fmt.Sprintf("%d", i)] = &CmdOutput{
+				Result: "error",
+				Output: err.Error(),
+			}
+			direktivapps.LogDouble(aid, fmt.Sprintf("command error: %v", err))
+
+			if obj.OnError == "stop" {
+				direktivapps.RespondWithError(w, fmt.Sprintf(code, "execute"), err.Error())
+				return
+			}
+
+			continue
+		}
+
+		direktivapps.LogDouble(aid, fmt.Sprintf("command output: %v", o))
+		object[fmt.Sprintf("%d", i)] = &CmdOutput{
+			Result: "success",
+			Output: toJSON(aid, o),
+		}
+
 	}
-
-	direktivapps.LogDouble(aid, "fetching output...")
 
 	data, err := json.Marshal(&object)
 	if err != nil {
 		direktivapps.RespondWithError(w, fmt.Sprintf(code, "marshal-response"), err.Error())
 		return
 	}
-
 	direktivapps.Respond(w, data)
+
 }
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
 	direktivapps.StartServer(VMWarePowerCLIHandler)
-}
-
-// NewSHA1Hash generates a new SHA1 hash based on
-// a random number of characters.
-func NewSHA1Hash(n ...int) string {
-	noRandomCharacters := 32
-
-	if len(n) > 0 {
-		noRandomCharacters = n[0]
-	}
-
-	randString := RandomString(noRandomCharacters)
-
-	hash := sha1.New()
-	hash.Write([]byte(randString))
-	bs := hash.Sum(nil)
-
-	return fmt.Sprintf("%x", bs)
-}
-
-var characterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-
-// RandomString generates a random string of n length
-func RandomString(n int) string {
-	b := make([]rune, n)
-	for i := range b {
-		b[i] = characterRunes[rand.Intn(len(characterRunes))]
-	}
-	return string(b)
 }

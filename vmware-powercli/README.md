@@ -5,6 +5,9 @@
 }
 ---
 
+IMPORTANT TO -Confirm:$false
+
+
 # VMware Power CLI
 
 The ability to send multiple `vmware-power-cli` commands and execute them.

@@ -1,6 +1,10 @@
 github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c h1:t1jfACYmQ4wd6dY08dftaHkc/IBexpoY6y0B0Fo1K4Y=
 github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c/go.mod h1:+fJQXv09OvZkT9IgRA0QKP4BTCIKG6HOzcEvz3P3yc0=
+github.com/direktiv/go-powershell v0.0.0-20211103153354-9301200a42b3 h1:MCVeBu8dYT2+B+bdkjFjYBx7p4RBbPZPz0vSJVEhWBk=
+github.com/direktiv/go-powershell v0.0.0-20211103153354-9301200a42b3/go.mod h1:eQXK0VU+pKojyiOp/PXKDwoAG7DCC1sCNKefwXv7AoA=
+github.com/direktiv/go-powershell v0.0.0-20211103175936-e6a9961a019d h1:25547dW6sUYRd2QJendFG09pOva/fn4igd/eQlXwL6c=
+github.com/direktiv/go-powershell v0.0.0-20211103175936-e6a9961a019d/go.mod h1:eQXK0VU+pKojyiOp/PXKDwoAG7DCC1sCNKefwXv7AoA=
 github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
 github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
-github.com/mattn/go-shellwords v1.0.12 h1:M2zGm7EW6UQJvDeQxo4T51eKPurbeFbe8WtebGE2xrk=
-github.com/mattn/go-shellwords v1.0.12/go.mod h1:EZzvwXDESEeg03EKmM+RmDnNOPKG4lLtQsUlTZDWQ8Y=
+github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
+github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
