@@ -1,5 +1,7 @@
 github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c h1:t1jfACYmQ4wd6dY08dftaHkc/IBexpoY6y0B0Fo1K4Y=
 github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c/go.mod h1:+fJQXv09OvZkT9IgRA0QKP4BTCIKG6HOzcEvz3P3yc0=
+github.com/direktiv/direktiv-apps/pkg v0.0.0-20211105001624-65854cc3e314 h1:6SHnTG5X0DWwoABD2HOmeHtxMJmcfqQ5agd0BZ6P9ak=
+github.com/direktiv/direktiv-apps/pkg v0.0.0-20211105001624-65854cc3e314/go.mod h1:+fJQXv09OvZkT9IgRA0QKP4BTCIKG6HOzcEvz3P3yc0=
 github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
 github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
 github.com/sendgrid/rest v2.6.5+incompatible h1:MZsDqRdwKTHXNABhVgiZFLgVDN698H4QtFrTX3WlrN0=

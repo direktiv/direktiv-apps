@@ -5,48 +5,107 @@
 }
 ---
 
-IMPORTANT TO -Confirm:$false
-
-
 # VMware Power CLI
 
 The ability to send multiple `vmware-power-cli` commands and execute them.
 
 ## Direktiv
 
-An example workflow of getting the version of `vmware-powercli` we run.
+This container can run scripts and command with PowerShell. The VMWare plugin has been already imported.
 
+Using a script needs a reference to a namespace or global variable. The shell runs unauthenticated and does not create a connection to a vCenter cluster or ESXi host.
+
+*Script Example*
 ```yaml
-id: get-version
+description: A simple 'action' state that sends a get request
 functions:
-- id: power-cli
+- id: get
   image: direktiv/vmware-powercli:v1
-description: The ability to send multiple `vmware-powercli` commands.
+  type: reusable
+  files:
+    - key: myscript"
+      scope: namespace
+      type: plain
+      as: "ps-script.ps1"
 states:
-- id: execute
+- id: getter
   type: action
   action:
-    function: power-cli
+    function: get
     input:
-      run:
-      - Get-PowerCLIVersion
+      print: true
+      scripts:
+        - name: "ps-script.ps1"
+          args:
+            - "arg1"
 ```
 
-**NOTE:** the `run` variable is an array of powershell strings which is wrapped in a `-Command` on the container itself.
+Script results will be converted to JSON as well if the result is JSON. If the result is text it will look like the following snippet:
 
-## Output of Execution
+```json
+"return": {
+		"script-0": {
+			"output": "connecting to server\n\nName  Port  User\n----  ----  ----\nserver   443   root\nWARNING: The 'Version' property of VirtualMachine type is deprecated. Use the 'HardwareVersion' property instead.\n\nName   : ubuntu",
+			"result": "success"
+		}
+	}
+```
 
-The output of the execution is a JSON object that takes your commands you ran as a key to build the structure.
-
-An example of the above workflow that we ran.
+The command alternative runs commands in order they are listed. If they return JSON the response will be added as an addressable JSON object in the response to Direktiv. The command `Get-VM -Name ubuntu | ConvertTo-Json  -Depth 1 -AsArray` will yield the following output:
 
 ```json
 {
 	"return": {
-		"Get-PowerCLIVersion": "\nPowerCLI Version\n----------------\n   VMware PowerCLI 12.2.0 build 17538434\n---------------\nComponent Versions\n---------------\n   VMware Common PowerCLI Component 12.3 build 17838947\n   VMware Cis Core PowerCLI Component PowerCLI Component 12.3 build 17839331\n   VMware VimAutomation VICore Commands PowerCLI Component PowerCLI Component 12.3 build 17839688\n\n\n"
+		"0": {
+			"output": [
+				{
+					"BootDelayMillisecond": 0,
+					"CoresPerSocket": 1,
+					"CreateDate": "2021-11-02T21:58:09.800272Z",
+					"CustomFields": "",
+					"DatastoreIdList": "Datastore-6181b457-fb4061f6-f9b8-000c291013a9",
+					"DrsAutomationLevel": null,
+				}
+			],
+			"result": "success"
+		}
 	}
 }
 ```
+It is important to add *-Confirm:$false* if the commands being called needs confirmation.
+
+*Command Example*
+```yaml
+description: A simple 'action' state that sends a get request
+functions:
+- id: get
+  image: direktiv/vmware-powercli:v1
+  type: reusable
+states:
+- id: getter
+  type: action
+  action:
+    secrets: ["ESXI_PWD"]
+    function: get
+    input:
+      host: my.esxi.server
+      user: root
+      password: jq(.secrets.ESXI_PWD)
+      on-error: stop
+      full-command: true
+      run:
+        - Get-VM -Name ubuntu
+  transition: check
+```
+
+
+## Additional Configuration Values
+
+| Attribute | Function |
+| -- | -- |
+|on-error|if set to 'stop' the function fails on the fist error|
+|full-command|Prints the full command. If set to false only the first 10 characters will be printed|
+|print| Prints stdout, stderr of the command / script|
 
 ## Error on Execution
 
@@ -59,4 +118,4 @@ If the container was to error out during the action an error will be thrown matc
 }
 ```
 
-**NOTE:** `%s` will be replaced with what is currently happening in the container that errored out e.g. `unmarshalling-input`.
+The `%s` will be replaced with what is currently happening in the container that created the error e.g. `unmarshalling-input`.
