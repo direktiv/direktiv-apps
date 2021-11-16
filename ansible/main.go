@@ -1,14 +1,16 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 
+	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 	da "github.com/direktiv/direktiv-apps/pkg/direktivapps"
 )
 
@@ -22,11 +24,14 @@ type input struct {
 	PrivateKey      string   `json:"privateKey"`
 	Args            []string `json:"args"`
 	Envs            []string `json:"envs"`
+	Collections     []string `json:"collections"`
+	ShowPlaybook    bool     `json:"show"`
 }
 
 const (
-	errCode    = "com.ansible.%s"
-	ansibleBin = "ansible-playbook"
+	errCode       = "com.ansible.%s"
+	ansibleBin    = "ansible-playbook"
+	ansibleGalaxy = "ansible-galaxy"
 )
 
 func reportError(w http.ResponseWriter, code string, err error) {
@@ -40,6 +45,21 @@ func coreLogic(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		reportError(w, "inputUnmarshal", err)
 		return
+	}
+
+	lw, _ := direktivapps.NewDirektivLogWriter(aid)
+
+	// install collections, e.g ansible-galaxy collection install devsec.hardening
+	for i := range obj.Collections {
+		galaxyCmd := exec.Command(ansibleGalaxy, "collection", "install", obj.Collections[i])
+
+		galaxyCmd.Stderr = lw
+		galaxyCmd.Stdout = lw
+		err = galaxyCmd.Run()
+		if err != nil {
+			reportError(w, "galaxy", err)
+			return
+		}
 	}
 
 	mntPath := r.Header.Get("Direktiv-TempDir")
@@ -75,26 +95,47 @@ func coreLogic(w http.ResponseWriter, r *http.Request) {
 	if !obj.HostKeyChecking {
 		cmd.Env = append(cmd.Env, "ANSIBLE_HOST_KEY_CHECKING=False")
 	}
+
 	osenv := os.Environ()
+	osenv = append(osenv, "ANSIBLE_CALLBACKS_ENABLED=json",
+		"ANSIBLE_STDOUT_CALLBACK=json")
 	osenv = append(osenv, obj.Envs...)
-	da.LogDouble(aid, fmt.Sprintf("attaching envs: %v", osenv))
+
 	cmd.Env = osenv
 
-	out, err := cmd.CombinedOutput()
-	if err != nil {
-		if out != nil {
-			err = fmt.Errorf("%w: %s", err, out)
+	if obj.ShowPlaybook {
+		b, err := ioutil.ReadFile(filepath.Join(mntPath, obj.Playbook))
+		if err != nil {
+			da.LogDouble(aid, fmt.Sprintf("can not find playbook: %v", err))
+			reportError(w, "playbook", err)
+			return
 		}
+		da.LogDouble(aid, fmt.Sprintf("running playbook %v", obj.Playbook))
+		da.LogDouble(aid, fmt.Sprintf("%v", string(b)))
+	} else {
+		da.LogDouble(aid, fmt.Sprintf("running playbook %v", obj.Playbook))
+	}
+
+	outb := &bytes.Buffer{}
+	errb := &bytes.Buffer{}
+
+	cmd.Stdout = outb
+	cmd.Stderr = errb
+
+	err = cmd.Run()
+	if err != nil {
+		da.LogDouble(aid, fmt.Sprintf("running playbook failed: %v", err))
+		da.LogDouble(aid, fmt.Sprintf("%v", string(errb.Bytes())))
 		reportError(w, "cmd", err)
 		return
 	}
 
-	out = []byte(strings.TrimSpace(string(out)))
-	da.LogDouble(aid, fmt.Sprintf("cmd output: %v", string(out)))
+	direktivapps.LogDouble(aid, fmt.Sprintf("Output: %v", string(outb.Bytes())))
 
-	if !json.Valid(out) {
-		o := make(map[string]string)
-		o["output"] = string(out)
+	if json.Valid(outb.Bytes()) {
+		o := make(map[string]interface{})
+
+		o["output"] = json.RawMessage(string(outb.Bytes()))
 
 		b, err := json.Marshal(o)
 		if err != nil {
@@ -104,7 +145,7 @@ func coreLogic(w http.ResponseWriter, r *http.Request) {
 
 		da.Respond(w, b)
 	} else {
-		da.Respond(w, out)
+		da.Respond(w, outb.Bytes())
 	}
 
 }

@@ -19,6 +19,7 @@ The following code block demonstrates how to include this isolate in a workflow,
 ```yaml
   - id: ansible
     image: direktiv/ansible:v1
+    type: reusable
     files:
       - key: playbook.yml
         scope: workflow
@@ -35,10 +36,17 @@ The input object accepted by this isolate contains the following fields:
 input:
   playbook: playbook.yml
   privateKey: pk.pem
+  # collections to install from galaxy before running the playbook
+  collections: ["devsec.hardening"]
   args:
     - "-i"
     - "192.168.1.123,"
+  show: true # prints the playbook
+  envs:
+    - "ANSIBLE_STDOUT_CALLBACK=default" # if non-JSON output is wanted
 ```
 
-*Note: the playbook and privateKey input fields should correspond with the variable names provided in the function declaration.*
+The environment variables ANSIBLE_CALLBACK_WHITELIST and ANSIBLE_STDOUT_CALLBACK are set to *json* by default.
 
+
+*Note: the playbook and privateKey input fields should correspond with the variable names provided in the function declaration.*
