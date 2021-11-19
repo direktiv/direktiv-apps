@@ -89,10 +89,10 @@ func SRMHandler(w http.ResponseWriter, r *http.Request) {
 		delete(obj, "variable")
 		delete(obj, "timestamp")
 		for key, element := range obj {
-			raw += fmt.Sprintf("\t%s=%s", key, element)
+			raw += fmt.Sprintf("\t%s=%v", key, element)
 		}
 		raw += "\n"
-		direktivapps.LogDouble(aid, fmt.Sprintf("%s >> %s:%s", raw, address, port))
+		direktivapps.LogDouble(aid, "%s >> %s:%s", raw, address, port)
 
 		tcpAddr, err := net.ResolveTCPAddr("tcp4", fmt.Sprintf("%s:%s", address, port))
 		if err != nil {
