@@ -45,9 +45,9 @@ func aid(r *http.Request) (string, error) {
 }
 
 // Start Server
-func StartServer(f func(w http.ResponseWriter, r *http.Request, ri *RequestInfo)) {
+func StartServer(f func(w http.ResponseWriter, r *http.Request, ri *RequestInfo), shutDown func()) {
 
-	logger := getZeroLogger(nil)
+	logger := GetZeroLogger(nil)
 	logger.Info().Msg("starting server")
 
 	r := mux.NewRouter()
@@ -73,18 +73,21 @@ func StartServer(f func(w http.ResponseWriter, r *http.Request, ri *RequestInfo)
 		Handler: r,
 	}
 
-	handleShutdown(srv)
+	handleShutdown(srv, shutDown)
 	log.Fatal(srv.ListenAndServe())
 
 }
 
-func handleShutdown(srv *http.Server) {
+func handleShutdown(srv *http.Server, shutdown func()) {
 
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGTERM)
 
 	go func() {
 		<-sigs
+		if shutdown != nil {
+			shutdown()
+		}
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 		srv.Shutdown(ctx)

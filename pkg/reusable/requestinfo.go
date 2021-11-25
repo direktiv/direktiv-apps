@@ -50,13 +50,13 @@ func newRequestInfo(aid string) *RequestInfo {
 	return &RequestInfo{
 		aid: aid,
 		logger: &DirektivLogger{
-			logger: getZeroLogger(cw),
+			logger: GetZeroLogger(cw),
 		},
 	}
 
 }
 
-func getZeroLogger(w io.Writer) zerolog.Logger {
+func GetZeroLogger(w io.Writer) zerolog.Logger {
 
 	// setup logger
 	cw := consoleWriter(os.Stderr)
