@@ -24,6 +24,11 @@ const (
 	DirektivErrorMessageHeader = "Direktiv-ErrorMessage"
 )
 
+const (
+	UnmarshallError = "io.direktiv.unmarshal"
+	MarshallError   = "io.direktiv.marshal"
+)
+
 type ActionError struct {
 	ErrorCode    string `json:"errorCode"`
 	ErrorMessage string `json:"errorMessage"`
@@ -114,7 +119,7 @@ func ReportResult(w http.ResponseWriter, data interface{}) {
 
 	b, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
-		ReportError(w, "marshal", err)
+		ReportError(w, MarshallError, err)
 	}
 	w.Write(b)
 
@@ -123,13 +128,11 @@ func ReportResult(w http.ResponseWriter, data interface{}) {
 func ReportError(w http.ResponseWriter, errcode string,
 	err error) {
 
-	ec := fmt.Sprintf("io.direktiv.%s", errcode)
-
-	w.Header().Set(DirektivErrorCodeHeader, ec)
+	w.Header().Set(DirektivErrorCodeHeader, errcode)
 	w.Header().Set(DirektivErrorMessageHeader, err.Error())
 
 	ae := &ActionError{
-		ErrorCode:    ec,
+		ErrorCode:    errcode,
 		ErrorMessage: err.Error(),
 	}
 
