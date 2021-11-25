@@ -30,34 +30,38 @@ func timestamp(in interface{}) string {
 	return time.Now().Format("15:04:05.000")
 }
 
-func newRequestInfo(aid string) *RequestInfo {
-
-	dl := &DirektivLoggerWriter{
-		aid: aid,
-	}
-
-	return &RequestInfo{
-		aid: aid,
-		logger: &DirektivLogger{
-			logger: getZeroLogger(false, dl),
-		},
-	}
-}
-
-func getZeroLogger(debug bool, w io.Writer) zerolog.Logger {
-
-	// setup logger
-	cw := zerolog.ConsoleWriter{Out: os.Stderr}
+func consoleWriter(w io.Writer) zerolog.ConsoleWriter {
+	cw := zerolog.ConsoleWriter{Out: w}
 	cw.NoColor = true
 	cw.FormatTimestamp = timestamp
 	cw.FormatLevel = func(i interface{}) string {
 		return ""
 	}
+	return cw
+}
+
+func newRequestInfo(aid string) *RequestInfo {
+
+	dl := &DirektivLoggerWriter{
+		aid: aid,
+	}
+	cw := consoleWriter(dl)
+
+	return &RequestInfo{
+		aid: aid,
+		logger: &DirektivLogger{
+			logger: getZeroLogger(cw),
+		},
+	}
+
+}
+
+func getZeroLogger(w io.Writer) zerolog.Logger {
+
+	// setup logger
+	cw := consoleWriter(os.Stderr)
 
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
-	if debug {
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
-	}
 
 	var wr io.Writer = cw
 	if w != nil {

@@ -47,7 +47,7 @@ func aid(r *http.Request) (string, error) {
 // Start Server
 func StartServer(f func(w http.ResponseWriter, r *http.Request, ri *RequestInfo)) {
 
-	logger := getZeroLogger(false, nil)
+	logger := getZeroLogger(nil)
 	logger.Info().Msg("starting server")
 
 	r := mux.NewRouter()
