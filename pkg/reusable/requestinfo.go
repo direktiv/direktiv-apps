@@ -6,7 +6,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/rs/zerolog"
 )
@@ -27,7 +26,8 @@ type DirektivLoggerWriter struct {
 }
 
 func timestamp(in interface{}) string {
-	return time.Now().Format("15:04:05.000")
+	// return time.Now().Format("15:04:05.000")
+	return ""
 }
 
 func consoleWriter(w io.Writer) zerolog.ConsoleWriter {
