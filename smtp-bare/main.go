@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
-	mail "github.com/xhit/go-simple-mail"
+	mail "github.com/xhit/go-simple-mail/v2"
 )
 
 var code = "com.smtp-bare.%s.error"
@@ -53,36 +53,39 @@ func SMTPHandler(w http.ResponseWriter, r *http.Request) {
 
 	server.Port = int(ri.Port)
 
-	// server.Authentication = mail.AuthPlain
-
 	// check for authentication
 	if ri.From != "" && ri.Password != "" {
+		direktivapps.LogDouble(aid, "using username and password")
 		server.Username = ri.From
 		server.Password = ri.Password
 	}
 	// check for TLS
 	if ri.TLS {
+		direktivapps.LogDouble(aid, "using encryption")
 		server.Encryption = mail.EncryptionTLS
 	}
 
-	// if ri.Password == "" {
-	// 	server.Authentication = mail.EncodingNone
-	// } else {
-	// 	server.Authentication = mail.AuthPlain
-	// }
+	if ri.Password == "" {
+		direktivapps.LogDouble(aid, "using auth none")
+		server.Authentication = mail.AuthNone
+	} else {
+		direktivapps.LogDouble(aid, "using auth plain")
+		server.Authentication = mail.AuthPlain
+	}
 
 	// Variable to keep alive connection
 	server.KeepAlive = false
 
 	// Timeout for connect to SMTP Server
-	server.ConnectTimeout = 10 * time.Second
+	server.ConnectTimeout = 30 * time.Second
 
 	// Timeout for send the data and wait respond
-	server.SendTimeout = 60 * time.Second
+	server.SendTimeout = 120 * time.Second
 
 	// SMTP client
 	ee, err := server.Connect()
 	if err != nil {
+		direktivapps.LogDouble(aid, "could not connect: %v", err.Error())
 		direktivapps.RespondWithError(w, fmt.Sprintf(code, "smtp-connect"), err.Error())
 		return
 	}
