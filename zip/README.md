@@ -15,22 +15,19 @@ An example workflow of using the container on Direktiv.
 
 ```yaml
 id: zip-file
-description: Listens for a smtp-event to send the email appropriately.
 functions:
 - id: zip
-  image: direktiv/zip:v1
+  image: direktiv/zip:v3
 states:
 - id: zip-data
   type: action
-  transform: 
-    data: jq(.return)
-    smtp: jq(.smtp)
-    password: jq(.password)
   action:
     function: zip
     input:
       password: jq(.password)
       files: jq(.smtp.attachments)
+      scope: workflow
+      name: myzip
 ```
 
 ### Input
@@ -43,7 +40,7 @@ states:
 
 ### Output
 
-The output returns the entire file which comes back as base64 string.
+Empty but the action stores the zip file under the provided name and scope. 
 
 ## Error
 
