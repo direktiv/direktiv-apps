@@ -1,0 +1,140 @@
+package reusable
+
+import (
+	"encoding/base64"
+	"fmt"
+	"io"
+	"os"
+	"strings"
+)
+
+type File struct {
+	Name        string `json:"name"`
+	Data        string `json:"data"`
+	Type        string `json:"type"`
+	ContentType string `json:"contenttype"`
+
+	ri *RequestInfo
+}
+
+type FileIterator struct {
+	idx   int
+	files []File
+	ri    *RequestInfo
+}
+
+func NewFileIterator(files []File, ri *RequestInfo) *FileIterator {
+	return &FileIterator{
+		files: files,
+		ri:    ri,
+	}
+}
+
+func (fi *FileIterator) Next() (*File, error) {
+
+	if fi.idx >= len(fi.files) {
+		return nil, io.EOF
+	}
+
+	f := &fi.files[fi.idx]
+	f.ri = fi.ri
+
+	fi.idx++
+
+	return f, nil
+}
+
+func (fi *FileIterator) Reset() {
+	fi.idx = 0
+}
+
+func (f *File) AsString() (string, error) {
+
+	switch f.Type {
+	case TypeBase64:
+		b, err := base64.StdEncoding.DecodeString(f.Data)
+		return string(b), err
+	case TypeFile:
+		file, err := os.Open(f.Data)
+		if err != nil {
+			return "", err
+		}
+		b, err := io.ReadAll(file)
+		return string(b), err
+	case TypeVariable:
+		v := strings.SplitN(f.Data, "/", 2)
+		if len(v) != 2 {
+			return "", fmt.Errorf("can not get var %s, needs format SCOPE/NAME", f.Name)
+		}
+		r, _, err := f.ri.ReadVar(v[0], v[1])
+		if err != nil {
+			return "", err
+		}
+		defer r.Close()
+		b, err := io.ReadAll(r)
+		return string(b), err
+	case TypePlain:
+		return f.Data, nil
+	default:
+		return "", fmt.Errorf("unknown type")
+	}
+}
+
+func (f *File) AsBase64() (string, error) {
+
+	switch f.Type {
+	case TypeBase64:
+		return f.Data, nil
+	case TypeFile:
+		file, err := os.Open(f.Data)
+		if err != nil {
+			return "", err
+		}
+		b, err := io.ReadAll(file)
+		b64 := base64.StdEncoding.EncodeToString(b)
+		return b64, err
+	case TypeVariable:
+		v := strings.SplitN(f.Data, "/", 2)
+		if len(v) != 2 {
+			return "", fmt.Errorf("can not get var %s, needs format SCOPE/NAME", f.Name)
+		}
+		r, _, err := f.ri.ReadVar(v[0], v[1])
+		if err != nil {
+			return "", err
+		}
+		defer r.Close()
+		b, err := io.ReadAll(r)
+		b64 := base64.StdEncoding.EncodeToString(b)
+		return b64, err
+	case TypePlain:
+		b := base64.StdEncoding.EncodeToString([]byte(f.Data))
+		return b, nil
+	default:
+		return "", fmt.Errorf("unknown type")
+	}
+
+}
+
+func (f *File) AsReader() (io.ReadCloser, error) {
+
+	switch f.Type {
+	case TypeBase64:
+		b, err := base64.StdEncoding.DecodeString(f.Data)
+		return io.NopCloser(strings.NewReader(string(b))), err
+	case TypeFile:
+		return os.Open(f.Data)
+	case TypeVariable:
+		v := strings.SplitN(f.Data, "/", 2)
+		if len(v) != 2 {
+			return nil, fmt.Errorf("can not get var %s, needs format SCOPE/NAME", f.Name)
+		}
+		r, _, err := f.ri.ReadVar(v[0], v[1])
+
+		return r, err
+	case TypePlain:
+		return io.NopCloser(strings.NewReader(f.Data)), nil
+	default:
+		return nil, fmt.Errorf("unknown type")
+	}
+
+}
