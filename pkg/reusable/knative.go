@@ -22,6 +22,22 @@ const (
 	DirektivActionIDHeader     = "Direktiv-ActionID"
 	DirektivErrorCodeHeader    = "Direktiv-ErrorCode"
 	DirektivErrorMessageHeader = "Direktiv-ErrorMessage"
+	DirektivTmpDir             = "Direktiv-TempDir"
+)
+
+const (
+	ScopeNamespace = "namespace"
+	ScopeWorkflow  = "workflow"
+	ScopeInstance  = "instance"
+	ScopeThread    = "thread"
+)
+
+const (
+	TypeBase64   = "base64"
+	TypePlain    = "plain"
+	TypeFile     = "file"
+	TypeVariable = "var"
+	TypeReader   = "reader"
 )
 
 const (
@@ -64,7 +80,7 @@ func StartServer(f func(w http.ResponseWriter, r *http.Request, ri *RequestInfo)
 		ctx, cancel := context.WithCancel(r.Context())
 		r = r.WithContext(ctx)
 		sm.Store(aid, cancel)
-		f(w, r, newRequestInfo(aid))
+		f(w, r, newRequestInfo(aid, r.Header.Get("DirektivTmpDir")))
 		sm.Delete(aid)
 	})
 

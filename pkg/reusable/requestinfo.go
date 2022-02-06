@@ -2,10 +2,13 @@ package reusable
 
 import (
 	"bytes"
+	"encoding/base64"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"strconv"
+	"strings"
 
 	"github.com/rs/zerolog"
 )
@@ -17,8 +20,8 @@ type DirektivLogger struct {
 }
 
 type RequestInfo struct {
-	aid    string
-	logger *DirektivLogger
+	aid, dir string
+	logger   *DirektivLogger
 }
 
 type DirektivLoggerWriter struct {
@@ -26,7 +29,6 @@ type DirektivLoggerWriter struct {
 }
 
 func timestamp(in interface{}) string {
-	// return time.Now().Format("15:04:05.000")
 	return ""
 }
 
@@ -40,7 +42,7 @@ func consoleWriter(w io.Writer) zerolog.ConsoleWriter {
 	return cw
 }
 
-func newRequestInfo(aid string) *RequestInfo {
+func newRequestInfo(aid, dir string) *RequestInfo {
 
 	dl := &DirektivLoggerWriter{
 		aid: aid,
@@ -49,6 +51,7 @@ func newRequestInfo(aid string) *RequestInfo {
 
 	return &RequestInfo{
 		aid: aid,
+		dir: dir,
 		logger: &DirektivLogger{
 			logger: GetZeroLogger(cw),
 		},
@@ -79,6 +82,97 @@ func (ri *RequestInfo) ActionID() string {
 
 func (ri *RequestInfo) Logger() *DirektivLogger {
 	return ri.logger
+}
+
+func (ri *RequestInfo) Dir() string {
+	return ri.dir
+}
+
+type UploadVariable struct {
+	Kind, Data string
+
+	// passing in a plain reader
+	Reader io.Reader
+	Length int64
+}
+
+func (ri *RequestInfo) WriteVar(scope, name string, variable UploadVariable) error {
+
+	switch variable.Kind {
+	case TypeBase64:
+		dec, err := base64.StdEncoding.DecodeString(variable.Data)
+		if err != nil {
+			return err
+		}
+		variable.Reader = bytes.NewReader(dec)
+		variable.Length = int64(len(dec))
+	case TypePlain:
+		variable.Reader = strings.NewReader(variable.Data)
+		variable.Length = int64(len(variable.Data))
+	case TypeFile:
+		s, _ := os.Stat(variable.Data)
+		f, err := os.Open(variable.Data)
+		defer f.Close()
+		if err != nil {
+			return err
+		}
+		variable.Reader = f
+		variable.Length = s.Size()
+	case TypeReader:
+		// do nothing
+	default:
+		return fmt.Errorf("unknown variable kind: %v", variable.Kind)
+	}
+
+	req, err := http.NewRequest(http.MethodPost, "http://127.0.0.1:8889/var", variable.Reader)
+	if err != nil {
+		return err
+	}
+
+	q := req.URL.Query()
+	q.Add("scope", scope)
+	q.Add("key", name)
+	q.Add("aid", ri.aid)
+
+	// assign encoded query string to http request
+	req.URL.RawQuery = q.Encode()
+
+	req.ContentLength = variable.Length
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	return nil
+}
+
+func (ri *RequestInfo) ReadVar(scope, name string) (io.ReadCloser, int64, error) {
+
+	client := &http.Client{}
+	req, err := http.NewRequest(http.MethodGet, "http://127.0.0.1:8889/var", nil)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	q := req.URL.Query()
+	q.Add("scope", scope)
+	q.Add("key", name)
+	q.Add("aid", ri.aid)
+	req.URL.RawQuery = q.Encode()
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	lh := resp.Header.Get("content-length")
+	n, _ := strconv.ParseInt(lh, 10, 64)
+
+	return resp.Body, n, nil
+
 }
 
 func (dl *DirektivLogger) Errorf(format string, args ...interface{}) {
