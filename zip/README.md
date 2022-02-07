@@ -24,10 +24,23 @@ states:
   action:
     function: zip
     input:
-      password: jq(.password)
-      files: jq(.smtp.attachments)
-      scope: workflow
-      name: myzip
+      password: jq(.password) # password encrypts the zip
+      files:   # files to zip
+      - name: mypdf.pdf 
+        data: workflow/pdffile 
+        type: var
+      - name: hellworld.txt
+        type: plain
+        data: this is plain text
+      - name: base64.txt
+        type: base64
+        data: aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kUXc0dzlXZ1hjUQ==
+      - name: secondpdf.pdf
+        type: file
+        data: /test.pdf
+      scope: workflow # stores the zip as variable
+      name: myzip 
+      return: true # returns zip as base64 if true
 ```
 
 ### Input
@@ -36,11 +49,11 @@ states:
 - files
   - name: the name of the file
   - data: the data for the file
-  - type: base64 to decode or blank
+  - type: plain, var, basse64, file
 
 ### Output
 
-Empty but the action stores the zip file under the provided name and scope. 
+Zip file as base64 in return and zip can be stored as variable.
 
 ## Error
 

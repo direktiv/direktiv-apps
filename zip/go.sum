@@ -4,8 +4,10 @@ github.com/benbjohnson/clock v1.1.0/go.mod h1:J11/hYXuz8f4ySSvYwY0FKfm+ezbsZBKZx
 github.com/coreos/go-systemd/v22 v22.3.2/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/direktiv/direktiv-apps/pkg v0.0.0-20211210012005-8fb97ec9302e h1:bu4QYre/Vz/akH/ZpYD/aXgXjhXIYX/5dE9UyK71k8Q=
-github.com/direktiv/direktiv-apps/pkg v0.0.0-20211210012005-8fb97ec9302e/go.mod h1:rUmjodOm+91c3Y+SxfMO5PwNbNfhWhGhPgrSmtvArQc=
+github.com/direktiv/direktiv-apps/pkg v0.0.0-20220206063601-da79830df9bf h1:OlQHlrmPDIcodskfPLml+hmns9IJzwVu1wwkfv6iFwE=
+github.com/direktiv/direktiv-apps/pkg v0.0.0-20220206063601-da79830df9bf/go.mod h1:rUmjodOm+91c3Y+SxfMO5PwNbNfhWhGhPgrSmtvArQc=
+github.com/direktiv/direktiv-apps/pkg v0.0.0-20220206063931-8dc5535bdb7a h1:2Bt40YT/5tQt70a/LLkVhjlWaa0M2mHjFfa8pvbaye4=
+github.com/direktiv/direktiv-apps/pkg v0.0.0-20220206063931-8dc5535bdb7a/go.mod h1:rUmjodOm+91c3Y+SxfMO5PwNbNfhWhGhPgrSmtvArQc=
 github.com/godbus/dbus/v5 v5.0.4/go.mod h1:xhWf0FNVPg57R7Z0UbKHbJfkEywrmjJnf7w5xrFpKfA=
 github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
 github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=

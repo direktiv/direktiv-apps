@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -13,17 +14,18 @@ import (
 	zip2 "github.com/klauspost/compress/zip"
 )
 
-type filePath struct {
-	Name string `json:"name"`
-	Data string `json:"data"`
-	Type string `json:"type"`
-}
+// type filePath struct {
+// 	Name string `json:"name"`
+// 	Data string `json:"data"`
+// 	Type string `json:"type"`
+// }
 
 type requestInput struct {
-	Files    []filePath `json:"files"`
-	Scope    string     `json:"scope"`
-	Name     string     `json:"name"`
-	Password string     `json:"password"`
+	Files    []reusable.File `json:"files"`
+	Scope    string          `json:"scope"`
+	Name     string          `json:"name"`
+	Password string          `json:"password"`
+	Return   bool            `json:"return"`
 }
 
 type zipper interface {
@@ -37,10 +39,11 @@ type encryptedZipper struct {
 }
 
 type unencryptedZipper struct {
-	writer zip2.Writer
+	writer *zip2.Writer
 }
 
 func (uz *unencryptedZipper) Close() error {
+	uz.writer.Flush()
 	return uz.writer.Close()
 }
 
@@ -66,68 +69,101 @@ func zipHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestInfo
 		return
 	}
 
-	if len(obj.Scope) == 0 || len(obj.Name) == 0 {
-		reusable.ReportError(w, errForCode("zipfile"), fmt.Errorf("name and scope are required"))
-		return
-	}
+	var zipFileOut *os.File
 
-	finalName := fmt.Sprintf("%s/out/%s/%s", r.Header.Get("Direktiv-TempDir"), obj.Scope, obj.Name)
-	ri.Logger().Infof("start zipping to %s", finalName)
-
-	zipFile, err := os.Create(finalName)
-	if err != nil {
-		reusable.ReportError(w, errForCode("zipfile"), err)
-		return
+	// create var file if set
+	if len(obj.Scope) > 0 && len(obj.Name) > 0 {
+		fn := fmt.Sprintf("%s/out/%s/%s", r.Header.Get("Direktiv-TempDir"), obj.Scope, obj.Name)
+		zipFileOut, err = os.Create(fn)
+		if err != nil {
+			reusable.ReportError(w, reusable.UnmarshallError, err)
+			return
+		}
+	} else {
+		zipFileOut, err = ioutil.TempFile("", "zip")
+		if err != nil {
+			reusable.ReportError(w, reusable.UnmarshallError, err)
+			return
+		}
 	}
+	defer zipFileOut.Close()
+
+	// remove tmp file if its not set back as var
+	defer func() {
+		if len(obj.Scope) == 0 && len(obj.Name) == 0 {
+			os.Remove(zipFileOut.Name())
+		}
+	}()
+
+	ri.Logger().Infof("start zipping to %s", zipFileOut.Name())
 
 	var wr zipper
 	if len(obj.Password) > 0 {
 		ri.Logger().Infof("using encrypted zipper")
 		wr = &encryptedZipper{
-			zip.NewWriter(zipFile),
+			zip.NewWriter(zipFileOut),
 			obj.Password,
 		}
 	} else {
 		ri.Logger().Infof("using unencrypted zipper")
 		wr = &unencryptedZipper{
-			writer: *zip2.NewWriter(zipFile),
+			zip2.NewWriter(zipFileOut),
 		}
 	}
-
 	defer wr.Close()
 
-	// iterate through files and create tmp files for it
-	for i := range obj.Files {
-		fin := obj.Files[i]
-
-		f, err := wr.Create(fin.Name)
-		if err != nil {
-			os.Remove(zipFile.Name())
+	fi := reusable.NewFileIterator(obj.Files, ri)
+	for {
+		f, err := fi.Next()
+		if err == io.EOF {
+			break
+		} else if err != nil {
 			reusable.ReportError(w, errForCode("zipfile"), err)
 			return
 		}
 
-		if fin.Type == "base64" {
-			ri.Logger().Infof("base64 content for %s", fin.Name)
-			dec, err := base64.StdEncoding.DecodeString(fin.Data)
-			if err != nil {
-				os.Remove(zipFile.Name())
-				reusable.ReportError(w, errForCode("zipfile"), err)
-				return
-			}
-			f.Write(dec)
-		} else {
-			ri.Logger().Infof("plain text content for %s", fin.Name)
-			f.Write([]byte(fin.Data))
-			if err != nil {
-				os.Remove(zipFile.Name())
-				reusable.ReportError(w, errForCode("zipfile"), err)
-				return
-			}
+		ri.Logger().Infof("processing %s ", f.Name)
+		ze, err := wr.Create(f.Name)
+		if err != nil {
+			reusable.ReportError(w, errForCode("zipfile"), err)
+			return
 		}
-	}
 
-	reusable.ReportResult(w, []byte("{}"))
+		c, err := f.AsString()
+		if err != nil {
+			reusable.ReportError(w, errForCode("zipfile"), err)
+			return
+		}
+
+		_, err = ze.Write([]byte(c))
+		if err != nil {
+			reusable.ReportError(w, errForCode("zipfile"), err)
+			return
+		}
+		ri.Logger().Infof("processed %s", f.Name)
+	}
+	wr.Close()
+
+	// reponse
+	if obj.Return {
+		rf, err := os.Open(zipFileOut.Name())
+		if err != nil {
+			reusable.ReportError(w, errForCode("zipfile"), err)
+			return
+		}
+		b, err := io.ReadAll(rf)
+		if err != nil {
+			reusable.ReportError(w, errForCode("zipfile"), err)
+			return
+		}
+		s := base64.StdEncoding.EncodeToString(b)
+
+		m := make(map[string]string)
+		m["zip"] = s
+		reusable.ReportResult(w, s)
+	} else {
+		reusable.ReportResult(w, "")
+	}
 
 }
 
