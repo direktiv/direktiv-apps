@@ -80,7 +80,7 @@ func StartServer(f func(w http.ResponseWriter, r *http.Request, ri *RequestInfo)
 		ctx, cancel := context.WithCancel(r.Context())
 		r = r.WithContext(ctx)
 		sm.Store(aid, cancel)
-		f(w, r, newRequestInfo(aid, r.Header.Get("DirektivTmpDir")))
+		f(w, r, newRequestInfo(aid, r.Header.Get(DirektivTmpDir)))
 		sm.Delete(aid)
 	})
 
