@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -137,4 +138,25 @@ func (f *File) AsReader() (io.ReadCloser, error) {
 		return nil, fmt.Errorf("unknown type")
 	}
 
+}
+
+func (f *File) AsFile() (*os.File, error) {
+	file, err := ioutil.TempFile("", f.Name)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	script, err := f.AsReader()
+	if err != nil {
+		return nil, err
+	}
+	defer script.Close()
+
+	_, err = io.Copy(file, script)
+	if err != nil {
+		return nil, err
+	}
+
+	return file, nil
 }
