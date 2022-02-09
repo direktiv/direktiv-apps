@@ -145,7 +145,6 @@ func (f *File) AsFile() (*os.File, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
 
 	script, err := f.AsReader()
 	if err != nil {
