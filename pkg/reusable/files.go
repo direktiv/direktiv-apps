@@ -140,8 +140,14 @@ func (f *File) AsReader() (io.ReadCloser, error) {
 
 }
 
-func (f *File) AsFile() (*os.File, error) {
+func (f *File) AsFile(mode os.FileMode) (*os.File, error) {
+
 	file, err := ioutil.TempFile("", f.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	err = os.Chmod(file.Name(), mode)
 	if err != nil {
 		return nil, err
 	}
