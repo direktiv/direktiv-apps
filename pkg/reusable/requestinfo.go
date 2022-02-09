@@ -22,6 +22,7 @@ type DirektivLogger struct {
 type RequestInfo struct {
 	aid, dir string
 	logger   *DirektivLogger
+	dl       *DirektivLoggerWriter
 }
 
 type DirektivLoggerWriter struct {
@@ -52,6 +53,7 @@ func newRequestInfo(aid, dir string) *RequestInfo {
 	return &RequestInfo{
 		aid: aid,
 		dir: dir,
+		dl:  dl,
 		logger: &DirektivLogger{
 			logger: GetZeroLogger(cw),
 		},
@@ -86,6 +88,10 @@ func (ri *RequestInfo) Logger() *DirektivLogger {
 
 func (ri *RequestInfo) Dir() string {
 	return ri.dir
+}
+
+func (ri *RequestInfo) LogWriter() *DirektivLoggerWriter {
+	return ri.dl
 }
 
 type UploadVariable struct {
