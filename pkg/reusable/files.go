@@ -163,5 +163,7 @@ func (f *File) AsFile(mode os.FileMode) (*os.File, error) {
 		return nil, err
 	}
 
+	file.Seek(0, io.SeekStart)
+
 	return file, nil
 }
