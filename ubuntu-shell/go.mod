@@ -2,4 +2,4 @@ module github.com/direktiv/direktiv-apps/ubuntu-shell
 
 go 1.16
 
-require github.com/direktiv/direktiv-apps/pkg v0.0.0-20211101220616-f962c28e6465
+require github.com/direktiv/direktiv-apps/pkg v0.0.0-20220210003412-4697d751f326

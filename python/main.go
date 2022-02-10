@@ -42,8 +42,14 @@ func pythonHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestI
 		reusable.ReportError(w, errForCode("execute"), err)
 		return
 	}
+	defer os.Remove(file.Name())
 
-	cmd := exec.Command("python3", file.Name())
+	args := []string{
+		file.Name(),
+	}
+	args = append(args, obj.Args...)
+
+	cmd := exec.Command("python3", args...)
 
 	ri.Logger().Infof("executing %v", cmd)
 
@@ -92,6 +98,7 @@ func pythonHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestI
 			reusable.ReportError(w, errForCode("json"), err)
 			return
 		}
+		defer os.Remove(uf)
 		reusable.ReportResult(w, ret)
 	}
 
@@ -111,7 +118,8 @@ func runScript(f *reusable.File, envs []string, ri *reusable.RequestInfo) error 
 	if err != nil {
 		return err
 	}
-	file.Close()
+	defer file.Close()
+	defer os.Remove(file.Name())
 
 	cmd := exec.Command(file.Name())
 
