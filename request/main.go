@@ -5,6 +5,7 @@ import (
 
 	"bytes"
 	"crypto/tls"
+	"encoding/base64"
 	b64 "encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -156,7 +157,6 @@ func Request(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var mapBody map[string]interface{}
-	var dataBody interface{}
 	var responding output
 	responding.Status = resp.Status
 	responding.StatusCode = resp.StatusCode
@@ -165,8 +165,7 @@ func Request(w http.ResponseWriter, r *http.Request) {
 	// if body is unable to be marshalled treat as a byte array
 	err = json.Unmarshal(body, &mapBody)
 	if err != nil {
-		json.Unmarshal(body, &dataBody)
-		responding.Body = dataBody
+		responding.Body = base64.StdEncoding.EncodeToString(body)
 	} else {
 		responding.Body = mapBody
 	}
