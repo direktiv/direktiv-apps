@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -51,8 +53,7 @@ func main() {
 }
 
 func GreetingHandler(w http.ResponseWriter, r *http.Request) {
-
-	// greeter := new(Greeter)
+	greeter := new(Greeter)
 	aid := r.Header.Get(DirektivActionIDHeader)
 
 	log(aid, "Reading Input")
@@ -62,98 +63,29 @@ func GreetingHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log(aid, fmt.Sprintf("DATA %s", string(data)))
-	log(aid, fmt.Sprintf("DATA2 %s", "helloworldhelloworldhelloworldhelloworldhelloworldhelloworldhelloworld12345"))
-	log(aid, fmt.Sprintf("TEMPDIR %s", r.Header.Get("Direktiv-TempDir")))
+	rdr := bytes.NewReader(data)
+	dec := json.NewDecoder(rdr)
 
-	// POST http://localhost:8889/var?aid=<EXAMPLE>&scope=instance&key=myFiles
+	dec.DisallowUnknownFields()
 
-	// Body: <VARIABLE DATA>
+	log(aid, "Decoding Input")
+	err = dec.Decode(greeter)
+	if err != nil {
+		respondWithErr(w, fmt.Sprintf(code, "decode"), err.Error())
+		return
+	}
 
-	// url := fmt.Sprintf("http://localhost:8889/var?aid=%s&scope=workflow&key=HELLO", aid)
+	var output ReturnMessage
+	output.Greeting = fmt.Sprintf("Welcome to Direktiv, %s!", greeter.Name)
 
-	// var jsonStr = []byte(`{"title":"Buy cheese and bread for breakfast."}`)
-	// req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
-	// if err != nil {
-	// 	log(aid, fmt.Sprintf("ERR %s", err.Error()))
-	// 	return
-	// }
+	marshalBytes, err := json.Marshal(output)
+	if err != nil {
+		respondWithErr(w, fmt.Sprintf(code, "marshal"), err.Error())
+		return
+	}
 
-	// client := &http.Client{}
-	// resp, err := client.Do(req)
-	// if err != nil {
-	// 	log(aid, fmt.Sprintf("ERR %s", err.Error()))
-	// 	return
-	// }
-	// defer resp.Body.Close()
-
-	// files, err := ioutil.ReadDir(fmt.Sprintf("%s/out", r.Header.Get("Direktiv-TempDir")))
-	// if err != nil {
-	// 	log(aid, fmt.Sprintf("ERR %s", err.Error()))
-	// }
-
-	// for _, f := range files {
-	// 	log(aid, f.Name())
-	// }
-
-	// file := fmt.Sprintf("%s/out/namespace/testme", r.Header.Get("Direktiv-TempDir"))
-
-	// f, err := os.Create(file)
-	// if err != nil {
-	// 	log(aid, fmt.Sprintf("ERR %s", err.Error()))
-	// 	return
-	// }
-
-	// f.Write([]byte("HELLO2!!!"))
-
-	// // registries1.png
-
-	// gg, err := ioutil.ReadFile("/registries1.png")
-	// if err != nil {
-	// 	log(aid, fmt.Sprintf("ERR %s", err.Error()))
-	// 	return
-	// }
-
-	// file2 := fmt.Sprintf("%s/out/namespace/whatever", r.Header.Get("Direktiv-TempDir"))
-	// f2, err := os.Create(file2)
-	// if err != nil {
-	// 	log(aid, fmt.Sprintf("ERR %s", err.Error()))
-	// 	return
-	// }
-	// f2.Write(gg)
-	// err = os.Rename("/registries1.png", fmt.Sprintf("%s/out/workflow/whatever", r.Header.Get("Direktiv-TempDir")))
-	// if err != nil {
-	// 	log(aid, fmt.Sprintf("ERR %s", err.Error()))
-	// 	return
-	// }
-
-	// /mnt/shared/example/out/workflow
-
-	// rdr := bytes.NewReader(data)
-	// dec := json.NewDecoder(rdr)
-
-	// dec.DisallowUnknownFields()
-
-	// log(aid, "Decoding Input")
-	// err = dec.Decode(greeter)
-	// if err != nil {
-	// 	respondWithErr(w, fmt.Sprintf(code, "decode"), err.Error())
-	// 	return
-	// }
-
-	// var output ReturnMessage
-	// output.Greeting = fmt.Sprintf("Welcome to Direktiv2, %s!", greeter.Name)
-
-	// marshalBytes, err := json.Marshal(output)
-	// if err != nil {
-	// 	respondWithErr(w, fmt.Sprintf(code, "marshal"), err.Error())
-	// 	return
-	// }
-
-	// log(aid, "Writing Output")
-	// respond(w, marshalBytes)
-
-	respond(w, []byte("{}"))
+	log(aid, "Writing Output")
+	respond(w, marshalBytes)
 }
 
 func shutdown(srv *http.Server) {
