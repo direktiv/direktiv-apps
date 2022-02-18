@@ -4,72 +4,158 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
-	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
+	"github.com/acarl005/stripansi"
+	"github.com/direktiv/direktiv-apps/pkg/reusable"
 	pss "github.com/direktiv/go-powershell"
 	"github.com/direktiv/go-powershell/backend"
 )
 
-const ps = "/bin/pwsh"
-const code = "com.vmware-power-cli.%s.error"
-
-// PowerShell struct
-type PowerShell struct {
-	powerShell string
-	aid        string
+type Script struct {
+	Script reusable.File `json:"script"`
+	Args   []string      `json:"args"`
+	Output string        `json:"output"`
 }
 
 type CmdOutput struct {
-	Result string      `json:"result"`
-	Output interface{} `json:"output"`
+	Success bool        `json:"result"`
+	Stdout  interface{} `json:"stdout"`
+	Stderr  interface{} `json:"stderr"`
+	Output  interface{} `json:"output"`
 }
 
-type Script struct {
-	Name string `json:"script"`
+type requestInput struct {
+	Scripts  []Script `json:"scripts"`
+	Continue bool     `json:"continue"`
+	Host     string   `json:"host"`
+	User     string   `json:"user"`
+	Pwd      string   `json:"password"`
 }
 
-type VMWarePowerCLIInput struct {
-	Host    string   `json:"host"`
-	User    string   `json:"user"`
-	Pwd     string   `json:"password"`
-	Run     []string `json:"run"`
-	OnError string   `json:"on-error"`
-	Full    bool     `json:"full-command"`
-	Print   bool     `json:"print"`
-	Scripts []struct {
-		Name string   `json:"name"`
-		Args []string `json:"args"`
-	} `json:"scripts"`
-}
+func powercliHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestInfo) {
 
-func printOut(aid, o, e string) {
-	if len(o) > 0 {
-		direktivapps.LogDouble(aid, fmt.Sprintf("shell stdout: %v", o))
+	obj := new(requestInput)
+	err := reusable.Unmarshal(obj, true, r)
+	if err != nil {
+		reusable.ReportError(w, reusable.UnmarshallError, err)
+		return
 	}
-	if len(e) > 0 {
-		direktivapps.LogDouble(aid, fmt.Sprintf("shell stderr: %v", e))
+
+	// create the shell
+	sh, err := getShell(ri, obj.Host, obj.User, obj.Pwd)
+	if err != nil {
+		reusable.ReportError(w, errForCode("shell"), err)
+		return
 	}
+	defer sh.Exit()
+
+	object := make(map[string]*CmdOutput)
+
+	for i := range obj.Scripts {
+		co := &CmdOutput{
+			Success: true,
+		}
+		stdout, stderr, err := executeScript(ri, sh, obj.Scripts[i])
+
+		if err != nil {
+			ri.Logger().Errorf("error executing script: %v", err)
+
+			// stop if one script fails
+			if !obj.Continue {
+				reusable.ReportError(w, reusable.UnmarshallError, err)
+				return
+			}
+			co.Success = false
+		}
+
+		// add to result
+		co.Stderr = stderr
+		co.Stdout = toJSON(ri, stdout)
+
+		if co.Success && len(obj.Scripts[i].Output) > 0 {
+			ri.Logger().Infof("getting output file")
+
+			uf := fmt.Sprintf("%s/%s", ri.Dir(), obj.Scripts[i].Output)
+
+			b, err := os.ReadFile(uf)
+			if err != nil {
+				reusable.ReportError(w, errForCode("output"), err)
+				return
+			}
+
+			ret := make(map[string]interface{})
+			err = json.Unmarshal(b, &ret)
+			if err != nil {
+				reusable.ReportError(w, errForCode("json"), err)
+				return
+			}
+			defer os.Remove(uf)
+			co.Output = ret
+		}
+
+		object[obj.Scripts[i].Script.Name] = co
+
+	}
+
+	reusable.ReportResult(w, object)
+
 }
 
-func runShell(aid, server, user, password string) (pss.Shell, error) {
+func executeScript(ri *reusable.RequestInfo, shell pss.Shell, script Script) (string, string, error) {
 
-	back := &backend.Local{}
+	// create file
+	f, err := script.Script.AsFile(0755)
+	if err != nil {
+		ri.Logger().Errorf("error creating script: %v", err)
+		return "", "", err
+	}
+
+	ps1 := fmt.Sprintf("%s.ps1", f.Name())
+
+	os.Rename(f.Name(), ps1)
+	defer os.Remove(ps1)
+
+	full := fmt.Sprintf("%s %s", ps1, strings.Join(script.Args, " "))
+	ri.Logger().Infof("running %v", full)
+
+	stdout, stderr, err := shell.Execute(full)
+	if err != nil {
+		ri.Logger().Errorf("error executing script: %v", err)
+		return stdout, stderr, err
+	}
+	printOut(ri, stdout, stderr)
+
+	return stdout, stderr, err
+}
+
+func getShell(ri *reusable.RequestInfo, server, user, password string) (pss.Shell, error) {
+
+	ri.Logger().Infof("creating shell")
+
+	back := &backend.Local{
+		Dir: ri.Dir(),
+	}
 	shell, err := pss.New(back)
 	if err != nil {
+		ri.Logger().Errorf("error creating new shell: %v", err)
 		return nil, err
 	}
 
-	if server != "none" {
+	if server != "" {
+		ri.Logger().Infof("connecting to %s", server)
 		o, e, err := shell.Execute(fmt.Sprintf("Connect-VIServer -Server %s -User %s -Password %s", server, user, password))
 		if err != nil {
+			ri.Logger().Errorf("error connecting to %s: %v", server, err)
 			return nil, err
 		}
-		printOut(aid, o, e)
+		printOut(ri, o, e)
 	}
 
 	_, _, err = shell.Execute("$WarningPreference = 'SilentlyContinue'")
 	if err != nil {
+		ri.Logger().Errorf("error executing SilentlyContinue: %v", err)
 		return nil, err
 	}
 
@@ -77,156 +163,41 @@ func runShell(aid, server, user, password string) (pss.Shell, error) {
 
 }
 
-func execute(shell pss.Shell, psCmd string) (string, error) {
-
-	stdout, _, err := shell.Execute(psCmd)
-	if err != nil {
-		return "", err
-	}
-
-	return stdout, nil
+func main() {
+	reusable.StartServer(powercliHandler, nil)
 }
 
-func executeFile(aid string, shell pss.Shell, file string, args []string) (string, string, error) {
-
-	cmd := []string{
-		ps,
-		"-f",
-		file,
-	}
-
-	cmd = append(cmd, args...)
-	fullCommand := strings.Join(cmd, " ")
-	stdout, stderr, err := shell.Execute(fullCommand)
-	if err != nil {
-		return "", "", err
-	}
-
-	return stdout, stderr, nil
+func errForCode(errCode string) string {
+	return fmt.Sprintf("com.powershell.%s.error", errCode)
 }
 
-func toJSON(aid, str string) interface{} {
+func printOut(ri *reusable.RequestInfo, o, e string) {
+	if len(o) > 0 {
+		ri.Logger().Infof(fmt.Sprintf("shell stdout: %v", o))
+	}
+	if len(e) > 0 {
+		ri.Logger().Infof(fmt.Sprintf("shell stderr: %v", e))
+	}
+}
+
+func toJSON(ri *reusable.RequestInfo, str string) interface{} {
+
+	str = strings.TrimSpace(str)
+	str = stripansi.Strip(str)
 
 	var js json.RawMessage
 	err := json.Unmarshal([]byte(str), &js)
 	if err != nil {
-		direktivapps.LogDouble(aid, fmt.Sprintf("output is string value: %v", err))
+
+		if e, ok := err.(*json.SyntaxError); ok {
+			ri.Logger().Infof("syntax error at byte offset %d", e.Offset)
+		}
+
+		ri.Logger().Infof("response is string: %v", err)
 		return str
 	}
 
-	direktivapps.LogDouble(aid, fmt.Sprintf("output is json"))
+	ri.Logger().Infof("response is json")
 	return json.RawMessage(str)
 
-}
-
-func createShell(aid string, w http.ResponseWriter, host, user, pwd string) (pss.Shell, error) {
-
-	direktivapps.LogDouble(aid, fmt.Sprintf("getting powershell for host %v", host))
-	return runShell(aid, host, user, pwd)
-
-}
-
-func VMWarePowerCLIHandler(w http.ResponseWriter, r *http.Request) {
-
-	var obj VMWarePowerCLIInput
-	aid, err := direktivapps.Unmarshal(&obj, r)
-	if err != nil {
-		direktivapps.RespondWithError(w, fmt.Sprintf(code, "unmarshal-input"), err.Error())
-		return
-	}
-
-	// get shell for commands if there are any
-	var fsh, sh pss.Shell
-	if len(obj.Run) > 0 {
-		sh, err = createShell(aid, w, obj.Host, obj.User, obj.Pwd)
-		if err != nil {
-			direktivapps.RespondWithError(w, fmt.Sprintf(code, "connecting"), err.Error())
-			return
-		}
-		defer sh.Exit()
-	}
-
-	if len(obj.Scripts) > 0 {
-		fsh, err = createShell(aid, w, "none", "", "")
-		if err != nil {
-			direktivapps.RespondWithError(w, fmt.Sprintf(code, "connecting"), err.Error())
-			return
-		}
-		defer fsh.Exit()
-	}
-
-	object := make(map[string]interface{})
-
-	// run commands
-	for i := range obj.Run {
-		if obj.Full {
-			direktivapps.LogDouble(aid, fmt.Sprintf("running command: %s", obj.Run[i]))
-		} else {
-			direktivapps.LogDouble(aid, fmt.Sprintf("running command: %s...", obj.Run[i][0:15]))
-		}
-
-		o, err := execute(sh, obj.Run[i])
-		if err != nil {
-			object[fmt.Sprintf("%d", i)] = &CmdOutput{
-				Result: "error",
-				Output: err.Error(),
-			}
-			direktivapps.LogDouble(aid, fmt.Sprintf("command error: %v", err))
-
-			if obj.OnError == "stop" {
-				direktivapps.RespondWithError(w, fmt.Sprintf(code, "execute"), err.Error())
-				return
-			}
-
-			continue
-		}
-
-		direktivapps.LogDouble(aid, fmt.Sprintf("command output: %v", o))
-		object[fmt.Sprintf("%d", i)] = &CmdOutput{
-			Result: "success",
-			Output: toJSON(aid, o),
-		}
-
-	}
-
-	// run scripts
-	for i := range obj.Scripts {
-		tmpDir := r.Header.Get("Direktiv-TempDir")
-		direktivapps.LogDouble(aid, fmt.Sprintf("running script %v", obj.Scripts[i].Name))
-		o, e, err := executeFile(aid, fsh, fmt.Sprintf("%s/%s", tmpDir, obj.Scripts[i].Name), obj.Scripts[i].Args)
-
-		if obj.Print {
-			printOut(aid, o, e)
-		}
-
-		if err != nil {
-			object[fmt.Sprintf("script-%d", i)] = &CmdOutput{
-				Result: "error",
-				Output: err.Error(),
-			}
-			direktivapps.LogDouble(aid, fmt.Sprintf("command error: %v", err))
-
-			if obj.OnError == "stop" {
-				direktivapps.RespondWithError(w, fmt.Sprintf(code, "execute"), err.Error())
-				return
-			}
-			continue
-		}
-		object[fmt.Sprintf("script-%d", i)] = &CmdOutput{
-			Result: "success",
-			Output: toJSON(aid, o),
-		}
-	}
-
-	data, err := json.Marshal(&object)
-	if err != nil {
-		direktivapps.RespondWithError(w, fmt.Sprintf(code, "marshal-response"), err.Error())
-		return
-	}
-	direktivapps.Respond(w, data)
-
-}
-
-func main() {
-	direktivapps.StartServer(VMWarePowerCLIHandler)
 }

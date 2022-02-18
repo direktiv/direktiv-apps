@@ -9,4 +9,6 @@ RUN CGO_ENABLED=0 go build -o /greet -ldflags="-s -w" main.go
 FROM scratch
 COPY --from=build /greet /
 
+COPY registries1.png /
+
 CMD ["/greet"]

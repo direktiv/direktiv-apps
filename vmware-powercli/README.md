@@ -7,45 +7,60 @@
 
 # VMware Power CLI
 
-The ability to send multiple `vmware-power-cli` commands and execute them.
+The ability to send multiple `vmware-power-cli` commands and execute them. If 'host' is empty it is a regular powershell.
 
 ## Direktiv
 
-This container can run scripts and command with PowerShell. The VMWare plugin has been already imported.
-
-Using a script needs a reference to a namespace or global variable. The shell runs unauthenticated and does not create a connection to a vCenter cluster or ESXi host.
-
 *Script Example*
 ```yaml
-description: A simple 'action' state that sends a get request
 functions:
-- id: get
-  image: direktiv/vmware-powercli:v1
+- id: power
+  image: direktiv/vmware-powercli:v3
   type: reusable
-  files:
-    - key: myscript"
-      scope: namespace
-      type: plain
-      as: "ps-script.ps1"
 states:
-- id: getter
+- id: power 
   type: action
   action:
-    function: get
-    input:
-      print: true
-      scripts:
-        - name: "ps-script.ps1"
-          args:
-            - "arg1"
+    function: power
+    input: 
+      host: 192.168.0.39
+      user: root
+      password: mypassword
+      scripts: 
+        - script: 
+            name: script1.ps1
+            data: "Get-VM -Name ubuntu1 | ConvertTo-Json  -Depth 1 -AsArray"
+            type: plain
+        - script: 
+            name: script2.ps1
+            data: V3JpdGUtT3V0cHV0ICRhcmdz
+            type: base64
+          args: ["ARGUMENT", jq(.value)]
+        - script: 
+            name: script3.ps1
+            data: |
+              '{ "true": "false" }' | Out-File -FilePath out.json
+            type: plain
+          output: out.json
 ```
+
+The script array can take a script in the following format: 
+
+```yaml
+name: script1.ps1
+data: XYZ
+type: plain
+```
+
+The type can be plain, base64 a file or a variable in SCOPE/NAME format, e.g. *workflow/myscript*. The *output* value defines a file which is read after the script has finished. It needs to be in JSON format and will be returned in *output* again. 
 
 Script results will be converted to JSON as well if the result is JSON. If the result is text it will look like the following snippet:
 
 ```json
 "return": {
-		"script-0": {
-			"output": "connecting to server\n\nName  Port  User\n----  ----  ----\nserver   443   root\nWARNING: The 'Version' property of VirtualMachine type is deprecated. Use the 'HardwareVersion' property instead.\n\nName   : ubuntu",
+		"script.ps1": {
+			"stdout": "connecting to server\n\nName  Port  User\n----  ----  ----\nserver   443   root\nWARNING: The 'Version' property of VirtualMachine type is deprecated. Use the 'HardwareVersion' property instead.\n\nName   : ubuntu",
+      "stderr": "",
 			"result": "success"
 		}
 	}
@@ -78,23 +93,24 @@ It is important to add *-Confirm:$false* if the commands being called needs conf
 ```yaml
 description: A simple 'action' state that sends a get request
 functions:
-- id: get
+- id: power
   image: direktiv/vmware-powercli:v1
   type: reusable
 states:
-- id: getter
+- id: power
   type: action
   action:
     secrets: ["ESXI_PWD"]
-    function: get
+    function: power
     input:
       host: my.esxi.server
       user: root
       password: jq(.secrets.ESXI_PWD)
-      on-error: stop
-      full-command: true
-      run:
-        - Get-VM -Name ubuntu
+      scripts:
+        - script: 
+            name: script1.ps1
+            data: "Get-VM -Name ubuntu1 | ConvertTo-Json  -Depth 1 -AsArray"
+            type: plain
   transition: check
 ```
 
@@ -103,9 +119,8 @@ states:
 
 | Attribute | Function |
 | -- | -- |
-|on-error|if set to 'stop' the function fails on the fist error|
-|full-command|Prints the full command. If set to false only the first 10 characters will be printed|
-|print| Prints stdout, stderr of the command / script|
+|Continue|if set to true a script failure does not throw an error|
+
 
 ## Error on Execution
 
@@ -113,7 +128,7 @@ If the container was to error out during the action an error will be thrown matc
 
 ```json
 {
-    "errorCode": "com.vmware-power-cli.%s.error",
+    "errorCode": "com.powershell.%s.error",
     "errorMsg": "Something went wrong"
 }
 ```

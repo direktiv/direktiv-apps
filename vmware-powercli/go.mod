@@ -3,6 +3,7 @@ module github.com/direktiv/direktiv-apps/vmware-powercli
 go 1.16
 
 require (
-	github.com/direktiv/direktiv-apps/pkg v0.0.0-20211028230147-8cc0dc73286c
-	github.com/direktiv/go-powershell v0.0.0-20211103175936-e6a9961a019d
+	github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d // indirect
+	github.com/direktiv/direktiv-apps/pkg v0.0.0-20220210025353-e6a0dfca5e90
+	github.com/direktiv/go-powershell v0.0.0-20220218012621-5a23fa8df6bb
 )

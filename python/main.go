@@ -118,7 +118,7 @@ func runScript(f *reusable.File, envs []string, ri *reusable.RequestInfo) error 
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	file.Close()
 	defer os.Remove(file.Name())
 
 	cmd := exec.Command(file.Name())
