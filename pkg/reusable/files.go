@@ -4,8 +4,10 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"io/fs"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -179,6 +181,16 @@ func (f *File) AsFile(mode os.FileMode) (*os.File, error) {
 	file, err := ioutil.TempFile("", f.Name)
 	if err != nil {
 		return nil, err
+	}
+
+	if mode == 0 {
+		mode = 0644
+
+		// try to parse
+		m, err := strconv.ParseUint(f.Mode, 8, 32)
+		if err == nil {
+			mode = fs.FileMode(m)
+		}
 	}
 
 	err = os.Chmod(file.Name(), mode)
