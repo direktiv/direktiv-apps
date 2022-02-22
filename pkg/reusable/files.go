@@ -14,6 +14,7 @@ type File struct {
 	Data        string `json:"data"`
 	Type        string `json:"type"`
 	ContentType string `json:"contenttype"`
+	Mode        string `json:"mode"`
 
 	ri *RequestInfo
 }
