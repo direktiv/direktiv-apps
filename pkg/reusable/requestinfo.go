@@ -204,7 +204,5 @@ func (dl *DirektivLoggerWriter) Write(p []byte) (n int, err error) {
 		return len(p), err
 	}
 
-	// in dev mode write to stdout
-	return fmt.Println(string(p))
-
+	return len(p), nil
 }
