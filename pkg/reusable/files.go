@@ -116,6 +116,39 @@ func (f *File) AsBase64() (string, error) {
 
 }
 
+func (f *File) Size() (int, error) {
+
+	switch f.Type {
+	case TypeBase64:
+		b, err := base64.StdEncoding.DecodeString(f.Data)
+		return len(b), err
+	case TypeFile:
+		file, err := os.Open(f.Data)
+		if err != nil {
+			return -1, err
+		}
+		b, err := io.ReadAll(file)
+		return len(b), err
+	case TypeVariable:
+		v := strings.SplitN(f.Data, "/", 2)
+		if len(v) != 2 {
+			return -1, fmt.Errorf("can not get var %s, needs format SCOPE/NAME", f.Name)
+		}
+		r, _, err := f.ri.ReadVar(v[0], v[1])
+		if err != nil {
+			return -1, err
+		}
+		defer r.Close()
+		b, err := io.ReadAll(r)
+		return len(b), err
+	case TypePlain:
+		return len(f.Data), nil
+	default:
+		return -1, fmt.Errorf("unknown type")
+	}
+
+}
+
 func (f *File) AsReader() (io.ReadCloser, error) {
 
 	switch f.Type {
