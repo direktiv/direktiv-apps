@@ -36,6 +36,8 @@ type cloneCommand struct {
 	Ref      string `json:"ref"`
 	User     string `json:"user"`
 	Password string `json:"pwd"`
+	Scope    string `json:"scope"`
+	Name     string `json:"name"`
 }
 
 type requestInput struct {
@@ -320,6 +322,18 @@ func gitHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestInfo
 			ret[i] = result
 		default:
 			reusable.ReportError(w, errForCode("git"), fmt.Errorf("unknown command: %s", c.Cmd))
+			return
+		}
+
+	}
+
+	// store as variable if set
+	if obj.Clone.Scope != "" && obj.Clone.Name != "" {
+		outFile := fmt.Sprintf("%s/out/%s/%s", ri.Dir(), obj.Clone.Scope, obj.Clone.Name)
+		ri.Logger().Infof("copying %s to %s", dot.Root(), outFile)
+		err = os.Rename(dot.Root(), outFile)
+		if err != nil {
+			reusable.ReportError(w, errForCode("store"), err)
 			return
 		}
 
