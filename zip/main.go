@@ -14,12 +14,6 @@ import (
 	zip2 "github.com/klauspost/compress/zip"
 )
 
-// type filePath struct {
-// 	Name string `json:"name"`
-// 	Data string `json:"data"`
-// 	Type string `json:"type"`
-// }
-
 type requestInput struct {
 	Files    []reusable.File `json:"files"`
 	Scope    string          `json:"scope"`
