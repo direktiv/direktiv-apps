@@ -27,7 +27,7 @@ The *clone* part of the input requires the URL of the repository and additional 
 
 - depth: Create a shallow clone with a history truncated to the specified number of commits
 - ref: Clones only a single branch
-- username: Username of the user for private repositories
+- user: Username of the user for private repositories
 - pwd: Password for private repositories or Github peronal access token.
 - scope / name: If both attributes are set, the final git repository will be stored as a Direktiv variable
 
