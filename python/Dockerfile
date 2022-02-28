@@ -13,7 +13,7 @@ RUN apk --update add ca-certificates
 
 FROM python:3.10.2-bullseye
 
-RUN pip3 install requests
+RUN pip3 install requests cryptography
 
 COPY --from=build /run-python /
 CMD ["/run-python"]
