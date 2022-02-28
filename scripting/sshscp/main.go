@@ -104,6 +104,13 @@ func generateAuth(attached []reusable.File, pwd, user string, ri *reusable.Reque
 
 }
 
+func connect(svr string, cc ssh.ClientConfig) (scp.Client, error) {
+	cc.Timeout = time.Duration(10 * time.Second)
+	client := scp.NewClient(svr, &cc)
+	err := client.Connect()
+	return client, err
+}
+
 func scpExec(s sshscp, c *connector, ri *reusable.RequestInfo) ([]string, error) {
 
 	var (
@@ -126,16 +133,14 @@ func scpExec(s sshscp, c *connector, ri *reusable.RequestInfo) ([]string, error)
 	svr := fmt.Sprintf("%s:%d", c.host, s.Port)
 	ri.Logger().Infof("connecting to %s", svr)
 
-	cc.Timeout = time.Duration(10 * time.Second)
-	client := scp.NewClient(svr, &cc)
-	err = client.Connect()
-	if err != nil {
-		return files, err
-	}
-	defer client.Close()
-
 	for a := range s.Files {
 		f := s.Files[a]
+
+		client, err := connect(svr, cc)
+		if err != nil {
+			return files, err
+		}
+		defer client.Close()
 
 		// don't copy the certificate
 		if isCert && f.Name == s.Auth {
@@ -146,10 +151,10 @@ func scpExec(s sshscp, c *connector, ri *reusable.RequestInfo) ([]string, error)
 		if err != nil {
 			return files, err
 		}
-		defer func() {
+		defer func(ff *os.File) {
 			r.Close()
 			os.Remove(r.Name())
-		}()
+		}(r)
 
 		fi, err := r.Stat()
 		if err != nil {
@@ -167,6 +172,7 @@ func scpExec(s sshscp, c *connector, ri *reusable.RequestInfo) ([]string, error)
 			ri.Logger().Infof("could not copy file %s: %v", path, err)
 			files = append(files, fmt.Sprintf("error %v", path))
 		} else if err != nil {
+			ri.Logger().Infof("copying failed: %v", err)
 			return files, err
 		} else {
 			files = append(files, path)
