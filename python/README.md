@@ -6,85 +6,65 @@ Run python scripts in Direktiv.
 
 This container runs python scripts provided by the workflow.
 
-
 *Script Example*
 ```yaml
-description: A simple 'action' state that sends a get request
 functions:
-- id: get
-  image: direktiv/vmware-powercli:v1
+- id: run
+  image: direktiv/python:v1
   type: reusable
-  files:
-    - key: myscript"
-      scope: namespace
-      type: plain
-      as: "ps-script.ps1"
 states:
-- id: getter
+- id: getter 
   type: action
   action:
-    function: get
-    input:
-      print: true
-      scripts:
-        - name: "ps-script.ps1"
-          args:
-            - "arg1"
+    function: run
+    input: 
+      script: 
+         name: simple
+         data: |
+          print('Hello')
+          print('World')
+         type: plain
 ```
 
-<!-- Script results will be converted to JSON as well if the result is JSON. If the result is text it will look like the following snippet:
-
-```json
-"return": {
-
-}
-```
-
-The command alternative runs commands in order they are listed. If they return JSON the response will be added as an addressable JSON object in the response to Direktiv. The command `Get-VM -Name ubuntu | ConvertTo-Json  -Depth 1 -AsArray` will yield the following output:
-
-```json
-{
-	"return": {
-		"0": {
-			"output": [
-				{
-					"BootDelayMillisecond": 0,
-					"CoresPerSocket": 1,
-					"CreateDate": "2021-11-02T21:58:09.800272Z",
-					"CustomFields": "",
-					"DatastoreIdList": "Datastore-6181b457-fb4061f6-f9b8-000c291013a9",
-					"DrsAutomationLevel": null,
-				}
-			],
-			"result": "success"
-		}
-	}
-}
-```
-It is important to add *-Confirm:$false* if the commands being called needs confirmation. -->
+The file can be provided in different formats anc can be downloaded from external sources.
 
 *Command Example*
 ```yaml
-description: A simple 'action' state that sends a get request
 functions:
-- id: get
-  image: direktiv/vmware-powercli:v1
+- id: getfile
+  type: reusable
+  image: direktiv/request:v4
+- id: run
+  image: direktiv/python:v1
   type: reusable
 states:
-- id: getter
+- id: getfile
   type: action
   action:
-    secrets: ["ESXI_PWD"]
-    function: get
+    function: getfile
     input:
-      host: my.esxi.server
-      user: root
-      password: jq(.secrets.ESXI_PWD)
-      on-error: stop
-      full-command: true
-      run:
-        - Get-VM -Name ubuntu
-  transition: check
+      method: "GET"
+      url: "https://gist.githubusercontent.com/jensg-st/4a14fa88cc96855358d25a90572f81b2/raw/16be9710c0f941b3482bdc9a2245ff2ea5a3ac9f/simplepython"
+    retries:
+      max_attempts: 3
+      codes: 
+        - "*"
+      delay: PT5S
+  transition: log
+- id: log
+  type: noop
+  transform: 
+    script: jq(.return.body)
+  transition: run
+- id: run
+  type: action
+  action:
+    function: run
+    input: 
+      script: 
+         name: runit
+         data: jq(.script)
+         type: base64
 ```
 
 

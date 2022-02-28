@@ -110,7 +110,7 @@ func errForCode(errCode string) string {
 
 func runScript(f *reusable.File, envs []string, ri *reusable.RequestInfo) error {
 
-	if len(f.Name) == 0 {
+	if len(f.Data) == 0 {
 		return nil
 	}
 
