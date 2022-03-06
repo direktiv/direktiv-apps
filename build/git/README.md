@@ -30,6 +30,7 @@ The *clone* part of the input requires the URL of the repository and additional 
 - user: Username of the user for private repositories
 - pwd: Password for private repositories or Github peronal access token.
 - scope / name: If both attributes are set, the final git repository will be stored as a Direktiv variable
+- init-scope / init-name: If both attributes are set, this repository will be used instead of cloning. Needs to be tar.gz.
 
 ```yaml
 input: 
@@ -65,6 +66,7 @@ input:
 |list-commits|Lists all commits in the project|
 |add **filename**|Adds a file to the commit|
 |commit **name** **email** **message**|Commits the changes|
+|push **branch**|Pushes to branch|
 |status|Returns the status of the tree|
 |diff **ref** **ref**|Returns the diff between two trees. The refernce can be a commit hash or tag, e.g. *diff v0.1.0 v0.1.1*|
 |logs **type** **ref**|Returns logs. The args *type* and *ref* are optional. If provided it returns the logs from that reference| 
