@@ -1,87 +1,92 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io"
+	"log"
 	"os"
 	"os/exec"
-	"path"
+	"strings"
 )
 
-func createRunnerError(dir, phase string, err error) {
-	errMsg := fmt.Sprintf("error in %s: %v", phase, err)
-	fmt.Println(errMsg)
-	f, err := os.Create(path.Join(dir, errOut))
+func setupCmds() error {
+
+	err := os.MkdirAll("/var/lib/docker", 0655)
 	if err != nil {
-		// can not do much
-		fmt.Printf("could not write error file: %v\n", err)
-		return
-	}
-	f.WriteString(errMsg)
-	f.Close()
-}
-
-func runPhase(dir, phase, log string, cmds []string) error {
-
-	delFile := func(d *os.File) {
-		d.Close()
-		os.Remove(d.Name())
-	}
-
-	fout, err := os.OpenFile(log, os.O_APPEND|os.O_RDWR, 0666)
-	if err != nil {
-		createRunnerError(dir, phase, err)
 		return err
 	}
-	defer delFile(fout)
 
-	fout.WriteString(fmt.Sprintf("starting phase %s\n", phase))
+	cmds := [][]string{
+		{
+			"/usr/sbin/ip",
+			"link", "set", "dev", "lo", "up",
+		},
+		{
+			"/usr/sbin/ip",
+			"link", "set", "dev", "vec0", "up",
+		},
+		{
+			"/usr/sbin/ip",
+			"addr", "add", "10.0.2.100/24", "dev", "vec0",
+		},
+		{
+			"/usr/sbin/ip",
+			"route", "add", "default", "via", "10.0.2.2",
+		},
+		{
+			"/usr/bin/mount",
+			"-t", "proc", "proc", "/proc/",
+		},
+		{
+			"/usr/bin/mount",
+			"-t", "sysfs", "sys", "/sys/",
+		},
+		{
+			"/usr/bin/mount",
+			"-t", "cgroup2", "none", "/sys/fs/cgroup",
+		},
+		{
+			"/usr/bin/mount",
+			"-t", "ext4", "/disk/containers.img", "/var/lib/docker",
+		},
+	}
 
-	var errBytes bytes.Buffer
-	mw := io.MultiWriter(fout, &errBytes)
+	for a := range cmds {
+		c := cmds[a]
+		cmd := exec.Command(c[0], c[1:]...)
+		log.Printf("executing: %v\n", cmd)
+		b, err := cmd.CombinedOutput()
 
-	cmd := exec.Command("/usr/bin/buildah", cmds...)
-	fout.WriteString(fmt.Sprintf("running %v", cmd))
-
-	// we catch errors in case
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = mw
-
-	err = cmd.Run()
-	if err != nil {
-		createRunnerError(dir, phase, fmt.Errorf("%v: %v", err.Error(), errBytes.String()))
-		return err
+		fmt.Printf("%v", string(b))
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
+}
+
+func startDocker() error {
+
+	cmd := exec.Command("/usr/bin/dockerd", "-H", "unix:///var/run/docker.sock",
+		"-H", "tcp://0.0.0.0", "--tls=false")
+	cmd.Stderr = os.Stdout
+	cmd.Stdout = os.Stdout
+
+	path := fmt.Sprintf("PATH=/usr/bin:/usr/sbin:%s", os.Getenv("PATH"))
+	path = strings.TrimSuffix(path, ":")
+	cmd.Env = append(cmd.Env, path)
+
+	return cmd.Run()
 
 }
 
-func runnerHandler(dir string) {
+func startRunner() error {
 
-	c, err := os.ReadFile(path.Join(dir, "commands.json"))
+	err := setupCmds()
 	if err != nil {
-		createRunnerError(dir, "build", err)
-		return
+		return err
 	}
 
-	var cmds map[string][]string
-
-	err = json.Unmarshal(c, &cmds)
-	if err != nil {
-		createRunnerError(dir, "build", err)
-		return
-	}
-
-	err = runPhase(dir, "build", path.Join(dir, buildLog), cmds["build"])
-	if err != nil {
-		return
-	}
-
-	if len(cmds["push"]) > 0 {
-		runPhase(dir, "push", path.Join(dir, pushLog), cmds["push"])
-	}
+	return startDocker()
 
 }

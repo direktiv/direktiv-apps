@@ -14,22 +14,40 @@ FROM ubuntu:21.10 as linux
 ARG LINUX=5.16.11
 RUN apt-get update && apt-get install wget curl build-essential make libelf-dev \
     flex bison bc libvdeplug-dev libssl-dev -y
-COPY linux.config /
 RUN wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$LINUX.tar.xz
 RUN tar -xvf linux-$LINUX.tar.xz
+COPY linux.config /
 RUN cp /linux.config /linux-$LINUX/.config
 RUN cd /linux-$LINUX && make ARCH=um -j `nproc`
 RUN mkdir /out && mkdir /build && cp /linux-$LINUX/linux /out/linux
 CMD ["cp", "/out/linux", "/build/linux"]
- 
+
 FROM ubuntu:21.10 as application
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
-RUN apt-get install tar gzip git net-tools iproute2 buildah  ca-certificates slirp -y
-RUN echo "unqualified-search-registries = ['docker.io']" >> /etc/containers/registries.conf 
+RUN apt-get install tar gzip git net-tools iproute2 ca-certificates -y
+# install docker
+RUN apt-get install ca-certificates curl iptables gnupg lsb-release -y
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+RUN echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+RUN apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io
+RUN mkdir /disk
+
+RUN update-alternatives --set iptables /usr/sbin/iptables-legacy
+RUN update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+
+RUN curl -L -o /slirp4netns https://github.com/rootless-containers/slirp4netns/releases/download/v1.2.0-beta.0/slirp4netns-x86_64
+RUN chmod 755 /slirp4netns
 
 COPY --from=linux /out/linux /usr/local/bin/linux
 COPY --from=builder /manager /usr/local/bin/manager
+
+ENV DOCKER_HOST=tcp://127.0.0.1:2375
+COPY daemon.json /etc/docker/daemon.json
+
 RUN mkdir /buildtmp
 ENV TMPDIR /buildtmp
+
 CMD ["/usr/local/bin/manager"]
