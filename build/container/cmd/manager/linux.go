@@ -99,8 +99,9 @@ func startLinuxDocker(size int) error {
 	}
 
 	linuxArgs := []string{"rootfstype=hostfs", "rw",
-		"mem=4G", "quiet", "vec0:transport=bess,dst=/bess.sock,depth=128,gro=1",
+		"mem=16G", "quiet", "vec0:transport=bess,dst=/bess.sock,depth=128,gro=1",
 		"init=/usr/local/bin/manager",
+		"ubd=mmap",
 		"cgroup_enable=cpuset",
 		"cgroup_enable=memory",
 		"cgroup_memory=1",

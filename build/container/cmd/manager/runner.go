@@ -6,6 +6,8 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"syscall"
+	"time"
 )
 
 func setupCmds() error {
@@ -16,6 +18,14 @@ func setupCmds() error {
 	}
 
 	cmds := [][]string{
+		{
+			"/usr/bin/mknod",
+			"/dev/anon", "c", "1", "10",
+		},
+		{
+			"/usr/bin/chmod",
+			"666", "/dev/anon",
+		},
 		{
 			"/usr/sbin/ip",
 			"link", "set", "dev", "lo", "up",
@@ -56,7 +66,7 @@ func setupCmds() error {
 		log.Printf("executing: %v\n", cmd)
 		b, err := cmd.CombinedOutput()
 
-		fmt.Printf("%v", string(b))
+		log.Printf("%v", string(b))
 		if err != nil {
 			return err
 		}
@@ -80,7 +90,78 @@ func startDocker() error {
 
 }
 
+func diskCleaner() {
+
+	// write the counter file
+	shell := `#!/bin/bash
+	netstat -anp 2>/dev/null | grep :2375 | grep ESTABLISHED | wc -l
+	`
+	f, _ := os.OpenFile("/count.sh", os.O_CREATE|os.O_RDWR, 0755)
+	f.WriteString(shell)
+	f.Close()
+
+	// method which use count function
+	count := func() bool {
+		cmd := exec.Command("/count.sh")
+		b, err := cmd.CombinedOutput()
+		if err != nil {
+			return false
+		}
+
+		log.Printf("%s clients connected", strings.TrimSpace(string(b)))
+		return strings.TrimSpace(string(b)) == "0"
+	}
+
+	// enable / disable firewall
+	fw := func(add bool) {
+
+		c := "-A"
+		if !add {
+			c = "-D"
+		}
+		log.Printf("clean action %v\n", c)
+		cmd := exec.Command("/usr/sbin/iptables", c, "INPUT", "-p", "tcp", "--destination-port", "2375", "-j", "DROP")
+		cmd.Run()
+	}
+
+	for {
+
+		if count() {
+			fw(true)
+			// after the trafffic is blocked, lets check again
+			if count() {
+				// check disk size, if above threshold we wipe it
+				fs := syscall.Statfs_t{}
+				err := syscall.Statfs("/var/lib/docker", &fs)
+				if err != nil {
+					fw(false)
+					continue
+				}
+
+				size := fs.Blocks * uint64(fs.Bsize)
+				used := size - fs.Bfree*uint64(fs.Bsize)
+				perc := float64(used) / float64(size)
+
+				log.Printf("disk usage: %0.2f", perc)
+
+				if perc > 80.0 {
+
+				}
+				cmd := exec.Command("/usr/bin/docker", "system", "prune", "-a", "-f")
+				cmd.Run()
+
+			}
+			fw(false)
+		}
+
+		time.Sleep(5 * time.Second)
+	}
+
+}
+
 func startRunner() error {
+
+	go diskCleaner()
 
 	err := setupCmds()
 	if err != nil {

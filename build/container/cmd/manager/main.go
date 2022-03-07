@@ -29,9 +29,6 @@ type requestInput struct {
 	// pass a brand new dockerfile in
 	DockerfileArg reusable.File `json:"dockerfile-arg"`
 
-	// sets the dockerfile path within the context
-	Dockerfile string `json:"dockerfile"`
-
 	// the "url" of the build, e.g. git url
 	Context string `json:"context"`
 
@@ -91,6 +88,7 @@ func createConfigJsonFile(dir string, rs []registry) error {
 	if ok {
 		proxyConfig.NoProxy = hp
 	}
+
 	cf.Proxies["default"] = proxyConfig
 
 	authPath := path.Join(dir, "config.json")
@@ -128,19 +126,6 @@ func waitForDocker() error {
 	}
 
 	return nil
-
-}
-
-func diskCleaner() {
-
-	for {
-		cmd := exec.Command("docker", "system", "prune", "-f")
-		err := cmd.Run()
-		if err != nil {
-			fmt.Printf("error system prune: %v\n", err)
-		}
-		time.Sleep(30 * time.Second)
-	}
 
 }
 
@@ -205,7 +190,7 @@ func main() {
 		return
 	}
 
-	ds := flag.Int("disksize", 5, "disk size in GB")
+	ds := flag.Int("disksize", 40, "disk size in GB")
 	builds := flag.Int("builds", 3, "parallel builds")
 	flag.Parse()
 
@@ -219,8 +204,6 @@ func main() {
 
 	// starts UML with
 	go startLinuxDocker(*ds)
-
-	go diskCleaner()
 
 	// wait for api.sock, has to work
 	err = waitForAPISock()
@@ -245,7 +228,3 @@ func dockerInfo() error {
 func errForCode(errCode string) string {
 	return fmt.Sprintf("com.docker.%s.error", errCode)
 }
-
-// ip link set dev vec0 up
-// ip addr add 10.0.2.100/24 dev vec0
-// ip route add default via 10.0.2.2

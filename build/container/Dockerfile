@@ -22,6 +22,13 @@ RUN cd /linux-$LINUX && make ARCH=um -j `nproc`
 RUN mkdir /out && mkdir /build && cp /linux-$LINUX/linux /out/linux
 CMD ["cp", "/out/linux", "/build/linux"]
 
+FROM golang:1.17-buster as coredns
+RUN apt-get update 
+RUN apt-get install git make -y
+RUN git clone -b v1.9.0 --depth 1 https://github.com/coredns/coredns
+RUN cd coredns && echo fanout:github.com/networkservicemesh/fanout >> plugin.cfg && \ 
+  make
+
 FROM ubuntu:21.10 as application
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
@@ -42,6 +49,7 @@ RUN curl -L -o /slirp4netns https://github.com/rootless-containers/slirp4netns/r
 RUN chmod 755 /slirp4netns
 
 COPY --from=linux /out/linux /usr/local/bin/linux
+COPY --from=coredns /go/bin/coredns /coredns
 COPY --from=builder /manager /usr/local/bin/manager
 
 ENV DOCKER_HOST=tcp://127.0.0.1:2375

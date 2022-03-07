@@ -38,7 +38,7 @@ func runBuildAndPush(input chan *requestInput) {
 		ri.Logger().Infof("worker picked up task")
 
 		// build args
-		nArgs := []string{"build"}
+		nArgs := []string{"build", "--progress", "plain"}
 		env := os.Environ()
 
 		ad, err = os.MkdirTemp("", ri.ActionID())
@@ -74,7 +74,9 @@ func runBuildAndPush(input chan *requestInput) {
 			continue
 		}
 
-		nArgs = append(nArgs, "-t", obj.Tag)
+		if obj.Tag != "" {
+			nArgs = append(nArgs, "-t", obj.Tag)
+		}
 
 		//  if there is a tar or dockerfile we need to put it somewhere
 		if obj.Tar.Data != "" {
@@ -135,6 +137,8 @@ func runBuildAndPush(input chan *requestInput) {
 			nArgs = append(nArgs, "-f", dfName)
 
 		}
+
+		nArgs = append(nArgs, "--network=host")
 
 		mw := io.MultiWriter(os.Stdout, ri.LogWriter())
 		cmd := exec.Command("docker", nArgs...)
