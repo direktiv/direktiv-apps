@@ -26,7 +26,11 @@ RUN pwsh -c "Set-PSRepository -Name PSGallery -InstallationPolicy Trusted" && \
     pwsh -c "\$ProgressPreference = \"SilentlyContinue\"; Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Scope AllUsers -Confirm:\$false" && \
     echo '$ProgressPreference = "SilentlyContinue"' > /root/.config/powershell/Microsoft.PowerShell_profile.ps1
 
-RUN apt-get install ca-certificates -y
+# Install SRM https://github.com/vmware/PowerCLI-Example-Scripts/tree/master/Modules/SRM
+RUN apt-get install ca-certificates zip -y
+RUN wget https://github.com/benmeadowcroft/SRM-Cmdlets/archive/master.zip && ls -la && unzip master.zip
+RUN pwsh -c "Import-Module -Name .\SRM-Cmdlets-master\Meadowcroft.Srm.psd1"
+
 
 COPY --from=build /vmware-powercli /
 CMD ["/vmware-powercli"]

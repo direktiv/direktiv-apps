@@ -15,6 +15,8 @@ github.com/direktiv/go-powershell v0.0.0-20211103175936-e6a9961a019d/go.mod h1:e
 github.com/direktiv/go-powershell v0.0.0-20220218012621-5a23fa8df6bb h1:cHelO99u52qcJ5/dVTq3N5QSsetrTeW2DB4T0mdgae0=
 github.com/direktiv/go-powershell v0.0.0-20220218012621-5a23fa8df6bb/go.mod h1:eQXK0VU+pKojyiOp/PXKDwoAG7DCC1sCNKefwXv7AoA=
 github.com/godbus/dbus/v5 v5.0.4/go.mod h1:xhWf0FNVPg57R7Z0UbKHbJfkEywrmjJnf7w5xrFpKfA=
+github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=
+github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
 github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=

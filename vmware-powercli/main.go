@@ -11,6 +11,7 @@ import (
 	"github.com/direktiv/direktiv-apps/pkg/reusable"
 	pss "github.com/direktiv/go-powershell"
 	"github.com/direktiv/go-powershell/backend"
+	"github.com/google/uuid"
 )
 
 type Script struct {
@@ -112,9 +113,14 @@ func executeScript(ri *reusable.RequestInfo, shell pss.Shell, script Script) (st
 		return "", "", err
 	}
 
-	ps1 := fmt.Sprintf("%s.ps1", f.Name())
+	name := f.Name()
+	if name == "" {
+		name = uuid.New().String()
+	}
 
-	os.Rename(f.Name(), ps1)
+	ps1 := fmt.Sprintf("%s.ps1", name)
+
+	os.Rename(name, ps1)
 	defer os.Remove(ps1)
 
 	full := fmt.Sprintf("%s %s", ps1, strings.Join(script.Args, " "))
@@ -192,12 +198,9 @@ func toJSON(ri *reusable.RequestInfo, str string) interface{} {
 		if e, ok := err.(*json.SyntaxError); ok {
 			ri.Logger().Infof("syntax error at byte offset %d", e.Offset)
 		}
-
-		ri.Logger().Infof("response is string: %v", err)
 		return str
 	}
 
-	ri.Logger().Infof("response is json")
 	return json.RawMessage(str)
 
 }

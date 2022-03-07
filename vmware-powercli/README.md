@@ -111,7 +111,6 @@ states:
             name: script1.ps1
             data: "Get-VM -Name ubuntu1 | ConvertTo-Json  -Depth 1 -AsArray"
             type: plain
-  transition: check
 ```
 
 
