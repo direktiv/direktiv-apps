@@ -52,7 +52,9 @@ func (fi *FileIterator) Reset() {
 	fi.idx = 0
 }
 
-func (f *File) AsString() (string, error) {
+func (f *File) AsString(ri *RequestInfo) (string, error) {
+
+	f.ri = ri
 
 	switch f.Type {
 	case TypeBase64:
@@ -84,7 +86,9 @@ func (f *File) AsString() (string, error) {
 	}
 }
 
-func (f *File) AsBase64() (string, error) {
+func (f *File) AsBase64(ri *RequestInfo) (string, error) {
+
+	f.ri = ri
 
 	switch f.Type {
 	case TypeBase64:
@@ -119,7 +123,9 @@ func (f *File) AsBase64() (string, error) {
 
 }
 
-func (f *File) Size() (int, error) {
+func (f *File) Size(ri *RequestInfo) (int, error) {
+
+	f.ri = ri
 
 	switch f.Type {
 	case TypeBase64:
@@ -152,7 +158,9 @@ func (f *File) Size() (int, error) {
 
 }
 
-func (f *File) AsReader() (io.ReadCloser, error) {
+func (f *File) AsReader(ri *RequestInfo) (io.ReadCloser, error) {
+
+	f.ri = ri
 
 	switch f.Type {
 	case TypeBase64:
@@ -161,6 +169,8 @@ func (f *File) AsReader() (io.ReadCloser, error) {
 	case TypeFile:
 		return os.Open(f.Data)
 	case TypeVariable:
+
+		fmt.Printf("GETTING AS READER %+v\n", f)
 		v := strings.SplitN(f.Data, "/", 2)
 		if len(v) != 2 {
 			return nil, fmt.Errorf("can not get var %s, needs format SCOPE/NAME", f.Name)
@@ -176,7 +186,9 @@ func (f *File) AsReader() (io.ReadCloser, error) {
 
 }
 
-func (f *File) AsFile(mode os.FileMode) (*os.File, error) {
+func (f *File) AsFile(ri *RequestInfo, mode os.FileMode) (*os.File, error) {
+
+	f.ri = ri
 
 	file, err := ioutil.TempFile("", f.Name)
 	if err != nil {
@@ -198,7 +210,7 @@ func (f *File) AsFile(mode os.FileMode) (*os.File, error) {
 		return nil, err
 	}
 
-	script, err := f.AsReader()
+	script, err := f.AsReader(ri)
 	if err != nil {
 		return nil, err
 	}
