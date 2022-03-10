@@ -1,11 +1,9 @@
 package reusable
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -165,22 +163,13 @@ func Unmarshal(obj interface{}, strict bool, r *http.Request) error {
 
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
-	data, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		return err
-	}
-
-	rdr := bytes.NewReader(data)
-	dec := json.NewDecoder(rdr)
+	dec := json.NewDecoder(r.Body)
+	defer r.Body.Close()
 
 	if strict {
 		dec.DisallowUnknownFields()
 	}
 
-	err = dec.Decode(obj)
-	if err != nil {
-		return err
-	}
+	return dec.Decode(obj)
 
-	return nil
 }
