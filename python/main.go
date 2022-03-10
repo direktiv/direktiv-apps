@@ -22,7 +22,7 @@ type requestInput struct {
 func pythonHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestInfo) {
 
 	obj := new(requestInput)
-	err := reusable.Unmarshal(obj, false, r)
+	err := reusable.Unmarshal(obj, true, r)
 	if err != nil {
 		reusable.ReportError(w, reusable.UnmarshallError, err)
 		return
