@@ -8,10 +8,12 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"sync"
 	"syscall"
 	"time"
 
+	"github.com/acarl005/stripansi"
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog"
 )
@@ -171,5 +173,31 @@ func Unmarshal(obj interface{}, strict bool, r *http.Request) error {
 	}
 
 	return dec.Decode(obj)
+
+}
+
+func ToJSON(str string) interface{} {
+
+	str = strings.TrimSpace(str)
+	str = stripansi.Strip(str)
+
+	var js json.RawMessage
+	err := json.Unmarshal([]byte(str), &js)
+	if err != nil {
+		return str
+	}
+
+	return json.RawMessage(str)
+
+}
+
+func GetFileAsJson(uf string) (interface{}, error) {
+
+	b, err := os.ReadFile(uf)
+	if err != nil {
+		return nil, err
+	}
+
+	return ToJSON(string(b)), nil
 
 }
