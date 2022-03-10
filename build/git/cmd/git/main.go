@@ -155,6 +155,8 @@ func gitHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestInfo
 
 	// store as variable if set
 	if obj.Clone.Scope != "" && obj.Clone.Name != "" {
+
+		ri.Logger().Infof("storing repo in %s/%s", obj.Clone.Scope, obj.Clone.Name)
 		outFile := path.Join(ri.Dir(), "out", obj.Clone.Scope, obj.Clone.Name)
 		srcFile := path.Join(ri.Dir(), "clone")
 		err = os.Rename(srcFile, outFile)
