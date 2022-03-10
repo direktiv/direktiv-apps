@@ -10,7 +10,7 @@ This container runs python scripts provided by the workflow.
 ```yaml
 functions:
 - id: run
-  image: direktiv/python:v1
+  image: direktiv/python-vsphere:v1
   type: reusable
 states:
 - id: getter 
