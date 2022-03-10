@@ -13,8 +13,6 @@ RUN apk --update add ca-certificates
 
 FROM scratch
 
-COPY ./test.pdf /
-
 COPY --from=build /zip /
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 CMD ["/zip"]

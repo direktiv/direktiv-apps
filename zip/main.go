@@ -56,6 +56,8 @@ func (uz *encryptedZipper) Close() error {
 
 func zipHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestInfo) {
 
+	ri.Logger().Infof("receiving zip request")
+
 	obj := new(requestInput)
 	err := reusable.Unmarshal(obj, false, r)
 	if err != nil {
@@ -67,6 +69,9 @@ func zipHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestInfo
 
 	// create var file if set
 	if len(obj.Scope) > 0 && len(obj.Name) > 0 {
+
+		ri.Logger().Infof("setting out filew to %s/%s", obj.Scope, obj.Name)
+
 		fn := fmt.Sprintf("%s/out/%s/%s", r.Header.Get("Direktiv-TempDir"), obj.Scope, obj.Name)
 		zipFileOut, err = os.Create(fn)
 		if err != nil {
@@ -74,6 +79,7 @@ func zipHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestInfo
 			return
 		}
 	} else {
+		ri.Logger().Infof("creating zip file")
 		zipFileOut, err = ioutil.TempFile("", "zip")
 		if err != nil {
 			reusable.ReportError(w, reusable.UnmarshallError, err)
