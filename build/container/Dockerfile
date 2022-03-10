@@ -87,8 +87,6 @@ RUN wget https://github.com/vorteil/vorteil/releases/latest/download/vorteil_lin
         ./vorteil version
 
 RUN ./vorteil projects convert-container $BASE_IMAGE /tmp/base
-RUN  ./vorteil images build --vm.disk-size "+30GiB" \
-           --vm.kernel=22.3.1 --format=vmdk /tmp/base/ -f
 
 ENV DOCKER_HOST=tcp://127.0.0.1:2375
 RUN mkdir -p /tmp/tars

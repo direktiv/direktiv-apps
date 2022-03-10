@@ -168,6 +168,24 @@ func runVM() {
 
 func main() {
 
+	_, err := os.Stat("/base.vmdk")
+	if err != nil {
+
+		cmd := exec.Command("/vorteil", "images", "build",
+			"--vm.disk-size", "+30GiB", "--vm.kernel=22.3.1",
+			"--format=vmdk", "/tmp/base/", "-f")
+
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+
+		err := cmd.Run()
+		if err != nil {
+			log.Printf("can not create disk %v", err)
+			panic(err)
+		}
+
+	}
+
 	go runVM()
 
 	jobs = make(chan *requestInput, max)
