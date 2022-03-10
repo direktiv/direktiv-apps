@@ -5,24 +5,24 @@ Building and pushing containers in Direktiv to container registries
 ## Direktiv
 ```yaml
 functions:
-- id: container
-  image: direktiv/container
+- id: builder
+  image: direktiv/builder
   type: reusable
 states:
 - id: builder 
   type: action
   action:
-    function: container
+    function: builder
     secrets: ["docker"]
     input: 
       buildkit: true
       args:
       - "--build-arg=myarg=value"
       registries:
-      - user: gerke74
+      - user: myuser
         password: jq(.secrets.docker)
         registry: https://index.docker.io/v1/
-      tag: gerke74/direktiv-build
+      tag: myuser/direktiv-build
       context: "https://github.com/jensg-st/hello-world.git#refs/heads/main"
 ```
 
@@ -63,9 +63,17 @@ The YAML for this would look like the following:
 
 ```yaml
 tar:
-  type: base64
   name: myproject
-  data: 123BASEDATA==
+  data: 123BASEDATA== 
+  type: base64
+```
+
+### no-push
+
+Only build and don't push the image.
+
+```yaml
+no-push: true
 ```
 
 ### tag

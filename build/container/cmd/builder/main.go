@@ -1,17 +1,17 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+	"log"
+	"math"
 	"net/http"
 	"os"
 	"os/exec"
-	"path"
+	"runtime"
 	"time"
 
 	"github.com/direktiv/direktiv-apps/pkg/reusable"
-	"github.com/docker/cli/cli/config/configfile"
-	"github.com/docker/cli/cli/config/types"
+	"github.com/mackerelio/go-osstat/memory"
 )
 
 // if push, this are the credentials
@@ -53,85 +53,28 @@ type requestInput struct {
 }
 
 var (
-	jobs chan *requestInput
-	max  int
+	jobs    chan *requestInput
+	max     = 5
+	timeout = 240
 )
-
-const timeout = 120
-
-func createConfigJsonFile(dir string, rs []registry) error {
-
-	cf := configfile.ConfigFile{
-		AuthConfigs: make(map[string]types.AuthConfig),
-		Proxies:     make(map[string]configfile.ProxyConfig),
-	}
-
-	for i := range rs {
-		r := rs[i]
-		authConfig := types.AuthConfig{
-			Username: r.User,
-			Password: r.Password,
-		}
-		cf.AuthConfigs[r.Registry] = authConfig
-	}
-
-	var proxyConfig configfile.ProxyConfig
-	hp, ok := os.LookupEnv("HTTPS_PROXY")
-	if ok {
-		proxyConfig.HTTPSProxy = hp
-	}
-	hp, ok = os.LookupEnv("HTTP_PROXY")
-	if ok {
-		proxyConfig.HTTPProxy = hp
-	}
-	hp, ok = os.LookupEnv("NO_PROXY")
-	if ok {
-		proxyConfig.NoProxy = hp
-	}
-
-	cf.Proxies["default"] = proxyConfig
-
-	authPath := path.Join(dir, "config.json")
-	ap, err := os.Create(authPath)
-	if err != nil {
-		return err
-	}
-
-	return cf.SaveToWriter(ap)
-
-}
-
-func checkForDocker(b chan bool) {
-
-	for {
-		err := dockerInfo()
-		if err == nil {
-			b <- true
-			break
-		}
-	}
-
-}
 
 func waitForDocker() error {
 
-	b := make(chan bool)
-	go checkForDocker(b)
-
-	select {
-	case <-b:
-		break
-	case <-time.After(120 * time.Second):
-		return fmt.Errorf("docker startup timeoud")
+	for i := 0; i < timeout; i++ {
+		err := dockerInfo()
+		if err == nil {
+			return nil
+		}
+		time.Sleep(1 * time.Second)
 	}
 
-	return nil
+	return fmt.Errorf("docker start timed out")
 
 }
 
 func managerHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestInfo) {
 
-	ri.Logger().Infof("running manager")
+	ri.Logger().Infof("running handler")
 
 	obj := new(requestInput)
 	err := reusable.Unmarshal(obj, true, r)
@@ -169,8 +112,8 @@ func managerHandler(w http.ResponseWriter, r *http.Request, ri *reusable.Request
 		return
 	case <-obj.doneCh:
 		break
-	case <-time.After(timeout * time.Minute):
-		reusable.ReportError(w, errForCode("nobuild"), err)
+	case <-time.After(time.Duration(timeout) * time.Minute):
+		reusable.ReportError(w, errForCode("timeout"), err)
 		return
 	}
 
@@ -180,40 +123,56 @@ func managerHandler(w http.ResponseWriter, r *http.Request, ri *reusable.Request
 
 }
 
+func runVM() {
+
+	log.Printf("starting with vm")
+	cpus := runtime.NumCPU()
+	if cpus > 8 {
+		cpus = 8
+	}
+
+	mem := uint64(4096)
+	memory, err := memory.Get()
+	if err == nil {
+		mem = memory.Total
+		mem /= (1024 * 1024)
+		mem = uint64(math.Min(float64(mem/2), 8192))
+	}
+
+	log.Printf("starting vm with %d cpus & %dm", cpus, mem)
+	cmd := exec.Command("/usr/bin/qemu-system-x86_64", "--accel", "tcg,thread=multi",
+		"-machine", "q35",
+		"-smp", fmt.Sprintf("%d", cpus),
+		"-m", fmt.Sprintf("%d", mem),
+		"-serial", "stdio",
+		"-display", "none",
+		"-device", "virtio-scsi-pci,id=scsi", "-device", "scsi-hd,drive=hd0",
+		"-drive", "if=none,file=/base.vmdk,format=vmdk,id=hd0",
+		"-netdev", "user,id=network0,hostfwd=tcp::2375-:2375",
+		"-device", "virtio-net-pci,netdev=network0,id=virtio0,mac=26:10:05:00:00:0a",
+	)
+
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stdout
+
+	log.Printf("starting with command: %v", cmd)
+
+	err = cmd.Run()
+
+	// we can not do much, if the VM dies we are done here
+	if err != nil {
+		panic(err)
+	}
+
+}
+
 func main() {
 
-	// if this file exists it is the UML server
-	_, err := os.Stat(dockerDiskFile)
-	if err == nil {
-		err = startRunner()
-		fmt.Printf("error running docker: %v\n", err)
-		return
-	}
-
-	ds := flag.Int("disksize", 40, "disk size in GB")
-	builds := flag.Int("builds", 3, "parallel builds")
-	flag.Parse()
-
-	max = *builds
-
-	// start bess.sock. has to work
-	err = startNetwork()
-	if err != nil {
-		panic(err)
-	}
-
-	// starts UML with
-	go startLinuxDocker(*ds)
-
-	// wait for api.sock, has to work
-	err = waitForAPISock()
-	if err != nil {
-		panic(err)
-	}
+	go runVM()
 
 	jobs = make(chan *requestInput, max)
 	for a := 0; a < max; a++ {
-		go runBuildAndPush(jobs)
+		go serveBuild()
 	}
 
 	reusable.StartServer(managerHandler, nil)
@@ -221,7 +180,7 @@ func main() {
 }
 
 func dockerInfo() error {
-	cmd := exec.Command("/usr/bin/docker", "-H", "tcp://127.0.0.1:2375", "info")
+	cmd := exec.Command("/usr/bin/docker", "info")
 	return cmd.Run()
 }
 

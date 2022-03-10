@@ -10,9 +10,11 @@ import (
 	"strings"
 
 	"github.com/codeclysm/extract"
+	"github.com/docker/cli/cli/config/configfile"
+	"github.com/docker/cli/cli/config/types"
 )
 
-func runBuildAndPush(input chan *requestInput) {
+func serveBuild() {
 
 	var ad, tar, dfName string
 	var err error
@@ -20,7 +22,7 @@ func runBuildAndPush(input chan *requestInput) {
 	report := func(objin *requestInput, err error) {
 
 		os.RemoveAll(ad)
-		os.Remove(tar)
+		os.RemoveAll(tar)
 		os.Remove(dfName)
 		if err != nil {
 			objin.errCh <- err
@@ -32,9 +34,8 @@ func runBuildAndPush(input chan *requestInput) {
 
 	for {
 
-		obj := <-input
+		obj := <-jobs
 		ri := obj.ri
-
 		ri.Logger().Infof("worker picked up task")
 
 		// build args
@@ -81,27 +82,27 @@ func runBuildAndPush(input chan *requestInput) {
 		//  if there is a tar or dockerfile we need to put it somewhere
 		if obj.Tar.Data != "" {
 
-			ri.Logger().Infof("tar attached, extracting")
+			ri.Logger().Infof("tar attached")
 
-			r, err := obj.Tar.AsReader()
+			r, err := obj.Tar.AsReader(ri)
 			if err != nil {
 				report(obj, err)
 				continue
 			}
 
-			td, err := os.MkdirTemp("", ri.ActionID())
+			tar, err = os.MkdirTemp("", ri.ActionID())
 			if err != nil {
 				report(obj, err)
 				continue
 			}
 
-			err = extract.Gz(context.TODO(), r, td, nil)
+			err = extract.Gz(context.Background(), r, tar, nil)
 			if err != nil {
 				report(obj, err)
 				continue
 			}
 
-			obj.Context = path.Join(td, obj.Tar.Name)
+			obj.Context = path.Join(tar, obj.Tar.Name)
 			nArgs = append(nArgs, obj.Context)
 
 		} else if obj.Context != "" {
@@ -112,16 +113,14 @@ func runBuildAndPush(input chan *requestInput) {
 		}
 
 		if obj.Buildkit {
-			nArgs = append(nArgs, "--network", "host")
 			env = append(env, "DOCKER_BUILDKIT=1")
 		}
 
 		// extract extra docker file
 		if obj.DockerfileArg.Data != "" {
 
-			// this only works for tar
-
-			df, err := obj.DockerfileArg.AsFile(0644)
+			// this only works for tar, not for git
+			df, err := obj.DockerfileArg.AsFile(ri, 0644)
 			if err != nil {
 				report(obj, err)
 				continue
@@ -137,8 +136,6 @@ func runBuildAndPush(input chan *requestInput) {
 			nArgs = append(nArgs, "-f", dfName)
 
 		}
-
-		nArgs = append(nArgs, "--network=host")
 
 		mw := io.MultiWriter(os.Stdout, ri.LogWriter())
 		cmd := exec.Command("docker", nArgs...)
@@ -165,6 +162,48 @@ func runBuildAndPush(input chan *requestInput) {
 		report(obj, nil)
 
 	}
+
+}
+
+func createConfigJsonFile(dir string, rs []registry) error {
+
+	cf := configfile.ConfigFile{
+		AuthConfigs: make(map[string]types.AuthConfig),
+		Proxies:     make(map[string]configfile.ProxyConfig),
+	}
+
+	for i := range rs {
+		r := rs[i]
+		authConfig := types.AuthConfig{
+			Username: r.User,
+			Password: r.Password,
+		}
+		cf.AuthConfigs[r.Registry] = authConfig
+	}
+
+	var proxyConfig configfile.ProxyConfig
+	hp, ok := os.LookupEnv("HTTPS_PROXY")
+	if ok {
+		proxyConfig.HTTPSProxy = hp
+	}
+	hp, ok = os.LookupEnv("HTTP_PROXY")
+	if ok {
+		proxyConfig.HTTPProxy = hp
+	}
+	hp, ok = os.LookupEnv("NO_PROXY")
+	if ok {
+		proxyConfig.NoProxy = hp
+	}
+
+	cf.Proxies["default"] = proxyConfig
+
+	authPath := path.Join(dir, "config.json")
+	ap, err := os.Create(authPath)
+	if err != nil {
+		return err
+	}
+
+	return cf.SaveToWriter(ap)
 
 }
 
