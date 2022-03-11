@@ -169,8 +169,6 @@ func (f *File) AsReader(ri *RequestInfo) (io.ReadCloser, error) {
 	case TypeFile:
 		return os.Open(f.Data)
 	case TypeVariable:
-
-		fmt.Printf("GETTING AS READER %+v\n", f)
 		v := strings.SplitN(f.Data, "/", 2)
 		if len(v) != 2 {
 			return nil, fmt.Errorf("can not get var %s, needs format SCOPE/NAME", f.Name)
