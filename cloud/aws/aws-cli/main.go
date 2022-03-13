@@ -84,17 +84,18 @@ func dummyHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestIn
 		cmd := exec.Command("aws", args...)
 
 		var b bytes.Buffer
-		mw := io.MultiWriter(ri.LogWriter(), os.Stdout, &b)
-
-		if !obj.Print {
-			cmd.Stdout = mw
+		mw := io.MultiWriter(os.Stdout, &b)
+		if obj.Print {
+			mw = io.MultiWriter(os.Stdout, &b, ri.LogWriter())
 		}
+
+		cmd.Stdout = mw
 		cmd.Stderr = mw
 
 		cmd.Env = envs
 		cmd.Dir = ri.Dir()
 
-		ri.Logger().Infof("executing %s...", cmd.String()[:60])
+		ri.Logger().Infof("executing %s...", cmd.String())
 
 		err := cmd.Run()
 		if err != nil && !obj.Continue {
@@ -133,8 +134,7 @@ func dummyHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestIn
 			return
 		}
 
-		var b bytes.Buffer
-		mw := io.MultiWriter(ri.LogWriter(), os.Stdout, &b)
+		mw := io.MultiWriter(ri.LogWriter(), os.Stdout)
 
 		cmd := exec.Command(scriptPath)
 		cmd.Env = envs

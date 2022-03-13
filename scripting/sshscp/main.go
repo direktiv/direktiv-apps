@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -16,6 +17,7 @@ import (
 	"github.com/bramvdbogaerde/go-scp"
 	"github.com/bramvdbogaerde/go-scp/auth"
 	"github.com/direktiv/direktiv-apps/pkg/reusable"
+	"github.com/google/uuid"
 
 	"golang.org/x/crypto/ssh"
 )
@@ -33,11 +35,14 @@ type sshscp struct {
 	Port     int             `json:"port"`
 	Continue bool            `json:"continue"`
 	Output   string          `json:"output"`
+
+	Args []string `json:"args"`
 }
 
 type requestInput struct {
 	SSHSCP   []sshscp `json:"actions"`
 	Continue bool     `json:"continue"`
+	Silent   bool     `json:"silent"`
 }
 
 type connector struct {
@@ -77,7 +82,7 @@ func generateAuth(attached []reusable.File, pwd, user string, ri *reusable.Reque
 		if f.Name == pwd {
 
 			ri.Logger().Infof("using %s as certficate", f.Name)
-			cert, err := f.AsFile(0400)
+			cert, err := f.AsFile(ri, 0400)
 			if err != nil {
 				return cc, isCert, err
 			}
@@ -147,7 +152,7 @@ func scpExec(s sshscp, c *connector, ri *reusable.RequestInfo) ([]string, error)
 			continue
 		}
 
-		r, err := f.AsFile(0)
+		r, err := f.AsFile(ri, 0)
 		if err != nil {
 			return files, err
 		}
@@ -183,7 +188,7 @@ func scpExec(s sshscp, c *connector, ri *reusable.RequestInfo) ([]string, error)
 	return files, nil
 }
 
-func sshExec(s sshscp, c *connector, ri *reusable.RequestInfo) ([]map[string]interface{}, error) {
+func sshExec(s sshscp, c *connector, silent bool, ri *reusable.RequestInfo) ([]map[string]interface{}, error) {
 
 	var (
 		err    error
@@ -216,6 +221,10 @@ func sshExec(s sshscp, c *connector, ri *reusable.RequestInfo) ([]map[string]int
 			continue
 		}
 
+		if f.Name == "" {
+			f.Name = uuid.New().String()
+		}
+
 		result := make(map[string]interface{})
 
 		result["script"] = f.Name
@@ -228,7 +237,7 @@ func sshExec(s sshscp, c *connector, ri *reusable.RequestInfo) ([]map[string]int
 
 		ri.Logger().Infof("running %v", f.Name)
 
-		start, err := f.AsFile(0755)
+		start, err := f.AsFile(ri, 0755)
 		if err != nil {
 			return ret, err
 		}
@@ -262,18 +271,35 @@ func sshExec(s sshscp, c *connector, ri *reusable.RequestInfo) ([]map[string]int
 			isScript = true
 		}
 
-		ri.Logger().Infof("executing %v", execute)
+		if len(s.Args) > 0 {
+			execute = fmt.Sprintf("%s %s", execute, strings.Join(s.Args, " "))
+		}
 
-		b, err = sess.CombinedOutput(execute)
+		if !silent {
+			ri.Logger().Infof("executing %v", execute)
+		} else {
+			ri.Logger().Infof("executing command %d", a)
+		}
+
+		var bout bytes.Buffer
+		mw := io.MultiWriter(&bout, os.Stdout)
+		if !silent {
+			mw = io.MultiWriter(&bout, ri.LogWriter(), os.Stdout)
+		}
+
+		sess.Stdout = mw
+		sess.Stderr = mw
+
+		err = sess.Run(execute)
+
 		result["success"] = true
 		if err != nil {
 			result["success"] = false
 			result["error"] = err.Error()
 		}
 
-		result["stdout"] = string(b)
-		if len(string(b)) > 0 {
-			ri.Logger().Infof(string(b))
+		if !silent {
+			result["stdout"] = bout.String()
 		}
 
 		ret = append(ret, result)
@@ -361,7 +387,7 @@ func sshscpHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestI
 
 		switch s.Type {
 		case sshType:
-			result, err = sshExec(s, c, ri)
+			result, err = sshExec(s, c, obj.Silent, ri)
 
 			// if there is an error we ned to create the success
 			// layout and add the error. flows can test for 'failed'

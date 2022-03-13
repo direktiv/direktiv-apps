@@ -28,11 +28,17 @@ states:
 
 ## Input
 
-The input needed to run the above workflow properly is the following:
+The input needed to run the above workflow properly is the following. JQ/JS can be used to generate content as well.
 
 ```yaml
 input:
-  message: "This message will be posted to slack chat"
+  message: 
+     blocks:
+      - type: header
+        text:
+          type: plain_text
+          text: 'This is a header'
+      - type: divider
   url: "SLACK_CHAT_WEBHOOK_URL"
 ```
 

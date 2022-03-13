@@ -1,0 +1,18 @@
+FROM golang:1.16.13-buster as build
+
+WORKDIR /app
+COPY ./main.go /app
+COPY ./go.mod /app
+COPY ./go.sum /app
+
+RUN go get -u -v
+RUN CGO_ENABLED=0 go build -o /application -ldflags="-s -w" main.go
+
+FROM alpine:latest as certs
+RUN apk --update add ca-certificates
+
+FROM scratch
+
+COPY --from=build /application /
+COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+CMD ["/application"]

@@ -114,6 +114,7 @@ If there is no file with that name *auth* is handled as password.
 | Attribute | Function |
 | -- | -- |
 |Continue|if on host fails the action tries the next one if there are more than one|
+|Silent|No output if set to true|
 |actions.Type|*scp* or *ssh*|
 |actions.host|hostname to connect to|
 |actions.Auth|password or certificate to use|

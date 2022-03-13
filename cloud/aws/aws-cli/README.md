@@ -59,7 +59,7 @@ states:
 |region| Region, default `us-east-1` |
 |commands| List of commands to excecute without `aws` |
 |continue| if set to true command execution continues if one command fails|
-|script| authenticated script to run |
+|script| authenticated script to run, runs as bash but #! does not have to be part of the script data |
 |print| print result to stdout, bool|
 
 ## Error on Execution
