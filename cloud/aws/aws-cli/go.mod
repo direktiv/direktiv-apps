@@ -7,6 +7,8 @@ require (
 	github.com/go-playground/validator v9.31.0+incompatible
 )
 
+require github.com/stretchr/testify v1.7.1-0.20210427113832-6241f9ab9942 // indirect
+
 require (
 	github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
