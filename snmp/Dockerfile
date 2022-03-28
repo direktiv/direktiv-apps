@@ -4,13 +4,12 @@ WORKDIR /app
 COPY ./main.go ./
 COPY ./go.mod ./
 COPY ./go.sum ./
-RUN go get -u -v
-RUN CGO_ENABLED=0 go build -o /snmp -ldflags="-s -w" main.go
+RUN go mod download
+RUN CGO_ENABLED=0 go build -o /application -ldflags="-s -w" main.go
 
-FROM alpine:latest as certs
-RUN apk --update add ca-certificates
+FROM gcr.io/distroless/static
+USER nonroot:nonroot
+EXPOSE 8080
+COPY --from=build /application /
+CMD ["/application"]
 
-FROM scratch
-COPY --from=build /snmp /
-COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-CMD ["/snmp"]

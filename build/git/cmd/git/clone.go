@@ -12,7 +12,7 @@ import (
 
 func clone(url, user, pwd string, depth int, ri *reusable.RequestInfo) (*git.Repository, error) {
 
-	ri.Logger().Infof("cloning %s", url)
+	ri.Logger().Infof("cloning")
 
 	mw := io.MultiWriter(os.Stdout, ri.LogWriter())
 	cloneOptions := &git.CloneOptions{
@@ -26,7 +26,6 @@ func clone(url, user, pwd string, depth int, ri *reusable.RequestInfo) (*git.Rep
 
 	if user != "" && pwd != "" {
 		ri.Logger().Infof("authenticating with %s", url)
-
 		cloneOptions.Auth = &httpgit.BasicAuth{
 			Username: user,
 			Password: pwd,

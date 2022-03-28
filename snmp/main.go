@@ -4,96 +4,121 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/direktiv/direktiv-apps/pkg/reusable"
 	"github.com/gosnmp/gosnmp"
-	"github.com/direktiv/direktiv-apps/pkg/direktivapps"
 )
 
-var code = "com.snmp.%s.error"
+type requestInput struct {
+	Server string `json:"server"`
+	Port   int    `json:"port"`
 
-type LoggingSNMP struct {
-	Aid string `json:"aid"`
-}
+	Version   int    `json:"version"`
+	Transport string `json:"transport"`
 
-func (lsnmp *LoggingSNMP) Print(v ...interface{}) {
-	for _, f := range v {
-		direktivapps.LogDouble(lsnmp.Aid, f.(string))
-	}
-}
+	Community string `json:"community"`
 
-func (lsnmp *LoggingSNMP) Printf(format string, v ...interface{}) {
-	direktivapps.LogDouble(lsnmp.Aid, fmt.Sprintf(format, v...))
-}
+	Inform bool `json:"inform"`
 
-type SnmpInput struct {
-	URL           string           `json:"url"`
-	Port          int              `json:"port"`
-	IsInform      bool             `json:"inform-request"`
-	SNMPV1Headers TrapHeaders      `json:"snmpv1-headers"`
-	Variables     []gosnmp.SnmpPDU `json:"variables"`
-}
-
-type TrapHeaders struct {
+	// v1
+	GenericTrap  int    `json:"generic"`
+	SpecificTrap int    `json:"specific"`
 	Enterprise   string `json:"enterprise"`
-	AgentAddress string `json:"agent-address"`
-	GenericTrap  int    `json:"generic-trap"`
-	SpecificTrap int    `json:"specific-trap"`
-	Timestamp    uint   `json:"timestamp"`
+
+	Variables []gosnmp.SnmpPDU `json:"variables"`
 }
 
-func SNMPHandler(w http.ResponseWriter, r *http.Request) {
-	var obj SnmpInput
-	aid, err := direktivapps.Unmarshal(&obj, r)
+type SNMPLogWriter struct {
+	w *reusable.DirektivLogger
+}
+
+func (lw *SNMPLogWriter) Print(v ...interface{}) {
+	lw.w.Infof("%v", v)
+}
+
+func (lw *SNMPLogWriter) Printf(format string, v ...interface{}) {
+	lw.w.Infof(format, v)
+}
+
+const snmpError = "direktiv.snmp.error"
+
+func snmpHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestInfo) {
+
+	obj := new(requestInput)
+	err := reusable.Unmarshal(obj, true, r)
 	if err != nil {
-		direktivapps.RespondWithError(w, fmt.Sprintf(code, "unmarshal-input"), err.Error())
+		reusable.ReportError(w, reusable.UnmarshallError, err)
 		return
 	}
 
-	direktivapps.LogDouble(aid, "setup logger...")
-
-	logger := &LoggingSNMP{
-		Aid: aid,
-	}
-
-	g := gosnmp.Default
-
-	direktivapps.LogDouble(aid, "reading input...")
-
-	// set the url
-	g.Target = obj.URL
-	g.Port = uint16(obj.Port)
-	// set the logger
-	g.Logger = gosnmp.NewLogger(logger)
-
-	err = g.Connect()
-	if err != nil {
-		direktivapps.RespondWithError(w, fmt.Sprintf(code, "connecting"), err.Error())
+	if obj.Server == "" {
+		reusable.ReportError(w, snmpError,
+			fmt.Errorf("server required for snmp"))
 		return
 	}
-	defer g.Conn.Close()
 
-	// send the trap
-	result, err := g.SendTrap(gosnmp.SnmpTrap{
-		IsInform:     obj.IsInform,
+	if obj.Port == 0 {
+		obj.Port = 161
+	}
+
+	gsnmp := gosnmp.Default
+
+	lw := &SNMPLogWriter{
+		w: ri.Logger(),
+	}
+
+	gosnmp.Default.Logger = gosnmp.NewLogger(lw)
+
+	if obj.Transport == "tcp" {
+		gsnmp.Transport = obj.Transport
+	}
+
+	gsnmp.Target = obj.Server
+	gsnmp.Port = uint16(obj.Port)
+
+	ri.Logger().Infof("sending trap to %s:%d via %s",
+		gsnmp.Target, gsnmp.Port, gsnmp.Transport)
+
+	if obj.Community != "" {
+		gsnmp.Community = obj.Community
+	}
+
+	ri.Logger().Infof("using community %s", gsnmp.Community)
+
+	switch obj.Version {
+	case 1:
+		gsnmp.Version = gosnmp.Version1
+	case 3:
+		gsnmp.Version = gosnmp.Version3
+	}
+
+	ri.Logger().Infof("sending trap version %v", gsnmp.Version)
+
+	trap := gosnmp.SnmpTrap{
+		IsInform:     obj.Inform,
 		Variables:    obj.Variables,
-		Enterprise:   obj.SNMPV1Headers.Enterprise,
-		GenericTrap:  obj.SNMPV1Headers.GenericTrap,
-		SpecificTrap: obj.SNMPV1Headers.SpecificTrap,
-		Timestamp:    obj.SNMPV1Headers.Timestamp,
-	})
+		Enterprise:   obj.Enterprise,
+		AgentAddress: obj.Server,
+		GenericTrap:  1,
+		SpecificTrap: obj.SpecificTrap,
+	}
+
+	err = gsnmp.Connect()
 	if err != nil {
-		direktivapps.RespondWithError(w, fmt.Sprintf(code, "send-trap"), err.Error())
+		reusable.ReportError(w, snmpError,
+			fmt.Errorf("can not connect to snmp agent"))
+		return
+	}
+	defer gsnmp.Conn.Close()
+
+	_, err = gsnmp.SendTrap(trap)
+	if err != nil {
+		reusable.ReportError(w, snmpError, err)
 		return
 	}
 
-	data, err := result.MarshalMsg()
-	if err != nil {
-		direktivapps.RespondWithError(w, fmt.Sprintf(code, "marshal-response"), err.Error())
-		return
-	}
-
-	direktivapps.Respond(w, data)
+	reusable.ReportResult(w, obj.Variables)
 }
 
 func main() {
-	direktivapps.StartServer(SNMPHandler)
+	reusable.StartServer(snmpHandler, nil)
 }

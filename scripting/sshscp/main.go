@@ -275,11 +275,7 @@ func sshExec(s sshscp, c *connector, silent bool, ri *reusable.RequestInfo) ([]m
 			execute = fmt.Sprintf("%s %s", execute, strings.Join(s.Args, " "))
 		}
 
-		if !silent {
-			ri.Logger().Infof("executing %v", execute)
-		} else {
-			ri.Logger().Infof("executing command %d", a)
-		}
+		ri.Logger().Infof("executing command %d", a)
 
 		var bout bytes.Buffer
 		mw := io.MultiWriter(&bout, os.Stdout)
