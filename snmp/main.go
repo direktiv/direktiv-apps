@@ -50,6 +50,22 @@ func snmpHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestInf
 		return
 	}
 
+	fmt.Printf("%v", obj)
+
+	for a := range obj.Variables {
+		v := &obj.Variables[a]
+		if v.Type == 2 {
+			// json comes in as float64
+			val, ok := v.Value.(float64)
+			if !ok {
+				reusable.ReportError(w, snmpError,
+					fmt.Errorf("integer value not of type int"))
+				return
+			}
+			v.Value = int(val)
+		}
+	}
+
 	if obj.Server == "" {
 		reusable.ReportError(w, snmpError,
 			fmt.Errorf("server required for snmp"))
@@ -93,9 +109,19 @@ func snmpHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestInf
 
 	ri.Logger().Infof("sending trap version %v", gsnmp.Version)
 
+	// pdu := gosnmp.SnmpPDU{
+	// 	Name:  "1.3.6.1.2.1.1.6",
+	// 	Type:  gosnmp.Integer,
+	// 	Value: 5,
+	// }
+
+	// xType := fmt.Sprintf("%T", pdu.Value)
+	// fmt.Printf(">> %v\n", xType)
+
 	trap := gosnmp.SnmpTrap{
-		IsInform:     obj.Inform,
-		Variables:    obj.Variables,
+		IsInform:  obj.Inform,
+		Variables: obj.Variables,
+		// Variables:    []gosnmp.SnmpPDU{pdu},
 		Enterprise:   obj.Enterprise,
 		AgentAddress: obj.Server,
 		GenericTrap:  1,
