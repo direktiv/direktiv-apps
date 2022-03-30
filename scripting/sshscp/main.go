@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -23,8 +24,9 @@ import (
 )
 
 const (
-	sshType = "ssh"
-	scpType = "scp"
+	sshType     = "ssh"
+	scpType     = "scp"
+	scpFromType = "scpfrom"
 )
 
 type sshscp struct {
@@ -114,6 +116,52 @@ func connect(svr string, cc ssh.ClientConfig) (scp.Client, error) {
 	client := scp.NewClient(svr, &cc)
 	err := client.Connect()
 	return client, err
+}
+
+func scpFromExec(s sshscp, c *connector, ri *reusable.RequestInfo) ([]string, error) {
+
+	var (
+		err error
+		cc  ssh.ClientConfig
+	)
+
+	files := []string{}
+
+	cc, _, err = generateAuth(s.Files, s.Auth, c.user, ri)
+	if err != nil {
+		return files, err
+	}
+
+	if len(c.path) == 0 {
+		return files, fmt.Errorf("no path specified for scp")
+	}
+
+	svr := fmt.Sprintf("%s:%d", c.host, s.Port)
+	ri.Logger().Infof("connecting to %s", svr)
+
+	client, err := connect(svr, cc)
+	if err != nil {
+		return files, err
+	}
+	defer client.Close()
+
+	target := filepath.Join(ri.Dir(), "out", s.Output)
+	f, err := os.Create(target)
+	if err != nil {
+		return files, err
+	}
+	defer f.Close()
+
+	ri.Logger().Infof("fetching file %s", c.path)
+	err = client.CopyFromRemote(context.Background(), f, c.path)
+	if err != nil {
+		return files, err
+	}
+
+	ri.Logger().Infof("fetching file finished")
+	files = append(files, target)
+
+	return files, nil
 }
 
 func scpExec(s sshscp, c *connector, ri *reusable.RequestInfo) ([]string, error) {
@@ -363,6 +411,7 @@ func sshscpHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestI
 	}
 
 	scps := make(map[string][]string)
+	scpsFrom := make(map[string][]string)
 	sshs := make(map[string][]map[string]interface{})
 
 	ret := make(map[string]interface{})
@@ -398,8 +447,11 @@ func sshscpHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestI
 		case scpType:
 			files, err = scpExec(s, c, ri)
 			scps[c.host] = files
+		case scpFromType:
+			files, err = scpFromExec(s, c, ri)
+			scpsFrom[c.host] = files
 		default:
-			reusable.ReportError(w, errForCode("sshscp"), fmt.Errorf("an action has to be ssh or scp"))
+			reusable.ReportError(w, errForCode("sshscp"), fmt.Errorf("an action has to be ssh, scp or scpfrom"))
 			return
 		}
 
@@ -414,6 +466,7 @@ func sshscpHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestI
 
 	ret[scpType] = scps
 	ret[sshType] = sshs
+	ret[scpFromType] = scpsFrom
 
 	reusable.ReportResult(w, ret)
 

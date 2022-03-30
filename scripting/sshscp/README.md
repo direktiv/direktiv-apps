@@ -71,6 +71,10 @@ states:
     secrets: ["password", "aws"]
     input: 
       actions:
+      - type: scpfrom
+        host: direktiv@192.168.0.35:/tmp/myfile.txt
+        auth: jq(.secrets.password)
+        output: workflow/file.txt
       - continue: true
         type: scp
         host: ec2-user@ec2-1-2-3-4.mars-orbit-1.compute.amazonaws.com:/tmp
@@ -115,11 +119,11 @@ If there is no file with that name *auth* is handled as password.
 | -- | -- |
 |Continue|if on host fails the action tries the next one if there are more than one|
 |Silent|No output if set to true|
-|actions.Type|*scp* or *ssh*|
+|actions.Type|*scp*, *scpfrom* or *ssh*|
 |actions.host|hostname to connect to|
 |actions.Auth|password or certificate to use|
 |actions.Port|SSH/SCP port, default 22 if not set|
-|actions.Output|SSH only, if the script creates a file with that name, the content will be used as return value|
+|actions.Output|SSH: if the script creates a file with that name, the content will be used as return value. SCPFROM: copies the file in the context/filename, e.g. namespace/myfile.txt|
 |actions.Continue|If set to true the container continues on errors in one command or host|
 
 ## Error on Execution
