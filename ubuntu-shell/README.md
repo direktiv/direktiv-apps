@@ -17,11 +17,7 @@ An example workflow of using the container in a workflow on Direktiv.
 id: shell
 functions:
 - id: myshell
-  image: direktiv/ubuntu-shell:v1
-  files:
-    - key: "myscript"
-      scope: workflow
-      type: plain
+  image: direktiv/ubuntu-shell:v3
 states:
 - id: hello
   type: action
@@ -36,7 +32,7 @@ states:
 
 ## Input
 
-The action takes two parameters. The first one is 'script' which is a name of a variable containing the script. Usually it comes from a workflow-scoped variable. The seoncd is an array of arguments for the script. The environment variable 'Direktiv_TempDir' is set for the script.
+The action takes two parameters. The first one is 'script' which is a name of a variable containing the script. Usually it comes from a workflow-scoped variable. The second is an array of arguments for the script. The environment variable 'Direktiv_TempDir' is set for the script.
 
 ## Output
 

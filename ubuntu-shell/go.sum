@@ -1,3 +1,5 @@
+github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d h1:licZJFw2RwpHMqeKTCYkitsPqHNxTmd4SNR5r94FGM8=
+github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d/go.mod h1:asat636LX7Bqt5lYEZ27JNDcqxfjdBQuJ/MM4CN/Lzo=
 github.com/benbjohnson/clock v1.1.0/go.mod h1:J11/hYXuz8f4ySSvYwY0FKfm+ezbsZBKZxNJlLklBHA=
 github.com/coreos/go-systemd/v22 v22.3.2/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -6,6 +8,8 @@ github.com/direktiv/direktiv-apps/pkg v0.0.0-20211101220616-f962c28e6465 h1:vKXx
 github.com/direktiv/direktiv-apps/pkg v0.0.0-20211101220616-f962c28e6465/go.mod h1:+fJQXv09OvZkT9IgRA0QKP4BTCIKG6HOzcEvz3P3yc0=
 github.com/direktiv/direktiv-apps/pkg v0.0.0-20220210003412-4697d751f326 h1:Q347aa/kTDbvYRskOIR3ftfoagyXEjy/MoO/FP5DvUk=
 github.com/direktiv/direktiv-apps/pkg v0.0.0-20220210003412-4697d751f326/go.mod h1:rUmjodOm+91c3Y+SxfMO5PwNbNfhWhGhPgrSmtvArQc=
+github.com/direktiv/direktiv-apps/pkg v0.0.0-20220330045317-f5ffc5bfce7e h1:RBTpjixnfDjVyQJFXY0cCXIY2m5IHD4dgvs+eqnpxXc=
+github.com/direktiv/direktiv-apps/pkg v0.0.0-20220330045317-f5ffc5bfce7e/go.mod h1:rUmjodOm+91c3Y+SxfMO5PwNbNfhWhGhPgrSmtvArQc=
 github.com/godbus/dbus/v5 v5.0.4/go.mod h1:xhWf0FNVPg57R7Z0UbKHbJfkEywrmjJnf7w5xrFpKfA=
 github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
 github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
