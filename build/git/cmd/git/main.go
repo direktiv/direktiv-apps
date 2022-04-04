@@ -46,6 +46,8 @@ var (
 		newGitExecutorImpl("list-tags", 0, listTags),
 		newGitExecutorImpl("create-tag", 1, createTag),
 		newGitExecutorImpl("delete-tag", 1, deleteTag),
+		newGitExecutorImpl("delete-push-tag", 1, deletePushTag),
+		newGitExecutorImpl("push-tags", 0, pushTags),
 		newGitExecutorImpl("list-branches", 0, listBranch),
 		newGitExecutorImpl("delete-branch", 1, deleteBranch),
 		newGitExecutorImpl("create-branch", 1, createBranch),

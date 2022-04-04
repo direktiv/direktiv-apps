@@ -3,12 +3,25 @@ package main
 import (
 	"github.com/direktiv/direktiv-apps/pkg/reusable"
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing"
 )
 
 func deleteTag(repo *git.Repository, c gitCommand,
 	ri *reusable.RequestInfo) (interface{}, error) {
 	return ifAvail(c.Args, 0), repo.DeleteTag(c.Args[0])
+}
+
+func deletePushTag(repo *git.Repository, c gitCommand,
+	ri *reusable.RequestInfo) (interface{}, error) {
+
+	return ifAvail(c.Args, 0), repo.Push(&git.PushOptions{
+		RefSpecs:   []config.RefSpec{config.RefSpec(":refs/tags/" + c.Args[0])},
+		Progress:   ri.LogWriter(),
+		RemoteName: "origin",
+		Prune:      true,
+	})
+
 }
 
 func createTag(repo *git.Repository, c gitCommand,

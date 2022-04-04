@@ -57,6 +57,8 @@ input:
 |list-tags|Lists all tags of the project|
 |delete-tag **tag-name**|Deletes a tag|
 |create-tag **tag-name**|Creates a tag|
+|push-tags|Pushes all tags|
+|delete-push-tag **tag-name**|Deletes remote tag|
 |list-branches|Lists all branches of the project|
 |delete-branch **branch-name**|Deletes a branch|
 |create-branch **branch-name**|Creates a branch|

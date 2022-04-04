@@ -36,6 +36,25 @@ func commit(repo *git.Repository, c gitCommand, ri *reusable.RequestInfo) (inter
 
 }
 
+func pushTags(repo *git.Repository, c gitCommand, ri *reusable.RequestInfo) (interface{}, error) {
+
+	mw := io.MultiWriter(os.Stdout, ri.LogWriter())
+
+	pushOptions := &git.PushOptions{
+		Progress: mw,
+		RefSpecs: []config.RefSpec{config.RefSpec("refs/tags/*:refs/tags/*")},
+	}
+
+	if c.user != "" && c.password != "" {
+		pushOptions.Auth = &httpgit.BasicAuth{
+			Username: c.user,
+			Password: c.password,
+		}
+	}
+
+	return "", repo.Push(pushOptions)
+}
+
 func push(repo *git.Repository, c gitCommand, ri *reusable.RequestInfo) (interface{}, error) {
 
 	mw := io.MultiWriter(os.Stdout, ri.LogWriter())
