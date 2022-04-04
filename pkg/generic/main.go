@@ -17,6 +17,7 @@ type cmd struct {
 	Env      []string `json:"env"`
 	Continue bool     `json:"continue"`
 	Silent   bool     `json:"silent"`
+	PrintCmd bool     `json:"print"`
 	Output   string   `json:"output"`
 }
 
@@ -66,6 +67,13 @@ func genericHandler(w http.ResponseWriter, r *http.Request, ri *reusable.Request
 		cmd.Stderr = mw
 		cmd.Dir = ri.Dir()
 		cmd.Env = append(os.Environ(), c.Env...)
+
+		if c.PrintCmd {
+
+			ri.Logger().Infof("command: %v", cmd)
+			ri.Logger().Infof("envs: %v", cmd.Env)
+
+		}
 
 		success := true
 		err = cmd.Run()
