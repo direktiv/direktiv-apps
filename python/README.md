@@ -11,7 +11,7 @@ This container runs python scripts provided by the workflow.
 functions:
 - id: run
   image: direktiv/python:v1
-  type: reusable
+  type: knative-workflow
 states:
 - id: getter 
   type: action

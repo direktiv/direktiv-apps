@@ -37,7 +37,7 @@ func pythonHandler(w http.ResponseWriter, r *http.Request, ri *reusable.RequestI
 		return
 	}
 
-	file, err := obj.Script.AsFile(0755)
+	file, err := obj.Script.AsFile(ri, 0755)
 	if err != nil {
 		reusable.ReportError(w, errForCode("execute"), err)
 		return
@@ -114,7 +114,7 @@ func runScript(f *reusable.File, envs []string, ri *reusable.RequestInfo) error 
 		return nil
 	}
 
-	file, err := f.AsFile(0755)
+	file, err := f.AsFile(ri, 0755)
 	if err != nil {
 		return err
 	}
