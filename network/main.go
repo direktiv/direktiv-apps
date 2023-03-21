@@ -95,7 +95,7 @@ func lookupTarget(obj *requestInput, w http.ResponseWriter, ri *reusable.Request
 
 		for i := 0; i < obj.Count; i++ {
 
-			ri.Logger().Infof("lookup %s", t)
+			ri.Logger().Infof("lookup address %s", t)
 
 			lr.Runs++
 			addrs, err := net.LookupHost(t)

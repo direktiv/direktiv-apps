@@ -1,4 +1,4 @@
-FROM golang:1.16.13-buster as build
+FROM golang:1.19 as build
 
 WORKDIR /app
 COPY ./main.go ./
@@ -12,6 +12,8 @@ FROM alpine:latest as certs
 RUN apk --update add ca-certificates
 
 FROM alpine
+
+RUN apk update && apk add bind-tools
 
 COPY --from=build /network /
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
