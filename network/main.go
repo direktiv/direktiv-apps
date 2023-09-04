@@ -63,11 +63,70 @@ func networkHandler(w http.ResponseWriter, r *http.Request, ri *reusable.Request
 			return
 		}
 		reusable.ReportResult(w, r)
+	case "lookupaddr":
+		r, err := lookupAddr(obj, w, ri)
+		if err != nil {
+			reusable.ReportError(w, errForCode("ping"), err)
+			return
+		}
+		reusable.ReportResult(w, r)
 	default:
 		reusable.ReportError(w, errForCode("app"), fmt.Errorf("application %s does not exist", obj.App))
 		return
 	}
 
+}
+
+func lookupAddr(obj *requestInput, w http.ResponseWriter, ri *reusable.RequestInfo) (interface{}, error) {
+
+	hostList := make([]*lookupResult, 0)
+
+	if obj.Interval <= 0 {
+		obj.Interval = 1
+	}
+	if obj.Count <= 0 {
+		obj.Count = 1
+	}
+
+	for i := range obj.Targets {
+		t := obj.Targets[i]
+
+		if len(t) == 0 {
+			continue
+		}
+
+		lr := &lookupResult{
+			Host:    t,
+			Success: false,
+		}
+
+		for i := 0; i < obj.Count; i++ {
+
+			ri.Logger().Infof("lookup address %s", t)
+
+			lr.Runs++
+			addrs, err := net.LookupAddr(t)
+			if err != nil {
+				lr.Fails++
+				lr.Reason = err.Error()
+				time.Sleep(time.Duration(obj.Interval) * time.Second)
+				continue
+			}
+			ri.Logger().Infof("address %v", addrs)
+			if obj.Result == "detail" {
+				lr.Addrs = addrs
+			}
+			time.Sleep(time.Duration(obj.Interval) * time.Second)
+		}
+
+		if lr.Fails == 0 {
+			lr.Success = true
+		}
+
+		hostList = append(hostList, lr)
+	}
+
+	return hostList, nil
 }
 
 func lookupTarget(obj *requestInput, w http.ResponseWriter, ri *reusable.RequestInfo) (interface{}, error) {
@@ -105,6 +164,7 @@ func lookupTarget(obj *requestInput, w http.ResponseWriter, ri *reusable.Request
 				time.Sleep(time.Duration(obj.Interval) * time.Second)
 				continue
 			}
+			ri.Logger().Infof("address %v", addrs)
 			if obj.Result == "detail" {
 				lr.Addrs = addrs
 			}
